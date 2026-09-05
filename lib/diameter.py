@@ -1240,7 +1240,7 @@ class Diameter:
                             self.logTool.log(service='HSS', level='debug', message=f"[diameter.py] [generateDiameterResponse] [{diameterApplication.get('requestAcronym', '')}] Successfully generated response: {response}", redisClient=self.redisMessaging)
                         except Exception as e:
                             self.logTool.log(service='HSS', level='error', message=f"[diameter.py] [generateDiameterResponse] [{diameterApplication.get('requestAcronym', '')}] Error generating response: {traceback.format_exc()}", redisClient=self.redisMessaging)
-                            return ''
+                            return self.Respond_ResultCode(packet_vars, avps, diameterApplication['failureResultCode'], experimental=diameterApplication['applicationId'] != 0)
                         break
                     except Exception as e:
                         continue
@@ -3285,31 +3285,42 @@ class Diameter:
         return response
 
     #Generate a Generic error handler with Result Code as input
-    def Respond_ResultCode(self, packet_vars, avps, result_code):
+    def Respond_ResultCode(self, packet_vars, avps, result_code, experimental=False, failed_avp=None):
+        """
+        Builds a generic error answer for the request in packet_vars / avps (RFC 6733 section 7.2).
+        result_code is sent in Result-Code (268), or in Experimental-Result (297, Vendor-Id 10415) when experimental is True.
+        failed_avp is an optional pre-encoded AVP to include inside Failed-AVP (279).
+        """
         self.logTool.log(service='HSS', level='error', message="Responding with result code " + str(result_code) + " to request with command code " + str(packet_vars['command_code']), redisClient=self.redisMessaging)
         avp = ''                                                                                    #Initiate empty var AVP
-        avp += self.generate_avp(264, 40, self.OriginHost)                                                    #Origin Host
-        avp += self.generate_avp(296, 40, self.OriginRealm)                                                   #Origin Realm
-        try:
-            session_id = self.get_avp_data(avps, 263)[0]                                                     #Get Session-ID
-            avp += self.generate_avp(263, 40, session_id)                                                    #Set session ID to received session ID
-        except:
-            self.logTool.log(service='HSS', level='debug', message="Failed to add SessionID into error", redisClient=self.redisMessaging)
+        session_id = self.get_avp_data(avps, 263)                                                   #Get Session-ID
+        if session_id:
+            avp += self.generate_avp(263, 40, session_id[0])                                        #Set session ID to received session ID
+        avp += self.generate_avp(264, 40, self.OriginHost)                                          #Origin Host
+        avp += self.generate_avp(296, 40, self.OriginRealm)                                         #Origin Realm
         for avps_to_check in avps:                                                                  #Only include AVP 260 (Vendor-Specific-Application-ID) if inital request included it
             if avps_to_check['avp_code'] == 260:
                 concat_subavp = ''
-                for sub_avp in avps_to_check['misc_data']:
-                    concat_subavp += self.generate_avp(sub_avp['avp_code'], sub_avp['avp_flags'], sub_avp['misc_data'])
-                avp += self.generate_avp(260, 40, concat_subavp)        #Vendor-Specific-Application-ID
-        avp += self.generate_avp(268, 40, self.int_to_hex(result_code, 4))                                                   #Response Code
-        
-        #Experimental Result AVP(Response Code for Failure)
-        avp_experimental_result = ''
-        avp_experimental_result += self.generate_vendor_avp(266, 40, 10415, '')                         #AVP Vendor ID
-        avp_experimental_result += self.generate_avp(298, 40, self.int_to_hex(result_code, 4))                 #AVP Experimental-Result-Code: DIAMETER_ERROR_USER_UNKNOWN (5001)
-        avp += self.generate_avp(297, 40, avp_experimental_result)                                      #AVP Experimental-Result(297)
-
-        response = self.generate_diameter_packet("01", "60", int(packet_vars['command_code']), int(packet_vars['ApplicationId']), packet_vars['hop-by-hop-identifier'], packet_vars['end-to-end-identifier'], avp)     #Generate Diameter packet
+                for sub_avp in avps_to_check['sub_avps']:
+                    if sub_avp['vendor_id']:
+                        concat_subavp += self.generate_vendor_avp(sub_avp['avp_code'], sub_avp['avp_flags'], sub_avp['vendor_id'], sub_avp['misc_data'])
+                    else:
+                        concat_subavp += self.generate_avp(sub_avp['avp_code'], sub_avp['avp_flags'], sub_avp['misc_data'])
+                avp += self.generate_avp(260, 40, concat_subavp)                                    #Vendor-Specific-Application-ID
+        auth_session_state = self.get_avp_data(avps, 277)                                           #Only include AVP 277 (Auth-Session-State) if inital request included it
+        if auth_session_state:
+            avp += self.generate_avp(277, 40, auth_session_state[0])
+        if experimental:
+            avp_experimental_result = ''
+            avp_experimental_result += self.generate_vendor_avp(266, 40, 10415, '')                 #AVP Vendor ID
+            avp_experimental_result += self.generate_avp(298, 40, self.int_to_hex(result_code, 4))  #AVP Experimental-Result-Code
+            avp += self.generate_avp(297, 40, avp_experimental_result)                              #AVP Experimental-Result(297)
+        else:
+            avp += self.generate_avp(268, 40, self.int_to_hex(result_code, 4))                      #Result-Code
+        if failed_avp:
+            avp += self.generate_avp(279, 40, failed_avp)                                           #Failed-AVP
+        flags = format(int(packet_vars['flags'], 16) & 0x40, '02x')                                 #Answer flags: only keep the Proxiable bit of the request
+        response = self.generate_diameter_packet("01", flags, int(packet_vars['command_code']), int(packet_vars['ApplicationId']), packet_vars['hop-by-hop-identifier'], packet_vars['end-to-end-identifier'], avp)     #Generate Diameter packet
         return response
 
     #3GPP Cx Registration Termination Answer
