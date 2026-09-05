@@ -143,14 +143,15 @@ def test_handler_exception_is_answered_with_failure_result_code(diameter):
     assert_common_error_avps(diameter, avps)
 
 
-def test_uar_without_session_id_is_answered(diameter):
+def test_uar_without_session_id_is_answered_with_missing_avp(diameter):
     packet_vars, avps = answer(diameter, uar_request(diameter, session_id=False))
     assert packet_vars["command_code"] == 300
     assert packet_vars["ApplicationId"] == 16777216
-    assert diameter.get_avp_data(avps, 268) == []
-    assert diameter.get_avp_data(avps, 298) == [diameter.int_to_hex(4100, 4)]
+    assert diameter.get_avp_data(avps, 268) == [diameter.int_to_hex(5005, 4)]
+    assert diameter.get_avp_data(avps, 298) == []
     assert 263 not in top_level_avp_codes(avps)
     assert_common_error_avps(diameter, avps)
+    assert failed_avp(diameter, avps)["avp_code"] == 263
 
 
 def test_valid_mar_is_still_answered_normally(diameter):

@@ -1874,7 +1874,7 @@ class Diameter:
     #3GPP S6a/S6d Update Location Answer
     def Answer_16777251_316(self, packet_vars, avps):
         avp = ''                                                                                    #Initiate empty var AVP
-        session_id = self.get_avp_data(avps, 263)[0]                                                     #Get Session-ID
+        session_id = self.get_required_avp_data(avps, 263)                                               #Get Session-ID
         avp += self.generate_avp(263, 40, session_id)                                                    #Session-ID AVP set
         avp += self.generate_avp(264, 40, self.OriginHost)                                                    #Origin Host
         avp += self.generate_avp(296, 40, self.OriginRealm)                                                   #Origin Realm
@@ -2229,7 +2229,7 @@ class Diameter:
     #3GPP S6a/S6d Authentication Information Answer
     def Answer_16777251_318(self, packet_vars, avps):
         self.logTool.log(service='HSS', level='debug', message=f"AIA AVPS: {avps}", redisClient=self.redisMessaging)
-        imsi = self.get_avp_data(avps, 1)[0]                                                             #Get IMSI from User-Name AVP in request
+        imsi = self.get_required_avp_data(avps, 1)                                                       #Get IMSI from User-Name AVP in request
         imsi = binascii.unhexlify(imsi).decode('utf-8')                                                  #Convert IMSI
         plmn = self.get_avp_data(avps, 1407)[0]                                                          #Get PLMN from User-Name AVP in request
 
@@ -2430,11 +2430,11 @@ class Diameter:
     #Purge UE Answer (PUA)
     def Answer_16777251_321(self, packet_vars, avps):
         
-        imsi = self.get_avp_data(avps, 1)[0]                                                             #Get IMSI from User-Name AVP in request
+        imsi = self.get_required_avp_data(avps, 1)                                                       #Get IMSI from User-Name AVP in request
         imsi = binascii.unhexlify(imsi).decode('utf-8')
 
         avp = ''
-        session_id = self.get_avp_data(avps, 263)[0]                                                     #Get Session-ID
+        session_id = self.get_required_avp_data(avps, 263)                                               #Get Session-ID
         avp += self.generate_avp(263, 40, session_id)                                                    #Session-ID AVP set
         avp += self.generate_avp(268, 40, self.int_to_hex(2001, 4))                                      #Result Code (DIAMETER_SUCCESS (2001))
         avp += self.generate_avp(260, 40, "000001024000000c" + format(int(16777251),"x").zfill(8) +  "0000010a4000000c000028af")      #Vendor-Specific-Application-ID (S6a)        
@@ -2464,7 +2464,7 @@ class Diameter:
     #Notify Answer (NOA)
     def Answer_16777251_323(self, packet_vars, avps):
         avp = ''
-        session_id = self.get_avp_data(avps, 263)[0]                                                     #Get Session-ID
+        session_id = self.get_required_avp_data(avps, 263)                                               #Get Session-ID
         avp += self.generate_avp(263, 40, session_id)                                                    #Session-ID AVP set
         avp += self.generate_avp(268, 40, self.int_to_hex(2001, 4))                                      #Result Code (DIAMETER_SUCCESS (2001))
         avp += self.generate_avp(260, 40, "000001024000000c" + format(int(16777251),"x").zfill(8) +  "0000010a4000000c000028af")      #Vendor-Specific-Application-ID (S6a)        
@@ -2941,7 +2941,7 @@ class Diameter:
     def Answer_16777216_300(self, packet_vars, avps):
         
         avp = ''                                                                                         #Initiate empty var AVP                                                                                           #Session-ID
-        session_id = self.get_avp_data(avps, 263)[0]                                                     #Get Session-ID
+        session_id = self.get_required_avp_data(avps, 263)                                               #Get Session-ID
         avp += self.generate_avp(263, 40, session_id)                                                    #Set session ID to received session ID
         avp += self.generate_avp(264, 40, self.OriginHost)                                               #Origin Host
         avp += self.generate_avp(296, 40, self.OriginRealm)                                              #Origin Realm
@@ -3045,7 +3045,7 @@ class Diameter:
     #3GPP Cx Server Assignment Answer
     def Answer_16777216_301(self, packet_vars, avps):
         avp = ''                                                                                    #Initiate empty var AVP                                                                                           #Session-ID
-        session_id = self.get_avp_data(avps, 263)[0]                                                     #Get Session-ID
+        session_id = self.get_required_avp_data(avps, 263)                                               #Get Session-ID
         avp += self.generate_avp(263, 40, session_id)                                                    #Set session ID to received session ID
         avp += self.generate_avp(264, 40, self.OriginHost)                                               #Origin Host
         avp += self.generate_avp(296, 40, self.OriginRealm)                                              #Origin Realm
@@ -3138,7 +3138,7 @@ class Diameter:
     #3GPP Cx Location Information Answer
     def Answer_16777216_302(self, packet_vars, avps):
         avp = ''                                                                                    #Initiate empty var AVP                                                                                           #Session-ID
-        session_id = self.get_avp_data(avps, 263)[0]                                                     #Get Session-ID
+        session_id = self.get_required_avp_data(avps, 263)                                               #Get Session-ID
         avp += self.generate_avp(263, 40, session_id)                                                    #Set session ID to received session ID
         avp += self.generate_avp(264, 40, self.OriginHost)                                                    #Origin Host
         avp += self.generate_avp(296, 40, self.OriginRealm)
@@ -3365,7 +3365,7 @@ class Diameter:
     #3GPP Cx Registration Termination Answer
     def Answer_16777216_304(self, packet_vars, avps):
         avp = ''                                                                                    #Initiate empty var AVP                                                                                           #Session-ID
-        session_id = self.get_avp_data(avps, 263)[0]                                                     #Get Session-ID
+        session_id = self.get_required_avp_data(avps, 263)                                               #Get Session-ID
         avp += self.generate_avp(263, 40, session_id)                                                    #Set session ID to received session ID
         vendor_id = self.generate_avp(266, 40, str(binascii.hexlify('10415'),'ascii'))
         self.logTool.log(service='HSS', level='debug', message="vendor_id avp: " + str(vendor_id), redisClient=self.redisMessaging)
@@ -3480,7 +3480,7 @@ class Diameter:
             self.logTool.log(service='HSS', level='debug', message=f"Rejecting Sh User-Data-Request: {e}", redisClient=self.redisMessaging)
             invalid_user_identity = next((avp_object for avp_object in avps if int(avp_object['avp_code']) == 700), None)
 
-        session_id = self.get_avp_data(avps, 263)[0]                                                     #Get Session-ID
+        session_id = self.get_required_avp_data(avps, 263)                                               #Get Session-ID
         avp += self.generate_avp(263, 40, session_id)                                                    #Set session ID to received session ID
         avp += self.generate_avp(264, 40, self.OriginHost)                                               #Origin Host
         avp += self.generate_avp(296, 40, self.OriginRealm)                                              #Origin Realm
@@ -3657,7 +3657,7 @@ class Diameter:
         self.database.UpdateObj(IMS_SUBSCRIBER, {'xcap_profile': sh_user_data}, subscriber_ims_details['ims_subscriber_id'])
 
         avp = ''                                                                                    #Initiate empty var AVP                                                                                           #Session-ID
-        session_id = self.get_avp_data(avps, 263)[0]                                                     #Get Session-ID
+        session_id = self.get_required_avp_data(avps, 263)                                               #Get Session-ID
         avp += self.generate_avp(263, 40, session_id)                                                    #Set session ID to received session ID
         avp += self.generate_avp(264, 40, self.OriginHost)                                               #Origin Host
         avp += self.generate_avp(296, 40, self.OriginRealm)                                              #Origin Realm
@@ -4409,7 +4409,7 @@ class Diameter:
     #3GPP SLh - LCS-Routing-Info-Answer
     def Answer_16777291_8388622(self, packet_vars, avps):
         avp = '' 
-        session_id = self.get_avp_data(avps, 263)[0]                                                    #Get Session-ID
+        session_id = self.get_required_avp_data(avps, 263)                                              #Get Session-ID
         avp += self.generate_avp(263, 40, session_id)                                                   #Set session    ID to received session ID
         #AVP: Vendor-Specific-Application-Id(260) l=32 f=-M-
         VendorSpecificApplicationId = ''
