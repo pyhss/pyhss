@@ -27,6 +27,29 @@ from pyhss_config import config
 from rat import SubscriberRATRestriction, RAT
 
 
+class DiameterAvpError(Exception):
+    """
+    Raised by a request handler when a received AVP is missing or invalid.
+    generateDiameterResponse() turns it into an error answer carrying result_code and a Failed-AVP (RFC 6733 section 7.1.5).
+    """
+    result_code = 5012  # DIAMETER_UNABLE_TO_COMPLY
+
+    def __init__(self, avp_code, avp_data='', vendor_id=None, avp_flags=None):
+        self.avp_code = avp_code
+        self.avp_data = avp_data
+        self.vendor_id = vendor_id
+        self.avp_flags = avp_flags if avp_flags is not None else ('c0' if vendor_id else 40)
+        super().__init__(f"{self.__class__.__name__}: AVP {avp_code}" + (f" (Vendor-Id {vendor_id})" if vendor_id else ""))
+
+
+class DiameterMissingAvp(DiameterAvpError):
+    result_code = 5005  # DIAMETER_MISSING_AVP
+
+
+class DiameterInvalidAvpValue(DiameterAvpError):
+    result_code = 5004  # DIAMETER_INVALID_AVP_VALUE
+
+
 class Diameter:
 
     def __init__(
@@ -729,6 +752,13 @@ class Diameter:
                         misc_data.append(sub_avp['misc_data'])
         return misc_data
 
+    def get_required_avp_data(self, avps, avp_code, vendor_id=None):
+        #Returns the data of the first AVP with avp_code, or raises DiameterMissingAvp so the request is answered with DIAMETER_MISSING_AVP
+        data = self.get_avp_data(avps, avp_code)
+        if not data:
+            raise DiameterMissingAvp(avp_code, vendor_id=vendor_id)
+        return data[0]
+
     def decode_diameter_packet_length(self, data):
         packet_vars = {}
         data = data.hex()
@@ -1238,6 +1268,13 @@ class Diameter:
                         try:
                             response = diameterApplication["responseMethod"](packet_vars, avps)
                             self.logTool.log(service='HSS', level='debug', message=f"[diameter.py] [generateDiameterResponse] [{diameterApplication.get('requestAcronym', '')}] Successfully generated response: {response}", redisClient=self.redisMessaging)
+                        except DiameterAvpError as e:
+                            self.logTool.log(service='HSS', level='warning', message=f"[diameter.py] [generateDiameterResponse] [{diameterApplication.get('requestAcronym', '')}] {e}", redisClient=self.redisMessaging)
+                            if e.vendor_id:
+                                failed_avp = self.generate_vendor_avp(e.avp_code, e.avp_flags, e.vendor_id, e.avp_data)
+                            else:
+                                failed_avp = self.generate_avp(e.avp_code, e.avp_flags, e.avp_data)
+                            return self.Respond_ResultCode(packet_vars, avps, e.result_code, failed_avp=failed_avp)
                         except Exception as e:
                             self.logTool.log(service='HSS', level='error', message=f"[diameter.py] [generateDiameterResponse] [{diameterApplication.get('requestAcronym', '')}] Error generating response: {traceback.format_exc()}", redisClient=self.redisMessaging)
                             return self.Respond_ResultCode(packet_vars, avps, diameterApplication['failureResultCode'], experimental=diameterApplication['applicationId'] != 0)
@@ -3161,18 +3198,20 @@ class Diameter:
 
     #3GPP Cx Multimedia Authentication Answer
     def Answer_16777216_303(self, packet_vars, avps):
-        public_identity = self.get_avp_data(avps, 601)[0]
+        public_identity = self.get_required_avp_data(avps, 601, vendor_id=10415)
         public_identity = binascii.unhexlify(public_identity).decode('utf-8')
         self.logTool.log(service='HSS', level='debug', message="Got MAR for public_identity : " + str(public_identity), redisClient=self.redisMessaging)
-        username = self.get_avp_data(avps, 1)[0]
-        username = binascii.unhexlify(username).decode('utf-8')
+        username_hex = self.get_required_avp_data(avps, 1)
+        username = binascii.unhexlify(username_hex).decode('utf-8')
+        if '@' not in username:
+            raise DiameterInvalidAvpValue(1, avp_data=username_hex)                                 #User-Name must be imsi@domain
         imsi = username.split('@')[0]   #Strip Domain
         domain = username.split('@')[1] #Get Domain Part
         self.logTool.log(service='HSS', level='debug', message="Got MAR username: " + str(username), redisClient=self.redisMessaging)
         auth_scheme = ''
 
         avp = ''                                                                                    #Initiate empty var AVP
-        session_id = self.get_avp_data(avps, 263)[0]                                                     #Get Session-ID
+        session_id = self.get_required_avp_data(avps, 263)                                               #Get Session-ID
         avp += self.generate_avp(263, 40, session_id)                                                    #Set session ID to received session ID
         avp += self.generate_avp(260, 40, "0000010a4000000c000028af000001024000000c01000000")            #Vendor-Specific-Application-ID for Cx
         avp += self.generate_avp(277, 40, "00000001")                                                    #Auth Session State
