@@ -162,3 +162,91 @@ def test_valid_mar_is_still_answered_normally(diameter):
     assert diameter.get_avp_data(avps, 298) == [diameter.int_to_hex(5001, 4)]
     assert diameter.get_avp_data(avps, 279) == []
     assert diameter.get_avp_data(avps, 263) == [diameter.string_to_hex("scscf01;abcde;1;app_cx")]
+
+
+def pur_request(diameter, session_id=True):
+    avps = common_avps(diameter, session_id)
+    avps += diameter.generate_avp(1, 40, diameter.string_to_hex(IMSI))
+    avps += diameter.generate_avp(283, 40, diameter.string_to_hex("epc.mnc001.mcc001.3gppnetwork.org"))
+    return build_request(diameter, 321, 16777251, avps)
+
+
+def make_handler_raise(monkeypatch, diameter, command_code, application_id):
+    for entry in diameter.diameterResponseList:
+        if entry["commandCode"] == command_code and entry["applicationId"] == application_id:
+
+            def raising_handler(packet_vars, avps):
+                raise RuntimeError("simulated handler failure")
+
+            monkeypatch.setitem(entry, "responseMethod", raising_handler)
+            return entry
+    raise AssertionError("no diameterResponseList entry found")
+
+
+def test_empty_session_id_avp_is_answered_with_missing_avp(diameter):
+    # A Session-Id AVP that is present but carries no payload is as unusable as an absent one
+    avps = common_avps(diameter, session_id=False)
+    avps += diameter.generate_avp(263, 40, "")
+    avps += diameter.generate_avp(1, 40, diameter.string_to_hex(f"{IMSI}@{DOMAIN}"))
+    avps += diameter.generate_vendor_avp(601, "c0", 10415, diameter.string_to_hex(f"sip:{IMSI}@{DOMAIN}"))
+    _, answer_avps = answer(diameter, build_request(diameter, 303, 16777216, avps))
+    assert diameter.get_avp_data(answer_avps, 268) == [diameter.int_to_hex(5005, 4)]
+    assert diameter.get_avp_data(answer_avps, 298) == []
+    assert failed_avp(diameter, answer_avps)["avp_code"] == 263
+
+
+def test_base_failure_code_is_sent_in_result_code_for_3gpp_application(diameter, monkeypatch):
+    # PUR (S6a) falls back to DIAMETER_UNABLE_TO_COMPLY (5012), an RFC 6733 code: it must go in
+    # Result-Code even though the application id is not 0, never in Experimental-Result
+    make_handler_raise(monkeypatch, diameter, 321, 16777251)
+    packet_vars, avps = answer(diameter, pur_request(diameter))
+    assert packet_vars["command_code"] == 321
+    assert packet_vars["ApplicationId"] == 16777251
+    assert diameter.get_avp_data(avps, 268) == [diameter.int_to_hex(5012, 4)]
+    assert diameter.get_avp_data(avps, 297) == []
+    assert diameter.get_avp_data(avps, 263) == [diameter.string_to_hex("scscf01;abcde;1;app_cx")]
+
+
+def test_experimental_failure_code_is_sent_in_experimental_result(diameter, monkeypatch):
+    # UAR (Cx) falls back to 4100, a 3GPP Experimental-Result-Code, so it keeps using Experimental-Result
+    make_handler_raise(monkeypatch, diameter, 300, 16777216)
+    _, avps = answer(diameter, uar_request(diameter))
+    assert diameter.get_avp_data(avps, 268) == []
+    experimental_result = diameter.get_avp_data(avps, 297)
+    assert [(a["avp_code"], a["misc_data"]) for a in experimental_result[0]] == [
+        (266, "000028af"),
+        (298, diameter.int_to_hex(4100, 4)),
+    ]
+
+
+def test_failed_error_answer_is_not_counted_as_successful(diameter, monkeypatch):
+    # If building the error answer itself fails, the request is dropped as before and counted as a
+    # failed response, not a successful one
+    metrics = []
+    monkeypatch.setattr(diameter.redisMessaging, "sendMetric", lambda **kwargs: metrics.append(kwargs["metricName"]))
+    make_handler_raise(monkeypatch, diameter, 321, 16777251)
+
+    def broken_error_answer(*args, **kwargs):
+        raise RuntimeError("cannot build the error answer")
+
+    monkeypatch.setattr(diameter, "Respond_ResultCode", broken_error_answer)
+    assert diameter.generateDiameterResponse(bytes.fromhex(pur_request(diameter))) == ""
+    assert "prom_diam_response_count_application_id_successful" not in metrics
+    assert "prom_diam_response_count_application_id_fail" in metrics
+
+
+def test_vendor_specific_application_id_echo_keeps_vendor_zero_sub_avp(diameter, monkeypatch):
+    # The decoder reports vendor_id as '' when the V bit is clear and as an int, possibly 0, when it
+    # is set; a sub AVP with Vendor-Id 0 and the V bit set must be echoed with the V bit intact
+    make_handler_raise(monkeypatch, diameter, 321, 16777251)
+    avps = common_avps(diameter, session_id=True)
+    avps = avps.replace(diameter.generate_avp(260, 40, CX_VENDOR_SPECIFIC_APPLICATION_ID), "")
+    vendor_zero_sub_avp = diameter.generate_vendor_avp(258, "c0", 0, "01000001")
+    avps += diameter.generate_avp(260, 40, diameter.generate_avp(266, 40, "000028af") + vendor_zero_sub_avp)
+    avps += diameter.generate_avp(1, 40, diameter.string_to_hex(IMSI))
+    _, answer_avps = answer(diameter, build_request(diameter, 321, 16777251, avps))
+    echoed = diameter.get_avp_data(answer_avps, 260)[0]
+    assert [(a["avp_code"], a["vendor_id"], a["avp_flags"], a["misc_data"]) for a in echoed] == [
+        (266, "", "40", "000028af"),
+        (258, 0, "c0", "01000001"),
+    ]
