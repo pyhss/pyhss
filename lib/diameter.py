@@ -38,8 +38,8 @@ class DiameterAvpError(Exception):
         self.avp_code = avp_code
         self.avp_data = avp_data
         self.vendor_id = vendor_id
-        self.avp_flags = avp_flags if avp_flags is not None else ('c0' if vendor_id else 40)
-        super().__init__(f"{self.__class__.__name__}: AVP {avp_code}" + (f" (Vendor-Id {vendor_id})" if vendor_id else ""))
+        self.avp_flags = avp_flags if avp_flags is not None else ('c0' if vendor_id is not None else 40)
+        super().__init__(f"{self.__class__.__name__}: AVP {avp_code}" + (f" (Vendor-Id {vendor_id})" if vendor_id is not None else ""))
 
 
 class DiameterMissingAvp(DiameterAvpError):
@@ -752,12 +752,31 @@ class Diameter:
                         misc_data.append(sub_avp['misc_data'])
         return misc_data
 
+    def get_top_level_avp_data(self, avps, avp_code):
+        #Returns the payload of the first top level AVP with avp_code ('' when it is empty), or None when there is none.
+        #Grouped AVPs are not searched, unlike get_avp_data().
+        for avp in avps:
+            if int(avp['avp_code']) == int(avp_code):
+                return avp['misc_data'] if isinstance(avp['misc_data'], str) else ''
+        return None
+
     def get_required_avp_data(self, avps, avp_code, vendor_id=None):
-        #Returns the data of the first AVP with avp_code, or raises DiameterMissingAvp so the request is answered with DIAMETER_MISSING_AVP
-        data = self.get_avp_data(avps, avp_code)
-        if not data or not data[0]:                                                                 #Absent, or present with an empty payload
-            raise DiameterMissingAvp(avp_code, vendor_id=vendor_id)
-        return data[0]
+        #Returns the data of the first top level AVP with avp_code (and, when vendor_id is given, that Vendor-Id).
+        #Raises DiameterMissingAvp when there is none, so the request is answered with DIAMETER_MISSING_AVP, and
+        #DiameterInvalidAvpValue when the AVP is present with an empty payload, answered with DIAMETER_INVALID_AVP_VALUE.
+        #Unlike get_avp_data() this does not look inside grouped AVPs: a mandatory AVP nested in another AVP does not count.
+        for avp in avps:
+            if int(avp['avp_code']) != int(avp_code):
+                continue
+            if vendor_id is not None and avp['vendor_id'] != vendor_id:                             #The decoder sets vendor_id to '' when the V bit is clear
+                continue
+            if avp['misc_data']:
+                return avp['misc_data']
+            if avp.get('sub_avps'):
+                return avp['sub_avps']
+            received_vendor_id = avp['vendor_id'] if avp['vendor_id'] != '' else None
+            raise DiameterInvalidAvpValue(avp_code, avp_data='', vendor_id=received_vendor_id, avp_flags=avp['avp_flags'])
+        raise DiameterMissingAvp(avp_code, vendor_id=vendor_id)
 
     def decode_diameter_packet_length(self, data):
         packet_vars = {}
@@ -1272,13 +1291,17 @@ class Diameter:
                     self.logTool.log(service='HSS', level='debug', message=f"[diameter.py] [generateDiameterResponse] [{diameterApplication.get('requestAcronym', '')}] Attempting to generate response", redisClient=self.redisMessaging)
                     try:
                         response = diameterApplication["responseMethod"](packet_vars, avps)
-                        self.logTool.log(service='HSS', level='debug', message=f"[diameter.py] [generateDiameterResponse] [{diameterApplication.get('requestAcronym', '')}] Successfully generated response: {response}", redisClient=self.redisMessaging)
                     except DiameterAvpError as e:
                         self.logTool.log(service='HSS', level='warning', message=f"[diameter.py] [generateDiameterResponse] [{diameterApplication.get('requestAcronym', '')}] {e}", redisClient=self.redisMessaging)
                         handlerError = e
                     except Exception as e:
                         self.logTool.log(service='HSS', level='error', message=f"[diameter.py] [generateDiameterResponse] [{diameterApplication.get('requestAcronym', '')}] Error generating response: {traceback.format_exc()}", redisClient=self.redisMessaging)
                         handlerError = e
+                    else:
+                        try:
+                            self.logTool.log(service='HSS', level='debug', message=f"[diameter.py] [generateDiameterResponse] [{diameterApplication.get('requestAcronym', '')}] Successfully generated response: {response}", redisClient=self.redisMessaging)
+                        except Exception:
+                            pass                                                                    #A logging failure must not turn a valid answer into an error answer
                     break
 
                 if matchedApplication is None:
@@ -1290,7 +1313,7 @@ class Diameter:
                     #counted by the failure metric below and the request is dropped as before, not counted
                     #as a successful response.
                     if isinstance(handlerError, DiameterAvpError):
-                        if handlerError.vendor_id:
+                        if handlerError.vendor_id is not None:
                             failed_avp = self.generate_vendor_avp(handlerError.avp_code, handlerError.avp_flags, handlerError.vendor_id, handlerError.avp_data)
                         else:
                             failed_avp = self.generate_avp(handlerError.avp_code, handlerError.avp_flags, handlerError.avp_data)
@@ -3228,11 +3251,17 @@ class Diameter:
 
     #3GPP Cx Multimedia Authentication Answer
     def Answer_16777216_303(self, packet_vars, avps):
-        public_identity = self.get_required_avp_data(avps, 601, vendor_id=10415)
-        public_identity = binascii.unhexlify(public_identity).decode('utf-8')
+        public_identity_hex = self.get_required_avp_data(avps, 601, vendor_id=10415)
+        try:
+            public_identity = binascii.unhexlify(public_identity_hex).decode('utf-8')
+        except (binascii.Error, UnicodeDecodeError):
+            raise DiameterInvalidAvpValue(601, avp_data=public_identity_hex, vendor_id=10415)      #Public-Identity must be a UTF-8 string
         self.logTool.log(service='HSS', level='debug', message="Got MAR for public_identity : " + str(public_identity), redisClient=self.redisMessaging)
         username_hex = self.get_required_avp_data(avps, 1)
-        username = binascii.unhexlify(username_hex).decode('utf-8')
+        try:
+            username = binascii.unhexlify(username_hex).decode('utf-8')
+        except (binascii.Error, UnicodeDecodeError):
+            raise DiameterInvalidAvpValue(1, avp_data=username_hex)                                 #User-Name must be a UTF-8 string
         if '@' not in username:
             raise DiameterInvalidAvpValue(1, avp_data=username_hex)                                 #User-Name must be imsi@domain
         imsi = username.split('@')[0]   #Strip Domain
@@ -3362,23 +3391,24 @@ class Diameter:
         """
         self.logTool.log(service='HSS', level='error', message="Responding with result code " + str(result_code) + " to request with command code " + str(packet_vars['command_code']), redisClient=self.redisMessaging)
         avp = ''                                                                                    #Initiate empty var AVP
-        session_id = self.get_avp_data(avps, 263)                                                   #Get Session-ID
-        if session_id and session_id[0]:                                                            #Echo it unless absent or empty (the decoder yields [] for an empty payload)
-            avp += self.generate_avp(263, 40, session_id[0])                                        #Set session ID to received session ID
+        session_id = self.get_top_level_avp_data(avps, 263)                                         #Get the request's own Session-ID (not one nested in another AVP)
+        if session_id:                                                                              #Echo it unless absent or empty
+            avp += self.generate_avp(263, 40, session_id)                                           #Set session ID to received session ID
         avp += self.generate_avp(264, 40, self.OriginHost)                                          #Origin Host
         avp += self.generate_avp(296, 40, self.OriginRealm)                                         #Origin Realm
         for avps_to_check in avps:                                                                  #Only include AVP 260 (Vendor-Specific-Application-ID) if inital request included it
             if avps_to_check['avp_code'] == 260:
                 concat_subavp = ''
                 for sub_avp in avps_to_check['sub_avps']:
+                    sub_avp_data = sub_avp['misc_data'] if isinstance(sub_avp['misc_data'], str) else ''  #The decoder yields [] for an empty payload
                     if sub_avp['vendor_id'] != '':                                                  #The decoder sets vendor_id to '' when the V bit is clear and to an int (possibly 0) when it is set
-                        concat_subavp += self.generate_vendor_avp(sub_avp['avp_code'], sub_avp['avp_flags'], sub_avp['vendor_id'], sub_avp['misc_data'])
+                        concat_subavp += self.generate_vendor_avp(sub_avp['avp_code'], sub_avp['avp_flags'], sub_avp['vendor_id'], sub_avp_data)
                     else:
-                        concat_subavp += self.generate_avp(sub_avp['avp_code'], sub_avp['avp_flags'], sub_avp['misc_data'])
+                        concat_subavp += self.generate_avp(sub_avp['avp_code'], sub_avp['avp_flags'], sub_avp_data)
                 avp += self.generate_avp(260, 40, concat_subavp)                                    #Vendor-Specific-Application-ID
-        auth_session_state = self.get_avp_data(avps, 277)                                           #Only include AVP 277 (Auth-Session-State) if inital request included it
-        if auth_session_state and auth_session_state[0]:
-            avp += self.generate_avp(277, 40, auth_session_state[0])
+        auth_session_state = self.get_top_level_avp_data(avps, 277)                                 #Only include AVP 277 (Auth-Session-State) if inital request included it
+        if auth_session_state:
+            avp += self.generate_avp(277, 40, auth_session_state)
         if experimental:
             avp_experimental_result = ''
             avp_experimental_result += self.generate_vendor_avp(266, 40, 10415, '')                 #AVP Vendor ID

@@ -4,7 +4,7 @@
 # malformed AVP must be answered with an error Result-Code instead of being
 # dropped, which makes the peer wait for the transaction to time out.
 import pytest
-from diameter import Diameter
+from diameter import Diameter, DiameterInvalidAvpValue
 from logtool import LogTool
 from pyhss_config import config
 
@@ -128,19 +128,14 @@ def test_mar_without_public_identity_is_answered_with_missing_avp(diameter):
     assert public_identity["vendor_id"] == 10415
 
 
-def test_handler_exception_is_answered_with_failure_result_code(diameter):
-    # A User-Name that is not valid UTF-8 makes the handler raise UnicodeDecodeError,
-    # which is answered with the command's failureResultCode (4100 for MAR) as Experimental-Result
+def test_mar_user_name_that_is_not_utf8_is_answered_with_invalid_avp_value(diameter):
     _, avps = answer(diameter, mar_request(diameter, username=b"\xfe\xff"))
-    assert diameter.get_avp_data(avps, 268) == []
-    experimental_result = diameter.get_avp_data(avps, 297)
-    assert [(a["avp_code"], a["misc_data"]) for a in experimental_result[0]] == [
-        (266, "000028af"),
-        (298, diameter.int_to_hex(4100, 4)),
-    ]
-    assert diameter.get_avp_data(avps, 279) == []
+    assert diameter.get_avp_data(avps, 268) == [diameter.int_to_hex(5004, 4)]
+    assert diameter.get_avp_data(avps, 298) == []
     assert diameter.get_avp_data(avps, 263) == [diameter.string_to_hex("scscf01;abcde;1;app_cx")]
     assert_common_error_avps(diameter, avps)
+    user_name = failed_avp(diameter, avps)
+    assert (user_name["avp_code"], user_name["misc_data"]) == (1, "feff")
 
 
 def test_uar_without_session_id_is_answered_with_missing_avp(diameter):
@@ -164,10 +159,14 @@ def test_valid_mar_is_still_answered_normally(diameter):
     assert diameter.get_avp_data(avps, 263) == [diameter.string_to_hex("scscf01;abcde;1;app_cx")]
 
 
+S6A_VENDOR_SPECIFIC_APPLICATION_ID = "0000010a4000000c000028af000001024000000c01000023"
+
+
 def pur_request(diameter, session_id=True):
-    avps = common_avps(diameter, session_id)
+    avps = common_avps(diameter, session_id).replace(
+        CX_VENDOR_SPECIFIC_APPLICATION_ID, S6A_VENDOR_SPECIFIC_APPLICATION_ID
+    )
     avps += diameter.generate_avp(1, 40, diameter.string_to_hex(IMSI))
-    avps += diameter.generate_avp(283, 40, diameter.string_to_hex("epc.mnc001.mcc001.3gppnetwork.org"))
     return build_request(diameter, 321, 16777251, avps)
 
 
@@ -183,16 +182,19 @@ def make_handler_raise(monkeypatch, diameter, command_code, application_id):
     raise AssertionError("no diameterResponseList entry found")
 
 
-def test_empty_session_id_avp_is_answered_with_missing_avp(diameter):
-    # A Session-Id AVP that is present but carries no payload is as unusable as an absent one
+def test_empty_session_id_avp_is_answered_with_invalid_avp_value(diameter):
+    # A Session-Id AVP that is present but carries no payload is an invalid value (5004), and the
+    # received AVP is returned in Failed-AVP; it is not echoed as the answer's Session-Id
     avps = common_avps(diameter, session_id=False)
     avps += diameter.generate_avp(263, 40, "")
     avps += diameter.generate_avp(1, 40, diameter.string_to_hex(f"{IMSI}@{DOMAIN}"))
     avps += diameter.generate_vendor_avp(601, "c0", 10415, diameter.string_to_hex(f"sip:{IMSI}@{DOMAIN}"))
     _, answer_avps = answer(diameter, build_request(diameter, 303, 16777216, avps))
-    assert diameter.get_avp_data(answer_avps, 268) == [diameter.int_to_hex(5005, 4)]
+    assert diameter.get_avp_data(answer_avps, 268) == [diameter.int_to_hex(5004, 4)]
     assert diameter.get_avp_data(answer_avps, 298) == []
-    assert failed_avp(diameter, answer_avps)["avp_code"] == 263
+    assert 263 not in top_level_avp_codes(answer_avps)
+    session_id = failed_avp(diameter, answer_avps)
+    assert (session_id["avp_code"], session_id["avp_flags"], session_id["misc_data"]) == (263, "40", "")
 
 
 def test_base_failure_code_is_sent_in_result_code_for_3gpp_application(diameter, monkeypatch):
@@ -250,3 +252,77 @@ def test_vendor_specific_application_id_echo_keeps_vendor_zero_sub_avp(diameter,
         (266, "", "40", "000028af"),
         (258, 0, "c0", "01000001"),
     ]
+
+
+def test_nested_session_id_does_not_satisfy_the_top_level_requirement(diameter):
+    # A Session-Id inside a grouped AVP is not the request's Session-Id: the request is still missing it
+    avps = common_avps(diameter, session_id=False)
+    avps += diameter.generate_avp(279, 40, diameter.generate_avp(263, 40, diameter.string_to_hex("nested")))
+    avps += diameter.generate_avp(1, 40, diameter.string_to_hex(f"{IMSI}@{DOMAIN}"))
+    avps += diameter.generate_vendor_avp(601, "c0", 10415, diameter.string_to_hex(f"sip:{IMSI}@{DOMAIN}"))
+    _, answer_avps = answer(diameter, build_request(diameter, 303, 16777216, avps))
+    assert diameter.get_avp_data(answer_avps, 268) == [diameter.int_to_hex(5005, 4)]
+    assert 263 not in top_level_avp_codes(answer_avps)
+    assert failed_avp(diameter, answer_avps)["avp_code"] == 263
+
+
+def test_public_identity_with_the_wrong_vendor_id_is_missing(diameter):
+    # Public-Identity is a 3GPP AVP: a code 601 without the V bit does not satisfy the requirement
+    avps = common_avps(diameter, session_id=True)
+    avps += diameter.generate_avp(1, 40, diameter.string_to_hex(f"{IMSI}@{DOMAIN}"))
+    avps += diameter.generate_avp(601, 40, diameter.string_to_hex(f"sip:{IMSI}@{DOMAIN}"))
+    _, answer_avps = answer(diameter, build_request(diameter, 303, 16777216, avps))
+    assert diameter.get_avp_data(answer_avps, 268) == [diameter.int_to_hex(5005, 4)]
+    public_identity = failed_avp(diameter, answer_avps)
+    assert (public_identity["avp_code"], public_identity["vendor_id"]) == (601, 10415)
+
+
+def test_answered_error_counts_one_failed_response_and_no_successful_one(diameter, monkeypatch):
+    metrics = []
+    monkeypatch.setattr(diameter.redisMessaging, "sendMetric", lambda **kwargs: metrics.append(kwargs["metricName"]))
+    answer(diameter, mar_request(diameter, session_id=False))
+    assert metrics.count("prom_diam_response_count_application_id_fail") == 1
+    assert "prom_diam_response_count_application_id_successful" not in metrics
+
+
+def test_unmatched_command_is_dropped_and_counted_as_failed(diameter, monkeypatch):
+    metrics = []
+    monkeypatch.setattr(diameter.redisMessaging, "sendMetric", lambda **kwargs: metrics.append(kwargs["metricName"]))
+    assert (
+        diameter.generateDiameterResponse(
+            bytes.fromhex(build_request(diameter, 999, 16777216, common_avps(diameter, True)))
+        )
+        == ""
+    )
+    assert metrics.count("prom_diam_response_count_application_id_fail") == 1
+    assert "prom_diam_response_count_application_id_successful" not in metrics
+
+
+def test_error_answer_survives_a_header_only_sub_avp_in_vendor_specific_application_id(diameter):
+    # The decoder yields [] for an empty payload; echoing 260 must not pass that to the encoder
+    avps = common_avps(diameter, session_id=False).replace(
+        diameter.generate_avp(260, 40, CX_VENDOR_SPECIFIC_APPLICATION_ID), ""
+    )
+    avps += diameter.generate_avp(
+        260, 40, diameter.generate_avp(266, 40, "") + diameter.generate_avp(258, 40, "01000000")
+    )
+    avps += diameter.generate_avp(1, 40, diameter.string_to_hex(f"{IMSI}@{DOMAIN}"))
+    avps += diameter.generate_vendor_avp(601, "c0", 10415, diameter.string_to_hex(f"sip:{IMSI}@{DOMAIN}"))
+    _, answer_avps = answer(diameter, build_request(diameter, 303, 16777216, avps))
+    assert diameter.get_avp_data(answer_avps, 268) == [diameter.int_to_hex(5005, 4)]
+    echoed = diameter.get_avp_data(answer_avps, 260)[0]
+    assert [(a["avp_code"], a["misc_data"]) for a in echoed] == [(266, ""), (258, "01000000")]
+
+
+def test_failed_avp_keeps_vendor_id_zero(diameter, monkeypatch):
+    for entry in diameter.diameterResponseList:
+        if entry["commandCode"] == 321 and entry["applicationId"] == 16777251:
+
+            def raising_handler(packet_vars, avps):
+                raise DiameterInvalidAvpValue(258, avp_data="01000001", vendor_id=0)
+
+            monkeypatch.setitem(entry, "responseMethod", raising_handler)
+    _, answer_avps = answer(diameter, pur_request(diameter))
+    assert diameter.get_avp_data(answer_avps, 268) == [diameter.int_to_hex(5004, 4)]
+    bad = failed_avp(diameter, answer_avps)
+    assert (bad["avp_code"], bad["vendor_id"], bad["avp_flags"], bad["misc_data"]) == (258, 0, "c0", "01000001")
