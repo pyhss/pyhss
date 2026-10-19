@@ -26,6 +26,9 @@ Build-Depends:
 # pyhss runtime deps
 	python3-aiohttp,
 	python3-flask,
+	python3-h2,
+	python3-httpx,
+	python3-hypercorn,
 	python3-influxdb,
 	python3-jinja2,
 	python3-prometheus-client,
@@ -58,6 +61,7 @@ Build-Depends:
 ###############################################################################
 # pyhss test deps
 	python3-pytest,
+	python3-openapi-core,
 	python3-pytest-env,
 	python3-sqlglot,
 # py-sctp build deps
@@ -85,6 +89,9 @@ Depends:
 # pyhss runtime deps
 	python3-aiohttp,
 	python3-flask,
+	python3-h2,
+	python3-httpx,
+	python3-hypercorn,
 	python3-influxdb,
 	python3-jinja2,
 	python3-prometheus-client,

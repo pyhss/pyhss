@@ -1,3 +1,5 @@
 pytest
 pytest-env
 sqlglot
+# SBI conformance tests against specs/3gpp/
+openapi-core

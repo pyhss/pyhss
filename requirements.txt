@@ -20,6 +20,9 @@ prometheus_flask_exporter
 pydantic==2.12.5
 pydantic_core==2.41.5
 influxdb==5.3.1
+# pyhss_udr: HTTP/2 (h2c) SBI server and NRF client
+hypercorn==0.17.3
+httpx[http2]==0.28.1
 
 asn1tools==0.167.0  # vendor-in-deb
 smspdudecoder==2.2.0  # vendor-in-deb
