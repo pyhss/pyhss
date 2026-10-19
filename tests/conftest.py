@@ -146,3 +146,16 @@ def run_pyhss_gsup():
         yield
     finally:
         proc.kill()
+
+
+@pytest.fixture(scope="session")
+def run_pyhss_udr():
+    cmd = ["python3", os.path.join(top_dir, "services/udrService.py")]
+    print(f"+ {cmd}")
+    proc = subprocess.Popen(cmd, env=pyhss_env)
+
+    try:
+        wait_for_tcp_port(config["udr"]["bind_port"], timeout=10)
+        yield
+    finally:
+        proc.kill()

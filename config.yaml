@@ -117,6 +117,39 @@ api:
   # Whether or not to return key-based data when querying the AUC. Disable in production systems.
   enable_insecure_auc: False
 
+# 5G UDR (pyhss_udr): Nudr_DataRepository (3GPP TS 29.504) over HTTP/2 cleartext (h2c),
+# e.g. as subscriber database for the UDM and PCF of Open5GS in 5G SA. See docs/5g_udr.md.
+udr:
+  bind_ip: "127.0.0.1"
+  bind_port: 7777
+  # IP address registered at the NRF, i.e. where UDM/PCF/SCP reach this UDR (default: bind_ip)
+  advertise_ip: ""
+  # NF instance ID (UUID) registered at the NRF (default: derived from hostname and bind_port)
+  nf_instance_id: ""
+  # API versions in the URI to serve and advertise: Open5GS 2.8.0 uses v1, TS 29.504 R19 is v2
+  api_versions: ["v1", "v2"]
+  # Seconds an idle HTTP/2 connection is kept open
+  keep_alive_timeout: 3600
+  # NF types allowed to use this UDR (NRF profile)
+  allowed_nf_types: ["SCP", "PCF", "UDM"]
+  # S-NSSAI of APNs/DNNs that have no sst/sd set. sd: 6 hex digits or null
+  default_snssai:
+    sst: 1
+    sd: null
+  # How an SQN resync from the UDM (authentication-subscription PATCH) is stored. The SQN is
+  # shared with S6a. "max": never move it backwards, "set": overwrite (like Open5GS' UDR)
+  sqn_patch_policy: "max"
+  nrf:
+    enabled: False
+    # NRF, or SCP with via_scp (indirect communication, as in the default Open5GS setup)
+    uri: "http://127.0.0.10:7777"
+    via_scp: False
+    # Used if the NRF does not set the heartbeat timer
+    heartbeat_interval: 10
+    retry_interval: 5
+    # Send hss.MCC/MNC as plmnList. Open5GS' NRF rejects a profile whose PLMN is not served by it
+    send_plmn_list: False
+
 metric:
   bind_ip: "127.0.0.1"
   bind_port: 9191

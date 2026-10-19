@@ -3,7 +3,9 @@
 # Copyright 2026 eta <eta@eta.st>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 import os
+import re
 import sys
+import uuid
 from pathlib import Path
 
 import yaml
@@ -55,6 +57,33 @@ def validate_config():
             f"Valid options are: {', '.join(sorted(valid_reject_causes))}"
         )
         sys.exit(1)
+
+    validate_udr_config(config.get("udr") or {})
+
+
+def validate_udr_config(udr):
+    def fail(message):
+        print(f"ERROR: invalid udr config: {message}")
+        sys.exit(1)
+
+    snssai = udr.get("default_snssai") or {}
+    if "sst" in snssai and not (isinstance(snssai["sst"], int) and 0 <= snssai["sst"] <= 255):
+        fail(f"default_snssai.sst must be 0..255, not '{snssai['sst']}'")
+    sd = snssai.get("sd")
+    if sd is not None and not re.fullmatch(r"[0-9A-Fa-f]{6}", str(sd)):
+        fail(f"default_snssai.sd must be 6 hex digits or null, not '{sd}'")
+    if udr.get("sqn_patch_policy", "max") not in ("max", "set"):
+        fail(f"sqn_patch_policy must be 'max' or 'set', not '{udr['sqn_patch_policy']}'")
+    if udr.get("nf_instance_id"):
+        try:
+            uuid.UUID(str(udr["nf_instance_id"]))
+        except ValueError:
+            fail(f"nf_instance_id must be a UUID, not '{udr['nf_instance_id']}'")
+    if not isinstance(udr.get("bind_port", 7777), int):
+        fail(f"bind_port must be a number, not '{udr['bind_port']}'")
+    for version in udr.get("api_versions", ["v1"]):
+        if not re.fullmatch(r"v[0-9]+", str(version)):
+            fail(f"api_versions must be like 'v1', not '{version}'")
 
 
 load_config()

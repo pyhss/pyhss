@@ -49,6 +49,15 @@ api:
   page_size: 200
   enable_insecure_auc: False
 
+udr:
+  bind_ip: "127.0.0.1"
+  bind_port: 17777
+  default_snssai:
+    sst: 1
+    sd: null
+  nrf:
+    enabled: False
+
 benchmarking:
   enabled: True
   reporting_interval: 3600

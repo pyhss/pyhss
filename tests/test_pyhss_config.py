@@ -52,3 +52,28 @@ class ConfigValidationTest(TestCase):
         }
         with self.assertRaises(SystemExit):
             validate_config()
+
+    def test_udr_config(self):
+        """The udr section is validated if present."""
+        import pyhss_config
+        valid = {
+            'default_snssai': {'sst': 1, 'sd': '0000AB'},
+            'sqn_patch_policy': 'set',
+            'nf_instance_id': '6a1e2b7c-0d4f-4c3a-9a51-3c1f0d2e9b10',
+            'bind_port': 7777,
+            'api_versions': ['v1', 'v2'],
+        }
+        pyhss_config.config = {'udr': valid}
+        validate_config()
+        for invalid in (
+            {'default_snssai': {'sst': 256}},
+            {'default_snssai': {'sst': 1, 'sd': '12345'}},
+            {'sqn_patch_policy': 'min'},
+            {'nf_instance_id': 'udr-1'},
+            {'bind_port': '7777'},
+            {'api_versions': ['1']},
+        ):
+            with self.subTest(config=invalid):
+                pyhss_config.config = {'udr': dict(valid, **invalid)}
+                with self.assertRaises(SystemExit):
+                    validate_config()
