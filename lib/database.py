@@ -1769,6 +1769,82 @@ class Database:
 
         return
 
+    def Update_AuC_SQN(self, auc_id, set_sqn=None, increment=0, policy='max', propagate=True):
+        #Atomically update the SQN of an AuC entry (used by the 5G UDR, the SQN is shared with S6a):
+        #optionally set it to set_sqn first (policy 'max' never moves it backwards, 'set' overwrites),
+        #then add increment. The SQN is 48 bits (3GPP TS 33.102), so the result wraps around.
+        self.logTool.log(service='Database', level='debug', message=f"Update_AuC_SQN for AuC {auc_id}: set_sqn={set_sqn} increment={increment} policy={policy}", redisClient=self.redisMessaging)
+        Session = sessionmaker(bind = self.engine)
+        session = Session()
+        try:
+            auc = session.query(AUC).filter_by(auc_id=auc_id).with_for_update().one()
+            sqn = int(auc.sqn or 0)
+            if set_sqn is not None:
+                sqn = int(set_sqn) if policy == 'set' else max(sqn, int(set_sqn))
+            sqn = (sqn + int(increment)) & 0xFFFFFFFFFFFF
+            auc.sqn = sqn
+            session.commit()
+        except Exception as E:
+            self.safe_rollback(session)
+            self.safe_close(session)
+            raise ValueError(E)
+        self.safe_close(session)
+
+        if propagate:
+            if config['geored'].get('enabled', False) == True:
+                self.handleGeored({"auc_id": auc_id, "sqn": sqn})
+        return sqn
+
+    def Update_Serving_AMF(self, imsi, serving_amf):
+        #Set (or clear with None) the AMF serving the subscriber over 3GPP access (5G UDR context data)
+        self.logTool.log(service='Database', level='debug', message=f"Updating Serving AMF for sub {imsi} to AMF {serving_amf}", redisClient=self.redisMessaging)
+        Session = sessionmaker(bind = self.engine)
+        session = Session()
+        try:
+            result = session.query(SUBSCRIBER).filter_by(imsi=str(imsi)).one()
+            result.serving_amf = serving_amf
+            result.serving_amf_timestamp = datetime.datetime.now(tz=timezone.utc) if serving_amf else None
+            session.commit()
+        except Exception as E:
+            self.safe_rollback(session)
+            self.safe_close(session)
+            raise ValueError(E)
+        self.safe_close(session)
+
+    def Get_5G_Subscription(self, imsi):
+        #Get everything the 5G UDR needs about a subscriber in one session. Returns None for an unknown IMSI,
+        #otherwise a dict with the subscriber, its AuC entry, its APNs (default APN first, then apn_list order)
+        #and its static UE IPs (apn_id -> SUBSCRIBER_ROUTING dict).
+        Session = sessionmaker(bind = self.engine)
+        session = Session()
+        try:
+            subscriber = session.query(SUBSCRIBER).filter_by(imsi=str(imsi)).one_or_none()
+            if subscriber is None:
+                return None
+            auc = session.query(AUC).filter_by(auc_id=subscriber.auc_id).one()
+
+            apn_ids = []
+            for apn_id in [str(subscriber.default_apn)] + str(subscriber.apn_list or '').split(','):
+                apn_id = apn_id.strip()
+                if apn_id.isdigit() and int(apn_id) not in apn_ids:
+                    apn_ids.append(int(apn_id))
+            apns = {apn.apn_id: apn for apn in session.query(APN).filter(APN.apn_id.in_(apn_ids)).all()}
+            routing = session.query(SUBSCRIBER_ROUTING).filter_by(subscriber_id=subscriber.subscriber_id).all()
+
+            def to_dict(obj):
+                result = dict(obj.__dict__)
+                result.pop('_sa_instance_state', None)
+                return result
+
+            return {
+                'subscriber': to_dict(subscriber),
+                'auc': to_dict(auc),
+                'apns': [to_dict(apns[apn_id]) for apn_id in apn_ids if apn_id in apns],
+                'routing': {route.apn_id: to_dict(route) for route in routing},
+            }
+        finally:
+            self.safe_close(session)
+
     def update_hlr(self, imsi: str, role: IPAPeerRole, new_id: Optional[str]) -> str:
         self.logTool.log(service='Database', level='debug', message=f"Updating GSUP record {role} for IMSI: {imsi} with new ID: {new_id}", redisClient=self.redisMessaging)
         Session = sessionmaker(bind=self.engine)
