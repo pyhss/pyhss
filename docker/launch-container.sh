@@ -60,8 +60,11 @@ case "${CONTAINER_ROLE}" in
     geored)
         exec python3 georedService.py
         ;;
+    udr)
+        exec python3 udrService.py
+        ;;
     *)
-        echo "WARN: Unknown env var value CONTAINER_ROLE '${CONTAINER_ROLE}'. Must be one of {hss,diameter,api,gsup,metrics,logs,geored,database}. Defaulting to running container CMD."
+        echo "WARN: Unknown env var value CONTAINER_ROLE '${CONTAINER_ROLE}'. Must be one of {hss,diameter,api,gsup,udr,metrics,logs,geored,database}. Defaulting to running container CMD."
         exec $@
         ;;
 esac

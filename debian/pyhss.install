@@ -8,6 +8,7 @@
 /systemd/pyhss_gsup.service /lib/systemd/system/
 /systemd/pyhss_hss.service /lib/systemd/system/
 /systemd/pyhss_metric.service /lib/systemd/system/
+/systemd/pyhss_udr.service /lib/systemd/system/
 
 # distro_packaging.conf drop-ins for systemd services
 /debian/systemd/* /lib/systemd/system/

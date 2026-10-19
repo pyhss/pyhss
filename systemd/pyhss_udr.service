@@ -1,0 +1,17 @@
+# Optional 5G UDR (Nudr_DataRepository over HTTP/2), e.g. for the UDM/PCF of Open5GS in 5G SA.
+[Unit]
+Description=PyHSS 5G UDR Service
+PartOf=pyhss.service
+Requires=pyhss_hss.service
+After=pyhss_hss.service
+
+[Service]
+Environment="PYTHONUNBUFFERED=1"
+Environment="PYHSS_LOG_STDOUT_NO_TIMESTAMP=1"
+User=root
+WorkingDirectory=/etc/pyhss/services/
+ExecStart=python3 udrService.py
+Restart=always
+
+[Install]
+WantedBy=pyhss.service

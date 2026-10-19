@@ -86,6 +86,31 @@ services:
       pyhss_hss:
         condition: service_started
 
+  # 5G UDR, e.g. for Open5GS in 5G SA: docker compose --profile 5g up
+  pyhss_udr:
+    image: ghcr.io/nickvsnetworking/pyhss/pyhss:development
+    env_file:
+        - ../docker/.env
+    container_name: "pyhss_udr"
+    environment:
+      CONTAINER_ROLE: "udr"
+    profiles: ["5g"]
+    ports:
+      - "127.0.0.1:7777:7777"
+    volumes:
+      - pyhss_sqlite:/var/lib/pyhss
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "7777"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 3s
+      start_interval: 0.1s
+    stop_grace_period: 2s
+    depends_on:
+      pyhss_hss:
+        condition: service_started
+
   redis:
     image: "redis:7.0-alpine"
     container_name: "redis"

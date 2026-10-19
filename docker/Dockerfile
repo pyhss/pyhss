@@ -96,6 +96,9 @@ EXPOSE 3868
 # GSUP
 EXPOSE 4222
 
+# 5G UDR (Nudr_DataRepository, HTTP/2)
+EXPOSE 7777
+
 # Metrics
 EXPOSE 9191
 

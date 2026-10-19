@@ -117,6 +117,27 @@ api:
   # Whether or not to return key-based data when querying the AUC. Disable in production systems.
   enable_insecure_auc: ${API_ENABLE_INSECURE_AUC:-False}
 
+# 5G UDR (pyhss_udr), see docs/5g_udr.md
+udr:
+  bind_ip: "${UDR_BIND_IP:-0.0.0.0}"
+  bind_port: ${UDR_BIND_PORT:-7777}
+  advertise_ip: "${UDR_ADVERTISE_IP:-}"
+  nf_instance_id: "${UDR_NF_INSTANCE_ID:-}"
+  api_versions: ["v1", "v2"]
+  keep_alive_timeout: ${UDR_KEEP_ALIVE_TIMEOUT:-3600}
+  allowed_nf_types: ["SCP", "PCF", "UDM"]
+  default_snssai:
+    sst: ${UDR_DEFAULT_SST:-1}
+    sd: ${UDR_DEFAULT_SD:-null}
+  sqn_patch_policy: "${UDR_SQN_PATCH_POLICY:-max}"
+  nrf:
+    enabled: ${UDR_NRF_ENABLED:-False}
+    uri: "${UDR_NRF_URI:-http://nrf:7777}"
+    via_scp: ${UDR_NRF_VIA_SCP:-False}
+    heartbeat_interval: ${UDR_NRF_HEARTBEAT_INTERVAL:-10}
+    retry_interval: ${UDR_NRF_RETRY_INTERVAL:-5}
+    send_plmn_list: ${UDR_NRF_SEND_PLMN_LIST:-False}
+
 metric:
   bind_ip: "${METRIC_BIND_IP:-0.0.0.0}"
   bind_port: ${METRIC_BIND_PORT:-9191}
