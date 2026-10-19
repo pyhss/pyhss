@@ -18,6 +18,8 @@ first builds a temporary bundle:
  * Constraint-only alternatives are removed: anyOf/oneOf/allOf entries that contain nothing
    but keywords like "required" or "not", e.g. NFProfile: anyOf: [{required: [fqdn]},
    {required: [ipv4Addresses]}]. pydantic models cannot express these.
+ * An allOf of value constraints only (e.g. Ipv6Addr: two patterns) is merged into the parent
+   schema. If a keyword occurs twice, the first one is kept, e.g. the stricter RFC 5952 pattern.
 
 The vendored spec files are not modified. The tests validate PyHSS's requests and responses
 against them, including the constraints that are left out of the models.
@@ -38,6 +40,7 @@ import yaml
 GENERATOR_VERSION = "0.86.0"
 SPEC_RELEASE = "r19-20260402"
 CONSTRAINT_KEYS = {"required", "not", "minProperties", "maxProperties"}
+VALUE_KEYS = {"pattern", "minLength", "maxLength", "minimum", "maximum", "format"}
 
 top_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), ".."))
 spec_dir = os.path.join(top_dir, "specs/3gpp", SPEC_RELEASE)
@@ -53,8 +56,18 @@ def is_constraint_only(node):
     return isinstance(node, dict) and node and set(node) <= CONSTRAINT_KEYS
 
 
+def is_value_constraint_only(node):
+    return isinstance(node, dict) and node and set(node) <= VALUE_KEYS
+
+
 def strip_constraint_alternatives(node):
     if isinstance(node, dict):
+        if isinstance(node.get("allOf"), list) and all(is_value_constraint_only(x) for x in node["allOf"]):
+            # e.g. Ipv6Addr: {type: string, allOf: [{pattern: A}, {pattern: B}]}: merge into the
+            # parent schema; for repeated keywords (two patterns) the first one is kept
+            for item in node.pop("allOf"):
+                for key, value in item.items():
+                    node.setdefault(key, value)
         for key in ("anyOf", "oneOf", "allOf"):
             if isinstance(node.get(key), list):
                 kept = [x for x in node[key] if not is_constraint_only(x)]

@@ -142,3 +142,12 @@ def test_models_up_to_date(tmp_path):
     assert filecmp.cmp(generated, committed, shallow=False), (
         "lib/sbi/models/ is out of date, run tools/gen_sbi_models.py"
     )
+
+
+def test_string_types_with_allof_patterns():
+    # TS29571 defines Ipv6Addr as a string with an allOf of two patterns
+    assert models.IpAddress(ipv6Addr="2001:db8::5").model_dump(mode="json", exclude_unset=True) == {
+        "ipv6Addr": "2001:db8::5"
+    }
+    with pytest.raises(ValueError):
+        models.Ipv6Addr("10.0.0.1")

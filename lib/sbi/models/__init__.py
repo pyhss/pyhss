@@ -1294,16 +1294,26 @@ class Ipv4AddressRange(BaseModel):
     end: Ipv4Addr | None = None
 
 
-class Ipv6Addr(BaseModel):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
+class Ipv6Addr(RootModel[str]):
+    root: Annotated[
+        str,
+        Field(
+            description="String identifying an IPv6 address formatted according to clause 4 of RFC5952. The mixed IPv4 IPv6 notation according to clause 5 of RFC5952 shall not be used.\n",
+            examples=["2001:db8:85a3::8a2e:370:7334"],
+            pattern="^((:|(0?|([1-9a-f][0-9a-f]{0,3}))):)((0?|([1-9a-f][0-9a-f]{0,3})):){0,6}(:|(0?|([1-9a-f][0-9a-f]{0,3})))$",
+        ),
+    ]
 
 
-class Ipv6Prefix(BaseModel):
-    model_config = ConfigDict(
-        populate_by_name=True,
-    )
+class Ipv6Prefix(RootModel[str]):
+    root: Annotated[
+        str,
+        Field(
+            description="String identifying an IPv6 address prefix formatted according to clause 4 of RFC 5952. IPv6Prefix data type may contain an individual /128 IPv6 address.\n",
+            examples=["2001:db8:abcd:12::0/64"],
+            pattern="^((:|(0?|([1-9a-f][0-9a-f]{0,3}))):)((0?|([1-9a-f][0-9a-f]{0,3})):){0,6}(:|(0?|([1-9a-f][0-9a-f]{0,3})))(\\/(([0-9])|([0-9]{2})|(1[0-1][0-9])|(12[0-8])))$",
+        ),
+    ]
 
 
 class Ipv6PrefixRange(BaseModel):
