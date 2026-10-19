@@ -16,6 +16,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   failed with `Experimental-Result-Code` 5001, and the LIA had no
   `Server-Name` for the I-CSCF to route to.
 
+### Added
+
+- 5G UDR: the new `pyhss_udr` service serves Nudr_DataRepository (3GPP TS 29.504) over HTTP/2
+  cleartext and registers at the NRF, so PyHSS can be the subscriber database of e.g.
+  Open5GS in 5G SA. 4G and 5G share the subscribers and the SQN. See
+  [docs/5g_udr.md](docs/5g_udr.md).
+- The SBI models (`lib/sbi/models/`) are generated from the 3GPP Release 19 OpenAPI specs,
+  which are vendored in `specs/3gpp/`. The tests validate the UDR against these specs.
+- Database schema version 2: `apn.sst`, `apn.sd` (S-NSSAI of an APN/DNN) and
+  `subscriber.serving_amf`, `subscriber.serving_amf_timestamp`. Existing databases are
+  upgraded automatically.
+
 ## [2.0.1] - 2026-10-14
 
 ### Fixed
