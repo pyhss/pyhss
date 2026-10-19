@@ -61,6 +61,8 @@ class APN(Base):
     nidd_mechanism = Column(Integer, default=None, doc="Mechanism used to transfer Non-IP-Data: SGi-BASED-DATA-DELIVERY (0) or SCEF-BASED-DATA-DELIVERY (1)")
     nidd_rds = Column(Integer, default=None, doc="Indicates if Reliable Data Service is enabled or disabled for this APN: DISABLED (0) or ENABLED (1)")
     nidd_preferred_data_mode = Column(Integer, default=None, doc="Preferred-Data-Mode: Data over User Plane Preferred (0) or Data over Control Plane Preferred (1)")
+    sst = Column(Integer, default=None, doc='5G: Slice/Service Type (0-255) of the S-NSSAI this APN/DNN is offered in, unset: udr.default_snssai from config')
+    sd = Column(String(6), default=None, doc='5G: Slice Differentiator (6 hex digits) of the S-NSSAI this APN/DNN is offered in')
     last_modified = Column(String(100), default=datetime.datetime.now(tz=timezone.utc), doc='Timestamp of last modification')
     operation_logs = relationship("APN_OPERATION_LOG", back_populates="apn")
 
@@ -118,6 +120,8 @@ class SUBSCRIBER(Base):
     serving_vlr_timestamp = Column(DateTime, doc='Timestamp of attach to VLR')    
     serving_sgsn = Column(String(512), doc='SGSN serving this subscriber')
     serving_sgsn_timestamp = Column(DateTime, doc='Timestamp of attach to SGSN')
+    serving_amf = Column(String(512), doc='5G: AMF instance ID serving this subscriber (3GPP access)')
+    serving_amf_timestamp = Column(DateTime, doc='5G: Timestamp of registration at the AMF')
     last_seen_eci = Column(String(64), doc='Last ECI seen serving this subscriber')
     last_seen_enodeb_id = Column(String(64), doc='Last eNodeB seen serving this subscriber')
     last_seen_cell_id = Column(String(64), doc='Last Cell ID seen serving this subscriber')

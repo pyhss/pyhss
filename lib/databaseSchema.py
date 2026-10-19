@@ -9,7 +9,7 @@ from sqlalchemy_utils import create_database, database_exists
 
 
 class DatabaseSchema:
-    latest = 1
+    latest = 2
 
     def __init__(self, logTool, base, engine: Engine, main_service: bool):
         self.logTool = logTool
@@ -213,5 +213,16 @@ class DatabaseSchema:
         self.add_column("subscriber", "serving_vlr_timestamp", "DATETIME")
         self.set_version(1)
 
+    def upgrade_to_v2(self):
+        if self.get_version() >= 2:
+            return
+        self.upgrade_msg(2)
+        self.add_column("apn", "sst", "INTEGER")
+        self.add_column("apn", "sd", "VARCHAR(6)")
+        self.add_column("subscriber", "serving_amf", "VARCHAR(512)")
+        self.add_column("subscriber", "serving_amf_timestamp", "DATETIME")
+        self.set_version(2)
+
     def upgrade_all(self):
         self.upgrade_from_20240603_release_1_0_1()
+        self.upgrade_to_v2()

@@ -47,6 +47,8 @@ class APN_Tests(unittest.TestCase):
         "nidd_rds": None,
         "nidd_scef_id": None,
         "nidd_scef_realm": None,
+        "sst": None,
+        "sd": None,
         "arp_priority": 1,
         "arp_preemption_capability": True,
         "arp_preemption_vulnerability": True,
@@ -202,6 +204,8 @@ class Subscriber_Tests(unittest.TestCase):
         self.__class__.template_data['last_seen_tac'] = None
         self.__class__.template_data['roaming_enabled'] = True
         self.__class__.template_data['roaming_rule_list'] = None
+        self.__class__.template_data['serving_amf'] = None
+        self.__class__.template_data['serving_amf_timestamp'] = None
         self.__class__.template_data['serving_mme'] = None
         self.__class__.template_data['serving_mme_peer'] = None
         self.__class__.template_data['serving_mme_realm'] = None
@@ -549,6 +553,8 @@ class GeoRed_MME(unittest.TestCase):
         self.__class__.subscriber_template_data['roaming_enabled'] = True
         self.__class__.subscriber_template_data['roaming_rule_list'] = None
         self.__class__.subscriber_template_data['serving_mme'] = None
+        self.__class__.subscriber_template_data['serving_amf'] = None
+        self.__class__.subscriber_template_data['serving_amf_timestamp'] = None
         self.__class__.subscriber_template_data['serving_mme_peer'] = None
         self.__class__.subscriber_template_data['serving_mme_realm'] = None
         self.__class__.subscriber_template_data['serving_mme_timestamp'] = None

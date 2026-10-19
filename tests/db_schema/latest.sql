@@ -19,7 +19,9 @@ CREATE TABLE apn (
 	nidd_scef_realm VARCHAR(512),
 	pgw_address VARCHAR(50),
 	qci INTEGER,
+	sd VARCHAR(6),
 	sgw_address VARCHAR(50),
+	sst INTEGER,
 	PRIMARY KEY (apn_id)
 );
 CREATE TABLE auc (
@@ -222,6 +224,8 @@ CREATE TABLE subscriber (
 	nam INTEGER,
 	roaming_enabled BOOLEAN,
 	roaming_rule_list VARCHAR(512),
+	serving_amf VARCHAR(512),
+	serving_amf_timestamp DATETIME,
 	serving_mme VARCHAR(512),
 	serving_mme_peer VARCHAR(512),
 	serving_mme_realm VARCHAR(512),
