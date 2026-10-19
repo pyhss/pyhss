@@ -11,6 +11,7 @@ is self-contained for code generators and validators.
 
 Usage: tools/fetch_3gpp_specs.py [--out specs/3gpp/r19-20260402]
 """
+
 import argparse
 import hashlib
 import os

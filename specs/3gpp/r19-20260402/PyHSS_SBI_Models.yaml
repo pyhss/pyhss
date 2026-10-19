@@ -1,0 +1,43 @@
+# Copyright 2026 Bjoern Riemer <bjoern.riemer@fokus.fraunhofer.de>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# Root document for tools/gen_sbi_models.sh. Lists the 3GPP schemas PyHSS uses;
+# lib/sbi/models/ is generated from these and everything they reference.
+openapi: 3.0.0
+info:
+  title: PyHSS SBI models
+  version: '1'
+paths: {}
+components:
+  schemas:
+    # Nudr_DR subscription data (TS 29.505)
+    AuthenticationSubscription:
+      $ref: 'TS29505_Subscription_Data.yaml#/components/schemas/AuthenticationSubscription'
+    ProvisionedDataSets:
+      $ref: 'TS29505_Subscription_Data.yaml#/components/schemas/ProvisionedDataSets'
+    # Nudm (TS 29.503)
+    AuthEvent:
+      $ref: 'TS29503_Nudm_UEAU.yaml#/components/schemas/AuthEvent'
+    AccessAndMobilitySubscriptionData:
+      $ref: 'TS29503_Nudm_SDM.yaml#/components/schemas/AccessAndMobilitySubscriptionData'
+    SmfSelectionSubscriptionData:
+      $ref: 'TS29503_Nudm_SDM.yaml#/components/schemas/SmfSelectionSubscriptionData'
+    SessionManagementSubscriptionData:
+      $ref: 'TS29503_Nudm_SDM.yaml#/components/schemas/SessionManagementSubscriptionData'
+    Amf3GppAccessRegistration:
+      $ref: 'TS29503_Nudm_UECM.yaml#/components/schemas/Amf3GppAccessRegistration'
+    SmfRegistration:
+      $ref: 'TS29503_Nudm_UECM.yaml#/components/schemas/SmfRegistration'
+    # Nudr_DR policy data (TS 29.519)
+    AmPolicyData:
+      $ref: 'TS29519_Policy_Data.yaml#/components/schemas/AmPolicyData'
+    SmPolicyData:
+      $ref: 'TS29519_Policy_Data.yaml#/components/schemas/SmPolicyData'
+    # Nnrf_NFManagement (TS 29.510)
+    NFProfile:
+      $ref: 'TS29510_Nnrf_NFManagement.yaml#/components/schemas/NFProfile'
+    # Common data (TS 29.571)
+    PatchItem:
+      $ref: 'TS29571_CommonData.yaml#/components/schemas/PatchItem'
+    ProblemDetails:
+      $ref: 'TS29571_CommonData.yaml#/components/schemas/ProblemDetails'

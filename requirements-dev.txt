@@ -1,0 +1,5 @@
+# Tools needed only to regenerate files in the repository, not at runtime.
+
+# tools/gen_sbi_models.py: lib/sbi/models/ from specs/3gpp/. Pinned, as the
+# generated code depends on the version (tests/test_sbi_models.py checks it).
+datamodel-code-generator==0.86.0

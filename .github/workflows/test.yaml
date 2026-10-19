@@ -36,6 +36,7 @@ jobs:
         pip install \
           -r requirements.txt \
           -r requirements-test.txt \
+          -r requirements-dev.txt \
           mysqlclient \
           psycopg2
 

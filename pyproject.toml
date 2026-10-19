@@ -67,6 +67,7 @@ include = [
 	"lib/gsup/controller/ss.py",
 	"lib/gsup/protocol/gsup_msg.py",
 	"lib/pyhss_config.py",
+	"lib/sbi/__init__.py",
 	"lib/version.py",
 	"tests/test_database_upgrade_mariadb.py",
 	"tests/test_database_upgrade_postgresql.py",
@@ -78,6 +79,9 @@ include = [
 	"tests/test_license_headers.py",
 	"tests/test_messaging_queue_order.py",
 	"tests/test_milenage.py",
+	"tests/test_sbi_models.py",
+	"tools/fetch_3gpp_specs.py",
+	"tools/gen_sbi_models.py",
 ]
 
 [tool.ruff.lint]

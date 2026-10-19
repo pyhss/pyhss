@@ -32,10 +32,17 @@ def test_license_headers():
         "sh",
     ]
 
+    # Generated from the 3GPP specs, see tools/gen_sbi_models.py
+    exclude_dirs = [
+        os.path.join(top_dir, "lib/sbi/models"),
+    ]
+
     missing = []
     for ext in extensions:
         pattern = os.path.join(top_dir, f"**/*.{ext}")
         for i in glob.glob(pattern, recursive=True):
+            if any(i.startswith(d + os.sep) for d in exclude_dirs):
+                continue
             if not file_has_headers(i):
                 missing += [i]
 
