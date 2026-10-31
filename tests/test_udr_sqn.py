@@ -69,17 +69,17 @@ def test_48bit_wrap(db):
 
 def test_s6a_and_5g_share_sqn(db):
     db.Update_AuC_SQN(db.test_ids["auc"], set_sqn=0, policy="set")
-    # S6a AIR: uses the stored SQN and adds 100
+    # S6a AIR: uses the stored SQN and adds the configured step (32)
     db.Get_Vectors_AuC(db.test_ids["auc"], "air", plmn="00f110")
-    assert get_sqn(db) == 100
+    assert get_sqn(db) == 32
     # 5G: authentication-status PUT adds 32
     db.Update_AuC_SQN(db.test_ids["auc"], increment=32)
-    assert get_sqn(db) == 132
+    assert get_sqn(db) == 64
     # 5G resync with an SQN behind the stored one must not move it backwards
     db.Update_AuC_SQN(db.test_ids["auc"], set_sqn=33, increment=32)
-    assert get_sqn(db) == 164
+    assert get_sqn(db) == 96
     db.Get_Vectors_AuC(db.test_ids["auc"], "air", plmn="00f110")
-    assert get_sqn(db) == 264
+    assert get_sqn(db) == 128
 
 
 def test_update_unknown_auc(db):

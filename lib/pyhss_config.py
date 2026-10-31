@@ -58,6 +58,10 @@ def validate_config():
         )
         sys.exit(1)
 
+    sqn_increment = (config.get("hss") or {}).get("sqn_increment", 32)
+    if not (isinstance(sqn_increment, int) and not isinstance(sqn_increment, bool) and sqn_increment > 0):
+        print(f"ERROR: invalid hss config: sqn_increment must be a positive integer, not '{sqn_increment}'")
+        sys.exit(1)
     validate_udr_config(config.get("udr") or {})
 
 

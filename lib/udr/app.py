@@ -16,7 +16,6 @@ from sbi.server import JSON_PATCH, Response, SbiApp, SbiError
 from udr import datamodel
 
 SQN_PATH = "/sequenceNumber/sqn"
-SQN_INCREMENT = 32  # added after an authentication event or a resync, as Open5GS' UDR does
 IMSI_UE_ID = re.compile(r"^imsi-([0-9]{5,15})$")
 
 
@@ -28,6 +27,7 @@ def create_app(database, udr_config, log=None):
     """database: a database.Database instance, udr_config: the "udr" section of config.yaml."""
     log = log or (lambda level, message: None)
     default_snssai = udr_config.get("default_snssai") or {"sst": 1}
+    sqn_increment = database.sqn_increment  # hss.sqn_increment, shared with S6a
     sqn_patch_policy = udr_config.get("sqn_patch_policy", "max")
     app = SbiApp("/nudr-dr", udr_config.get("api_versions", ["v1", "v2"]), log)
 
@@ -81,7 +81,7 @@ def create_app(database, udr_config, log=None):
             database.Update_AuC_SQN,
             sub["auc"]["auc_id"],
             set_sqn=sqn,
-            increment=SQN_INCREMENT,
+            increment=sqn_increment,
             policy=sqn_patch_policy,
         )
         log("info", f"{ueId}: SQN resync to {sqn:012x}, stored SQN is now {new_sqn:012x}")
@@ -93,7 +93,7 @@ def create_app(database, udr_config, log=None):
     async def create_authentication_status(request, ueId):
         event = request.model(models.AuthEvent)
         sub = await load(ueId)
-        await asyncio.to_thread(database.Update_AuC_SQN, sub["auc"]["auc_id"], increment=SQN_INCREMENT)
+        await asyncio.to_thread(database.Update_AuC_SQN, sub["auc"]["auc_id"], increment=sqn_increment)
         log("info", f"{ueId}: authentication {'succeeded' if event.success.root else 'failed'} ({event.authType.root})")
         return no_content()
 
@@ -102,7 +102,7 @@ def create_app(database, udr_config, log=None):
     )
     async def delete_authentication_status(request, ueId):
         sub = await load(ueId)
-        await asyncio.to_thread(database.Update_AuC_SQN, sub["auc"]["auc_id"], increment=SQN_INCREMENT)
+        await asyncio.to_thread(database.Update_AuC_SQN, sub["auc"]["auc_id"], increment=sqn_increment)
         return no_content()
 
     # Context data (TS 29.505 clause 5.2.6). Open5GS' UDM accepts only 204, even on creation.

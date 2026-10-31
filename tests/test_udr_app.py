@@ -77,6 +77,7 @@ class FakeDatabase:
     def __init__(self):
         self.subs = {IMSI: copy.deepcopy(SUB)}
         self.serving_amf = {}
+        self.sqn_increment = 32
 
     def Get_5G_Subscription(self, imsi):
         return copy.deepcopy(self.subs.get(imsi))

@@ -380,6 +380,8 @@ class Database:
         self.georedEnabled = config.get('geored', {}).get('enabled', True)
         self.eirNoMatchResponse = int(config.get('eir', {}).get('no_match_response', 2))
         self.eirStoreOffnetImsi = config.get('eir', {}).get('store_offnet_imsi', False)
+        #Step added to the SQN after every vector and resync, see hss.sqn_increment in config.yaml
+        self.sqn_increment = int(config.get('hss', {}).get('sqn_increment', 32))
 
         self.logTool = logTool
         if redisMessaging:
@@ -1616,7 +1618,7 @@ class Database:
             vector_dict['kasme'] = kasme
 
             #Incriment SQN
-            self.Update_AuC(auc_id, sqn=key_data['sqn']+100)
+            self.Update_AuC_SQN(auc_id, increment=self.sqn_increment)
 
             return vector_dict
 
@@ -1625,7 +1627,7 @@ class Database:
             rand = kwargs['rand']       
             sqn, mac_s = S6a_crypt.generate_resync_s6a(key_data['ki'], key_data['opc'], key_data['amf'], kwargs['auts'], rand)
             self.logTool.log(service='Database', level='debug', message="SQN from resync: " + str(sqn) + " SQN in DB is "  + str(key_data['sqn']) + "(Difference of " + str(int(sqn) - int(key_data['sqn'])) + ")", redisClient=self.redisMessaging)
-            self.Update_AuC(auc_id, sqn=sqn+100)
+            self.Update_AuC_SQN(auc_id, set_sqn=sqn, increment=self.sqn_increment, policy='max')
             return
         
         elif action == "sip_auth":
@@ -1636,7 +1638,7 @@ class Database:
             vector_dict['xres'] = xres
             vector_dict['ck'] = ck
             vector_dict['ik'] = ik
-            self.Update_AuC(auc_id, sqn=key_data['sqn']+100)
+            self.Update_AuC_SQN(auc_id, increment=self.sqn_increment)
             return vector_dict
 
         elif action == "aka":
@@ -1655,7 +1657,7 @@ class Database:
 
                 kwargs['requested_vectors'] = kwargs['requested_vectors'] - 1
                 vector_list.append(vector_dict)
-            self.Update_AuC(auc_id, sqn=key_data['sqn']+100)
+            self.Update_AuC_SQN(auc_id, increment=self.sqn_increment)
             return vector_list
 
         elif action == "2g3g":
@@ -1668,7 +1670,7 @@ class Database:
             while kwargs['requested_vectors'] != 0:
                 kwargs['requested_vectors'] = kwargs['requested_vectors'] - 1
                 vector_list.append(vect)
-            self.Update_AuC(auc_id, sqn=key_data['sqn']+100)
+            self.Update_AuC_SQN(auc_id, increment=self.sqn_increment)
             return vector_list
 
         elif action == "eap_aka":
@@ -1680,7 +1682,7 @@ class Database:
             vector_dict['xres'] = binascii.hexlify(xres).decode("utf-8")
             vector_dict['mac'] = binascii.hexlify(mac_a).decode("utf-8")
             vector_dict['ak'] = binascii.hexlify(ak).decode("utf-8")
-            self.Update_AuC(auc_id, sqn=key_data['sqn']+100)
+            self.Update_AuC_SQN(auc_id, increment=self.sqn_increment)
             return vector_dict
 
         elif action == "Digest-MD5":

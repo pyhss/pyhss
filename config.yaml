@@ -21,6 +21,11 @@ hss:
   #Name of the Site, shown in API
   site_name: ""
 
+  #Step added to the SQN after every authentication vector and SQN resync (4G, IMS, GSUP and 5G).
+  #SIMs use the lower bits of the SQN (the IND) to select an SQN counter in an array, so the step
+  #must be a multiple of the array size (32 slots: 32) to keep every vector in the same slot.
+  sqn_increment: 32
+
   #Your Home Mobile Country Code (Used for PLMN calcluation)
   MCC: "001"
   #Your Home Mobile Network Code (Used for PLMN calcluation)
