@@ -33,6 +33,31 @@ components:
       $ref: 'TS29519_Policy_Data.yaml#/components/schemas/AmPolicyData'
     SmPolicyData:
       $ref: 'TS29519_Policy_Data.yaml#/components/schemas/SmPolicyData'
+    # Npcf_AMPolicyControl (TS 29.507)
+    PolicyAssociationRequest:
+      $ref: 'TS29507_Npcf_AMPolicyControl.yaml#/components/schemas/PolicyAssociationRequest'
+    PolicyAssociation:
+      $ref: 'TS29507_Npcf_AMPolicyControl.yaml#/components/schemas/PolicyAssociation'
+    PolicyAssociationUpdateRequest:
+      $ref: 'TS29507_Npcf_AMPolicyControl.yaml#/components/schemas/PolicyAssociationUpdateRequest'
+    PolicyUpdate:
+      $ref: 'TS29507_Npcf_AMPolicyControl.yaml#/components/schemas/PolicyUpdate'
+    # Npcf_SMPolicyControl (TS 29.512)
+    SmPolicyContextData:
+      $ref: 'TS29512_Npcf_SMPolicyControl.yaml#/components/schemas/SmPolicyContextData'
+    SmPolicyDecision:
+      $ref: 'TS29512_Npcf_SMPolicyControl.yaml#/components/schemas/SmPolicyDecision'
+    SmPolicyUpdateContextData:
+      $ref: 'TS29512_Npcf_SMPolicyControl.yaml#/components/schemas/SmPolicyUpdateContextData'
+    SmPolicyDeleteData:
+      $ref: 'TS29512_Npcf_SMPolicyControl.yaml#/components/schemas/SmPolicyDeleteData'
+    SmPolicyNotification:
+      $ref: 'TS29512_Npcf_SMPolicyControl.yaml#/components/schemas/SmPolicyNotification'
+    # Npcf_PolicyAuthorization (TS 29.514)
+    AppSessionContext:
+      $ref: 'TS29514_Npcf_PolicyAuthorization.yaml#/components/schemas/AppSessionContext'
+    AppSessionContextUpdateDataPatch:
+      $ref: 'TS29514_Npcf_PolicyAuthorization.yaml#/components/schemas/AppSessionContextUpdateDataPatch'
     # Nnrf_NFManagement (TS 29.510)
     NFProfile:
       $ref: 'TS29510_Nnrf_NFManagement.yaml#/components/schemas/NFProfile'

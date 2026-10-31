@@ -54,6 +54,17 @@ class Field5QiPriorityLevel(RootModel[int]):
     ]
 
 
+class Field5QiPriorityLevelRm(RootModel[int | None]):
+    root: Annotated[
+        int | None,
+        Field(
+            description="This data type is defined in the same way as the '5QiPriorityLevel' data type, but with the OpenAPI 'nullable: true' property.\n",
+            ge=1,
+            le=127,
+        ),
+    ] = None
+
+
 class A2xCapability(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -156,7 +167,53 @@ class AerialUeIndication(RootModel[AerialUeIndication1 | str]):
     ]
 
 
-class AfEvent1(StrEnum):
+class AfAppId(RootModel[str]):
+    root: Annotated[str, Field(description="Contains an AF application identifier.")]
+
+
+class AfEventTS295141(StrEnum):
+    ACCESS_TYPE_CHANGE = "ACCESS_TYPE_CHANGE"
+    ANI_REPORT = "ANI_REPORT"
+    APP_DETECTION = "APP_DETECTION"
+    CHARGING_CORRELATION = "CHARGING_CORRELATION"
+    EPS_FALLBACK = "EPS_FALLBACK"
+    EXTRA_UE_ADDR = "EXTRA_UE_ADDR"
+    FAILED_QOS_UPDATE = "FAILED_QOS_UPDATE"
+    FAILED_RESOURCES_ALLOCATION = "FAILED_RESOURCES_ALLOCATION"
+    OUT_OF_CREDIT = "OUT_OF_CREDIT"
+    PDU_SESSION_STATUS = "PDU_SESSION_STATUS"
+    PLMN_CHG = "PLMN_CHG"
+    QOS_MONITORING = "QOS_MONITORING"
+    QOS_MON_CAP_REPO = "QOS_MON_CAP_REPO"
+    QOS_NOTIF = "QOS_NOTIF"
+    RAN_NAS_CAUSE = "RAN_NAS_CAUSE"
+    REALLOCATION_OF_CREDIT = "REALLOCATION_OF_CREDIT"
+    SAT_CATEGORY_CHG = "SAT_CATEGORY_CHG"
+    SUCCESSFUL_QOS_UPDATE = "SUCCESSFUL_QOS_UPDATE"
+    SUCCESSFUL_RESOURCES_ALLOCATION = "SUCCESSFUL_RESOURCES_ALLOCATION"
+    TSN_BRIDGE_INFO = "TSN_BRIDGE_INFO"
+    UP_PATH_CHG_FAILURE = "UP_PATH_CHG_FAILURE"
+    USAGE_REPORT = "USAGE_REPORT"
+    UE_REACH_STATUS_CH = "UE_REACH_STATUS_CH"
+    BAT_OFFSET_INFO = "BAT_OFFSET_INFO"
+    URSP_ENF_INFO = "URSP_ENF_INFO"
+    PACK_DEL_VAR = "PACK_DEL_VAR"
+    L4_S_SUPP = "L4S_SUPP"
+    RT_DELAY_TWO_QOS_FLOWS = "RT_DELAY_TWO_QOS_FLOWS"
+    RATE_LIMIT_INFO_REPO = "RATE_LIMIT_INFO_REPO"
+    UP_PATH_CHANGE = "UP_PATH_CHANGE"
+    CN_HEALTH_MONITOR = "CN_HEALTH_MONITOR"
+    UE_TEMPORARILY_UNAVAILABLE = "UE_TEMPORARILY_UNAVAILABLE"
+
+
+class AfEventTS29514(RootModel[AfEventTS295141 | str]):
+    root: Annotated[
+        AfEventTS295141 | str,
+        Field(description="Represents an event to notify to the AF."),
+    ]
+
+
+class AfEventTS295171(StrEnum):
     SVC_EXPERIENCE = "SVC_EXPERIENCE"
     UE_MOBILITY = "UE_MOBILITY"
     UE_COMM = "UE_COMM"
@@ -177,9 +234,9 @@ class AfEvent1(StrEnum):
     UE_ALTITUDE = "UE_ALTITUDE"
 
 
-class AfEvent(RootModel[AfEvent1 | str]):
+class AfEventTS29517(RootModel[AfEventTS295171 | str]):
     root: Annotated[
-        AfEvent1 | str,
+        AfEventTS295171 | str,
         Field(
             description="Represents an application's event.  \nPossible values are:\n- SVC_EXPERIENCE: Indicates that the subscribed/notified event is service experience\n  information for an application.\n- UE_MOBILITY: Indicates that the subscribed/notified event is UE mobility information.\n- UE_COMM: Indicates that the subscribed/notified event is UE communication information.\n- EXCEPTIONS: Indicates that the subscribed/notified event is exceptions information.\n- USER_DATA_CONGESTION: Indicates that the subscribed/notified event is user data congestion\n  analytics related information.\n- PERF_DATA: Indicates that the subscribed/notified event is performance data information.\n- DISPERSION: Indicates that the subscribed/notified event is dispersion information.\n- COLLECTIVE_BEHAVIOUR: Indicates that the subscribed/notified event is collective behaviour\n  information.\n- MS_QOE_METRICS: Indicates that the subscribed/notified event is Media Streaming QoE\n  metrics.\n- MS_CONSUMPTION: Indicates that the subscribed/notified event is Media Streaming\n  consumption reports.\n- MS_NET_ASSIST_INVOCATION: Indicates that the subscribed/notified event is Media Streaming\n  network assistance invocation.\n- MS_DYN_POLICY_INVOCATION: Indicates that the subscribed/notified event is Media Streaming\n  dynamic policy invocation.\n- MS_ACCESS_ACTIVITY: Indicates that the subscribed/notified event is Media Streaming access\n  activity.\n- GNSS_ASSISTANCE_DATA: Indicates that the subscribed/notified event is GNSS Assistance Data\n  Collection.\n- DATA_VOLUME_TRANSFER_TIME: Indicates that the event subscribed is data volume transfer\n  time information.\n- APP_ACTIVE_TIME: Indicates that the event subscribed is application activation time\n  information.\n- SIGNALLING_INFO: Indicates that the event subscribed/notified is signalling information.\n- UE_ALTITUDE: Indicates that the event subscribed/notified is UE altitude information.\n"
         ),
@@ -188,6 +245,39 @@ class AfEvent(RootModel[AfEvent1 | str]):
 
 class AfId(RootModel[str]):
     root: Annotated[str, Field(description="Application Function Identifier")]
+
+
+class AfNotifMethod1(StrEnum):
+    EVENT_DETECTION = "EVENT_DETECTION"
+    ONE_TIME = "ONE_TIME"
+    PERIODIC = "PERIODIC"
+
+
+class AfNotifMethod(RootModel[AfNotifMethod1 | str]):
+    root: Annotated[
+        AfNotifMethod1 | str,
+        Field(
+            description="Represents the notification methods that can be subscribed for an event."
+        ),
+    ]
+
+
+class AfRequestedData1(StrEnum):
+    UE_IDENTITY = "UE_IDENTITY"
+
+
+class AfRequestedData(RootModel[AfRequestedData1 | str]):
+    root: Annotated[
+        AfRequestedData1 | str,
+        Field(
+            description="Represents the information that the AF requested to be exposed."
+        ),
+    ]
+
+
+class AfSigProtocol1(StrEnum):
+    NO_INFORMATION = "NO_INFORMATION"
+    SIP = "SIP"
 
 
 class AiotAreaCode(RootModel[str]):
@@ -290,6 +380,37 @@ class Angle(RootModel[int]):
     root: Annotated[int, Field(description="Indicates value of angle.", ge=0, le=360)]
 
 
+class AppDetectionNotifType1(StrEnum):
+    APP_START = "APP_START"
+    APP_STOP = "APP_STOP"
+
+
+class AppDetectionNotifType(RootModel[AppDetectionNotifType1 | str]):
+    root: Annotated[
+        AppDetectionNotifType1 | str,
+        Field(
+            description="Indicates the notification type for Application Detection Control."
+        ),
+    ]
+
+
+class AppDetectionReport(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    adNotifType: AppDetectionNotifType
+    afAppId: AfAppId
+
+
+class ApplicationChargingId(RootModel[str]):
+    root: Annotated[
+        str,
+        Field(
+            description="Application provided charging identifier allowing correlation of charging information.\n"
+        ),
+    ]
+
+
 class ApplicationId(RootModel[str]):
     root: Annotated[
         str, Field(description="String providing an application identifier.")
@@ -336,6 +457,13 @@ class ArpPriorityLevel(RootModel[int | None]):
     ] = None
 
 
+class AspId(RootModel[str]):
+    root: Annotated[
+        str,
+        Field(description="Contains an identity of an application service provider."),
+    ]
+
+
 class AtsssCapability(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -376,6 +504,51 @@ class AtsssCapability(BaseModel):
             description="Indicates the support of Access Traffic Steering, Switching and Splitting procedures  using the MPQUIC-E steering functionality (see clauses 4.2.10, 5.32 of 3GPP\xa0TS\xa023.501) true: Supported false (default): Not Supported\n"
         ),
     ] = False
+
+
+class AtsssCapabilityExt1(StrEnum):
+    MPTCP = "MPTCP"
+    MPQUIC_UDP = "MPQUIC_UDP"
+    MPQUIC_IP = "MPQUIC_IP"
+    MPQUIC_E = "MPQUIC_E"
+    ATSSS_LL = "ATSSS_LL"
+    ATSSS_LL_WITH_ASMODE_UL = "ATSSS_LL_WITH_ASMODE_UL"
+    ATSSS_LL_WITH_EXSDMODE_DL_ASMODE_UL = "ATSSS_LL_WITH_EXSDMODE_DL_ASMODE_UL"
+    ATSSS_LL_WITH_ASMODE_DLUL = "ATSSS_LL_WITH_ASMODE_DLUL"
+
+
+class AtsssCapabilityExt(RootModel[AtsssCapabilityExt1 | str]):
+    root: Annotated[
+        AtsssCapabilityExt1 | str,
+        Field(
+            description="Contains the ATSSS capability supported for the MA PDU Session.\nPossible values are:\n- MPTCP: Indicates that the MA PDU Session supports the MPTCP capability.\n- MPQUIC_UDP: Indicates that the MA PDU Session supports the MPQUIC_UDP capability.\n- MPQUIC_IP: Indicates that the MA PDU Session supports the MPQUIC_IP capability.\n- MPQUIC_E Indicates that the MA PDU Session supports the MPQUIC_E capability.\n- ATSSS_LL: Indicates that the MA PDU Session supports the ATSSS-LL capability with any \nsteering mode.\n- ATSSS_LL_WITH_ASMODE_UL: Indicates that the MA PDU Session supports the ATSSS-LL \ncapability with any steering mode in the downlink and Active-Standby mode in uplink.\n- ATSSS_LL_WITH_EXSDMODE_DL_ASMODE_UL: Indicates that the MA PDU Session supports the \nATSSS-LL capability with any steering mode except Smallest Delay mode in the downlink and \nActive-Standby mode in uplink.\n- ATSSS_LL_WITH_ASMODE_DLUL: Indicates that the MA PDU Session supports the ATSSS-LL \ncapability with Active-Standby mode in uplink and downlink.\n"
+        ),
+    ]
+
+
+class AtsssCapabilityTS295121(StrEnum):
+    MPTCP_ATSSS_LL_WITH_ASMODE_UL = "MPTCP_ATSSS_LL_WITH_ASMODE_UL"
+    MPTCP_ATSSS_LL_WITH_EXSDMODE_DL_ASMODE_UL = "MPTCP_ATSSS_LL_WITH_EXSDMODE_DL_ASMODE_UL"
+    MPTCP_ATSSS_LL_WITH_ASMODE_DLUL = "MPTCP_ATSSS_LL_WITH_ASMODE_DLUL"
+    ATSSS_LL = "ATSSS_LL"
+    MPTCP_ATSSS_LL = "MPTCP_ATSSS_LL"
+    MPQUIC_ATSSS_LL_WITH_ASMODE_UL = "MPQUIC_ATSSS_LL_WITH_ASMODE_UL"
+    MPQUIC_ATSSS_LL_WITH_EXSDMODE_DL_ASMODE_UL = "MPQUIC_ATSSS_LL_WITH_EXSDMODE_DL_ASMODE_UL"
+    MPQUIC_ATSSS_LL_WITH_ASMODE_DLUL = "MPQUIC_ATSSS_LL_WITH_ASMODE_DLUL"
+    MPQUIC_ATSSS_LL = "MPQUIC_ATSSS_LL"
+    MPTCP_MPQUIC_ATSSS_LL_WITH_ASMODE_UL = "MPTCP_MPQUIC_ATSSS_LL_WITH_ASMODE_UL"
+    MPTCP_MPQUIC_ATSSS_LL_WITH_EXSDMODE_DL_ASMODE_UL = "MPTCP_MPQUIC_ATSSS_LL_WITH_EXSDMODE_DL_ASMODE_UL"
+    MPTCP_MPQUIC_ATSSS_LL_WITH_ASMODE_DLUL = "MPTCP_MPQUIC_ATSSS_LL_WITH_ASMODE_DLUL"
+    MPTCP_MPQUIC_ATSSS_LL = "MPTCP_MPQUIC_ATSSS_LL"
+
+
+class AtsssCapabilityTS29512(RootModel[AtsssCapabilityTS295121 | str]):
+    root: Annotated[
+        AtsssCapabilityTS295121 | str,
+        Field(
+            description="Contains the ATSSS capability supported for the MA PDU Session."
+        ),
+    ]
 
 
 class AuthMethod1(StrEnum):
@@ -420,6 +593,28 @@ class AvailableRanVisibleQoeMetric(RootModel[AvailableRanVisibleQoeMetric1 | str
     ]
 
 
+class AverWindow(RootModel[int]):
+    root: Annotated[
+        int,
+        Field(
+            description="Unsigned integer indicating Averaging Window (see clause 5.7.3.6 and 5.7.4 of 3GPP TS 23.501), expressed in milliseconds. \n",
+            ge=1,
+            le=4095,
+        ),
+    ] = 2000
+
+
+class AverWindowRm(RootModel[int | None]):
+    root: Annotated[
+        int | None,
+        Field(
+            description="This data type is defined in the same way as the 'AverWindow' data type, but with the OpenAPI 'nullable: true' property.\n",
+            ge=1,
+            le=4095,
+        ),
+    ] = 2000
+
+
 class BatteryIndication(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -444,6 +639,15 @@ class BatteryIndication(BaseModel):
     ] = None
 
 
+class BdtReferenceId(RootModel[str]):
+    root: Annotated[
+        str,
+        Field(
+            description="string identifying a BDT Reference ID as defined in clause 5.3.3 of 3GPP TS 29.154."
+        ),
+    ]
+
+
 class BdtReferenceIdRm(RootModel[str | None]):
     root: Annotated[
         str | None,
@@ -461,6 +665,16 @@ class BitRate(RootModel[str]):
             pattern="^\\d+(\\.\\d+)? (bps|Kbps|Mbps|Gbps|Tbps)$",
         ),
     ]
+
+
+class BitRateRm(RootModel[str | None]):
+    root: Annotated[
+        str | None,
+        Field(
+            description="This data type is defined in the same way as the 'BitRate' data type, but with the OpenAPI 'nullable: true' property.\n",
+            pattern="^\\d+(\\.\\d+)? (bps|Kbps|Mbps|Gbps|Tbps)$",
+        ),
+    ] = None
 
 
 class BluetoothRssi1(str, Enum):
@@ -537,6 +751,27 @@ class CallbackUriPrefixItem(BaseModel):
     notificationTypes: list[str]
 
 
+class CalleeInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    calledPartyAddr: str | None = None
+    requestPartyAddrs: Annotated[list[str] | None, Field(min_length=1)] = None
+    calledAssertIds: Annotated[list[str] | None, Field(min_length=1)] = None
+
+
+class ChargingId(RootModel[int]):
+    root: Annotated[
+        int,
+        Field(
+            deprecated=True,
+            description="Integer where the allowed values correspond to the value range of an unsigned 32-bit integer.\n",
+            ge=0,
+            le=4294967295,
+        ),
+    ]
+
+
 class CivicAddress(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -607,6 +842,10 @@ class CodeWordInd(RootModel[CodeWordInd1 | str]):
     ]
 
 
+class CodecData(RootModel[str]):
+    root: Annotated[str, Field(description="Contains codec related information.")]
+
+
 class CollectionPeriodRmmLteMdt1(str, Enum):
     FIELD_1024 = 1024
     FIELD_1280 = 1280
@@ -662,6 +901,12 @@ class Confidence(RootModel[int]):
     ]
 
 
+class ContentVersion(RootModel[int]):
+    root: Annotated[
+        int, Field(description="Represents the content version of some content.")
+    ]
+
+
 class ContextInfo(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -682,12 +927,43 @@ class CoreNetworkType(RootModel[CoreNetworkType1 | str]):
     ]
 
 
+class CorrelationType1(StrEnum):
+    COMMON_DNAI = "COMMON_DNAI"
+    COMMON_EAS = "COMMON_EAS"
+
+
+class CorrelationType(RootModel[CorrelationType1 | str]):
+    root: Annotated[
+        CorrelationType1 | str,
+        Field(
+            description="Indicates that a common DNAI or common EAS should be selected."
+        ),
+    ]
+
+
 class CounterSor(RootModel[str]):
     root: Annotated[str, Field(description="CounterSoR.", pattern="^[A-Fa-f0-9]{4}$")]
 
 
 class CounterUpu(RootModel[str]):
     root: Annotated[str, Field(description="CounterUPU.", pattern="^[A-Fa-f0-9]{4}$")]
+
+
+class CreditManagementStatus1(StrEnum):
+    END_USER_SER_DENIED = "END_USER_SER_DENIED"
+    CREDIT_CTRL_NOT_APP = "CREDIT_CTRL_NOT_APP"
+    AUTH_REJECTED = "AUTH_REJECTED"
+    USER_UNKNOWN = "USER_UNKNOWN"
+    RATING_FAILED = "RATING_FAILED"
+
+
+class CreditManagementStatus(RootModel[CreditManagementStatus1 | str]):
+    root: Annotated[
+        CreditManagementStatus1 | str,
+        Field(
+            description="Indicates the reason of the credit management session failure."
+        ),
+    ]
 
 
 class DataSetId1(StrEnum):
@@ -731,6 +1007,15 @@ class DateTime(RootModel[AwareDatetime]):
     ]
 
 
+class DateTimeRm(RootModel[AwareDatetime | None]):
+    root: Annotated[
+        AwareDatetime | None,
+        Field(
+            description="string with format 'date-time' as defined in OpenAPI with 'nullable:true' property. \n"
+        ),
+    ] = None
+
+
 class DateTimeTS29122(RootModel[AwareDatetime]):
     root: Annotated[
         AwareDatetime,
@@ -762,11 +1047,41 @@ class DelayMeasurementProtocol(RootModel[DelayMeasurementProtocol1 | str]):
     ]
 
 
+class DlDataDeliveryStatus1(StrEnum):
+    BUFFERED = "BUFFERED"
+    TRANSMITTED = "TRANSMITTED"
+    DISCARDED = "DISCARDED"
+
+
+class DlDataDeliveryStatus(RootModel[DlDataDeliveryStatus1 | str]):
+    root: Annotated[
+        DlDataDeliveryStatus1 | str,
+        Field(
+            description="Possible values are:\n- BUFFERED: The first downlink data is buffered with extended buffering matching the\n  source of the downlink traffic.\n- TRANSMITTED: The first downlink data matching the source of the downlink traffic is\n  transmitted after previous buffering or discarding of corresponding packet(s) because\n  the UE of the PDU Session becomes ACTIVE, and buffered data can be delivered to UE.\n- DISCARDED: The first downlink data matching the source of the downlink traffic is\n  discarded because the Extended Buffering time, as determined by the SMF, expires or\n  the amount of downlink data to be buffered is exceeded.\n"
+        ),
+    ]
+
+
 class Dnai(RootModel[str]):
     root: Annotated[
         str,
         Field(
             description="DNAI (Data network access identifier), see clause 5.6.7 of 3GPP TS 23.501."
+        ),
+    ]
+
+
+class DnaiChangeType1(StrEnum):
+    EARLY = "EARLY"
+    EARLY_LATE = "EARLY_LATE"
+    LATE = "LATE"
+
+
+class DnaiChangeType(RootModel[DnaiChangeType1 | str]):
+    root: Annotated[
+        DnaiChangeType1 | str,
+        Field(
+            description="Possible values are:\n- EARLY: Early notification of UP path reconfiguration.\n- EARLY_LATE: Early and late notification of UP path reconfiguration. This value shall\n  only be present in the subscription to the DNAI change event.\n- LATE: Late notification of UP path reconfiguration. \n"
         ),
     ]
 
@@ -782,6 +1097,16 @@ class Dnn(RootModel[str]):
 
 class DnnIndicator(RootModel[bool]):
     root: Annotated[bool, Field(description="DNN indicator")]
+
+
+class DnnSelectionMode1(StrEnum):
+    VERIFIED = "VERIFIED"
+    UE_DNN_NOT_VERIFIED = "UE_DNN_NOT_VERIFIED"
+    NW_DNN_NOT_VERIFIED = "NW_DNN_NOT_VERIFIED"
+
+
+class DnnSelectionMode(RootModel[DnnSelectionMode1 | str]):
+    root: Annotated[DnnSelectionMode1 | str, Field(description="DNN Selection Mode")]
 
 
 class DnsSecurityProtocol1(StrEnum):
@@ -804,6 +1129,21 @@ class DualRegistrationFlag(RootModel[bool]):
     ]
 
 
+class DurationMilliSec(RootModel[int]):
+    root: Annotated[
+        int, Field(description="Indicates the time interval in units of milliseconds.")
+    ]
+
+
+class DurationMilliSecRm(RootModel[int]):
+    root: Annotated[
+        int,
+        Field(
+            description='This data type is defined in the same way as the "DurationMillisec" data type, but with the OpenAPI nullable property set to true.\n'
+        ),
+    ]
+
+
 class DurationSec(RootModel[int]):
     root: Annotated[int, Field(description="indicating a time in seconds.")]
 
@@ -813,6 +1153,16 @@ class DurationSecRm(RootModel[int | None]):
         int | None,
         Field(
             description="indicating a time in seconds with OpenAPI defined 'nullable: true' property."
+        ),
+    ] = None
+
+
+class DurationSecRmTS29122(RootModel[int | None]):
+    root: Annotated[
+        int | None,
+        Field(
+            description='Unsigned integer identifying a period of time in units of seconds with "nullable=true" property.\n',
+            ge=0,
         ),
     ] = None
 
@@ -863,6 +1213,10 @@ class EmptyObject(BaseModel):
         extra="forbid",
         populate_by_name=True,
     )
+
+
+class EpsRanNasRelCause(RootModel[str]):
+    root: Annotated[str, Field(description="Defines the EPS RAN/NAS release cause.")]
 
 
 class EutraCellId(RootModel[str]):
@@ -1002,6 +1356,48 @@ class ExtGroupId(RootModel[str]):
     ]
 
 
+class ExtMaxDataBurstVol(RootModel[int]):
+    root: Annotated[
+        int,
+        Field(
+            description="Unsigned integer indicating Maximum Data Burst Volume (see clauses 5.7.3.7 and 5.7.4 of 3GPP TS 23.501), expressed in Bytes. \n",
+            ge=4096,
+            le=2000000,
+        ),
+    ]
+
+
+class ExtMaxDataBurstVolRm(RootModel[int | None]):
+    root: Annotated[
+        int | None,
+        Field(
+            description="This data type is defined in the same way as the 'ExtMaxDataBurstVol' data type, but with the OpenAPI 'nullable: true' property.\n",
+            ge=4096,
+            le=2000000,
+        ),
+    ] = None
+
+
+class ExtPacketDelBudget(RootModel[int]):
+    root: Annotated[
+        int,
+        Field(
+            description="Unsigned integer indicating Packet Delay Budget (see clauses\xa05.7.3.4 and 5.7.4 of 3GPP TS 23.501 [8])), expressed in 0.01 milliseconds.\n",
+            ge=1,
+        ),
+    ]
+
+
+class ExtPacketDelBudgetRm(RootModel[int | None]):
+    root: Annotated[
+        int | None,
+        Field(
+            description='This data type is defined in the same way as the \'ExtPacketDelBudget\' data type, but with the OpenAPI \'nullable: true\' property. "\n',
+            ge=1,
+        ),
+    ] = None
+
+
 class ExternalClientType1(StrEnum):
     EMERGENCY_SERVICES = "EMERGENCY_SERVICES"
     VALUE_ADDED_SERVICES = "VALUE_ADDED_SERVICES"
@@ -1031,6 +1427,59 @@ class ExternalGroupId(RootModel[str]):
     ]
 
 
+class FailureCode1(StrEnum):
+    UNK_RULE_ID = "UNK_RULE_ID"
+    RA_GR_ERR = "RA_GR_ERR"
+    SER_ID_ERR = "SER_ID_ERR"
+    NF_MAL = "NF_MAL"
+    RES_LIM = "RES_LIM"
+    MAX_NR_QO_S_FLOW = "MAX_NR_QoS_FLOW"
+    MISS_FLOW_INFO = "MISS_FLOW_INFO"
+    RES_ALLO_FAIL = "RES_ALLO_FAIL"
+    UNSUCC_QOS_VAL = "UNSUCC_QOS_VAL"
+    INCOR_FLOW_INFO = "INCOR_FLOW_INFO"
+    PS_TO_CS_HAN = "PS_TO_CS_HAN"
+    APP_ID_ERR = "APP_ID_ERR"
+    NO_QOS_FLOW_BOUND = "NO_QOS_FLOW_BOUND"
+    FILTER_RES = "FILTER_RES"
+    MISS_REDI_SER_ADDR = "MISS_REDI_SER_ADDR"
+    CM_END_USER_SER_DENIED = "CM_END_USER_SER_DENIED"
+    CM_CREDIT_CON_NOT_APP = "CM_CREDIT_CON_NOT_APP"
+    CM_AUTH_REJ = "CM_AUTH_REJ"
+    CM_USER_UNK = "CM_USER_UNK"
+    CM_RAT_FAILED = "CM_RAT_FAILED"
+    UE_STA_SUSP = "UE_STA_SUSP"
+    UNKNOWN_REF_ID = "UNKNOWN_REF_ID"
+    INCORRECT_COND_DATA = "INCORRECT_COND_DATA"
+    REF_ID_COLLISION = "REF_ID_COLLISION"
+    TRAFFIC_STEERING_ERROR = "TRAFFIC_STEERING_ERROR"
+    DNAI_STEERING_ERROR = "DNAI_STEERING_ERROR"
+    AN_GW_FAILE = "AN_GW_FAILE"
+    MAX_NR_PACKET_FILTERS_EXCEEDED = "MAX_NR_PACKET_FILTERS_EXCEEDED"
+    PACKET_FILTER_TFT_ALLOCATION_EXCEEDED = "PACKET_FILTER_TFT_ALLOCATION_EXCEEDED"
+    MUTE_CHG_NOT_ALLOWED = "MUTE_CHG_NOT_ALLOWED"
+    UE_TEMPORARILY_UNAVAILABLE = "UE_TEMPORARILY_UNAVAILABLE"
+
+
+class FailureCode(RootModel[FailureCode1 | str]):
+    root: Annotated[
+        FailureCode1 | str,
+        Field(
+            description='Indicates the reason of the PCC rule failure.  \nPossible values are\n- UNK_RULE_ID: Indicates that the pre-provisioned PCC rule could not be successfully\nactivated because the PCC rule identifier is unknown to the SMF.\n- RA_GR_ERR: Indicate that the PCC rule could not be successfully installed or enforced\nbecause the Rating Group specified within the Charging Data policy decision which the PCC\nrule refers to is unknown or, invalid.\n- SER_ID_ERR: Indicate that the PCC rule could not be successfully installed or enforced\nbecause the Service Identifier specified within the Charging Data policy decision which the\nPCC rule refers to is invalid, unknown, or not applicable to the service being charged.\n- NF_MAL: Indicate that the PCC rule could not be successfully installed (for those\nprovisioned from the PCF) or activated (for those pre-defined in SMF) or enforced (for those\nalready successfully installed) due to SMF/UPF malfunction.\n- RES_LIM: Indicate that the PCC rule could not be successfully installed (for those\nprovisioned from PCF) or activated (for those pre-defined in SMF) or enforced (for those\nalready successfully installed) due to a limitation of resources at the SMF/UPF.\n- MAX_NR_QoS_FLOW: Indicate that the PCC rule could not be successfully installed (for those\nprovisioned from PCF) or activated (for those pre-defined in SMF) or enforced (for those\nalready successfully installed) due to the fact that the maximum number of QoS flows has\nbeen reached for the PDU session.\n- MISS_FLOW_INFO: Indicate that the PCC rule could not be successfully installed or enforced\nbecause neither the "flowInfos" attribute nor the "appId" attribute is specified within the\nPccRule data structure by the PCF during the first install request of the PCC rule.\n- RES_ALLO_FAIL: Indicate that the PCC rule could not be successfully installed or\nmaintained since the QoS flow establishment/modification failed, or the QoS flow was\nreleased.\n- UNSUCC_QOS_VAL: indicate that the QoS validation has failed or when Guaranteed Bandwidth >\nMax-Requested-Bandwidth.\n- INCOR_FLOW_INFO: Indicate that the PCC rule could not be successfully installed or\nmodified at the SMF because the provided flow information is not supported by the network\n (e.g. the provided IP address(es) or Ipv6 prefix(es) do not correspond to an IP version\napplicable for the PDU session).\n- PS_TO_CS_HAN: Indicate that the PCC rule could not be maintained because of PS to CS\nhandover.\n- APP_ID_ERR: Indicate that the rule could not be successfully installed or enforced because\nthe Application Identifier is invalid, unknown, or not applicable to the application\nrequired for detection.\n- NO_QOS_FLOW_BOUND: Indicate that there is no QoS flow which the SMF can bind the PCC\nrule(s) to.\n- FILTER_RES: Indicate that the Flow Information within the "flowInfos" attribute cannot be \nhandled by the SMF because any of the restrictions defined in clause 5.4.2 of 3GPP TS 29.212 \nwas not met.\n- MISS_REDI_SER_ADDR: Indicate that the PCC rule could not be successfully installed or\nenforced at the SMF because there is no valid Redirect Server Address within the Traffic\nControl Data policy decision which the PCC rule refers to provided by the PCF and no \npreconfigured redirection address for this PCC rule at the SMF.\n- CM_END_USER_SER_DENIED: Indicate that the charging system denied the service request due\nto service restrictions (e.g. terminate rating group) or limitations related to the\nend-user, for example the end-user\'s account could not cover the requested service.\n- CM_CREDIT_CON_NOT_APP: Indicate that the charging system determined that the service can\nbe granted to the end user but no further credit control is needed for the service (e.g.\nservice is free of charge or is treated for offline charging).\n  - CM_AUTH_REJ: Indicate that the charging system denied the service request in order to\nterminate the service for which credit is requested.\n- CM_USER_UNK: Indicate that the specified end user could not be found in the charging\nsystem.\n- CM_RAT_FAILED: Indicate that the charging system cannot rate the service request due to\ninsufficient rating input, incorrect AVP combination or due to an attribute or an attribute\nvalue that is not recognized or supported in the rating.\n- UE_STA_SUSP: Indicates that the UE is in suspend state.\n- UNKNOWN_REF_ID: Indicates that the PCC rule could not be successfully installed/modified\nbecause the referenced identifier to a Policy Decision Data or to a Condition Data is\nunknown to the SMF.\n- INCORRECT_COND_DATA: Indicates that the PCC rule could not be successfully\ninstalled/modified because the referenced Condition data are incorrect.\n- REF_ID_COLLISION: Indicates that PCC rule could not be successfully installed/modified\nbecause the same Policy Decision is referenced by a session rule (e.g. the session rule\nand the PCC rule refer to the same Usage Monitoring decision data).\n- TRAFFIC_STEERING_ERROR: Indicates that enforcement of the steering of traffic to the\nN6-LAN or 5G-LAN failed; or the dynamic PCC rule could not be successfully installed or\nmodified at the NF service consumer because there are invalid traffic steering policy\nidentifier(s) within the provided Traffic Control Data policy decision to which the PCC\nrule refers.\n- DNAI_STEERING_ERROR: Indicates that the enforcement of the steering of traffic to the\nindicated DNAI failed; or the dynamic PCC rule could not be successfully installed or\nmodified at the NF service consumer because there is invalid route information for a DNAI(s)\n (e.g. routing profile id is not configured) within the provided Traffic Control Data policy\ndecision to which the PCC rule refers.\n- AN_GW_FAILE: This value is used to indicate that the AN-Gateway has failed and that the\nPCF should refrain from sending policy decisions to the SMF until it is informed that the\nS-GW has been recovered. This value shall not be used if the SM Policy association\nmodification procedure is initiated for PCC rule removal only.\n- MAX_NR_PACKET_FILTERS_EXCEEDED: This value is used to indicate that the PCC rule could not\nbe successfully installed, modified or enforced at the NF service consumer because the\nnumber of supported packet filters for signalled QoS rules for the PDU session has been\nreached.\n- PACKET_FILTER_TFT_ALLOCATION_EXCEEDED: This value is used to indicate that the PCC rule is\nremoved at 5GS to EPS mobility because TFT allocation was not possible since the number of\nactive packet filters in the EPC bearer is exceeded.\n- MUTE_CHG_NOT_ALLOWED: Indicates that the PCC rule could not be successfully modified\nbecause the mute condition for application detection report cannot be changed. Applicable\nwhen the functionality introduced with the ADC feature applies.\n- UE_TEMPORARILY_UNAVAILABLE: Indicates that the PCC rule could not be successfully\ninstalled or modified because the SMF was informed that the UE was not reachable.\n'
+        ),
+    ]
+
+
+class FinalUnitAction1(StrEnum):
+    TERMINATE = "TERMINATE"
+    REDIRECT = "REDIRECT"
+    RESTRICT_ACCESS = "RESTRICT_ACCESS"
+
+
+class FinalUnitAction(RootModel[FinalUnitAction1 | str]):
+    root: FinalUnitAction1 | str
+
+
 class FlCapabilityType1(StrEnum):
     FL_SERVER = "FL_SERVER"
     FL_CLIENT = "FL_CLIENT"
@@ -1042,6 +1491,84 @@ class FlCapabilityType(RootModel[FlCapabilityType1 | str]):
         FlCapabilityType1 | str,
         Field(description="Type of Federated Learning Capability.\n"),
     ]
+
+
+class Float(RootModel[float]):
+    root: Annotated[
+        float, Field(description="string with format 'float' as defined in OpenAPI.")
+    ]
+
+
+class FloatRm(RootModel[float | None]):
+    root: Annotated[
+        float | None,
+        Field(
+            description="string with format 'float' as defined in OpenAPI with the OpenAPI defined 'nullable: true' property.\n"
+        ),
+    ] = None
+
+
+class FlowDescriptionTS29512(RootModel[str]):
+    root: Annotated[str, Field(description="Defines a packet filter for an IP flow.")]
+
+
+class FlowDescriptionTS29514(RootModel[str]):
+    root: Annotated[str, Field(description="Defines a packet filter of an IP flow.")]
+
+
+class FlowDirection1(StrEnum):
+    DOWNLINK = "DOWNLINK"
+    UPLINK = "UPLINK"
+    BIDIRECTIONAL = "BIDIRECTIONAL"
+    UNSPECIFIED = "UNSPECIFIED"
+
+
+class FlowDirection(RootModel[FlowDirection1 | str]):
+    root: Annotated[
+        FlowDirection1 | str,
+        Field(
+            description="Indicates the direction of the service data flow.  \nPossible values are:\n- DOWNLINK: The corresponding filter applies for traffic to the UE.\n- UPLINK: The corresponding filter applies for traffic from the UE.\n- BIDIRECTIONAL: The corresponding filter applies for traffic both to and from the UE.\n- UNSPECIFIED: The corresponding filter applies for traffic to the UE (downlink), but has no\nspecific direction declared. The service data flow detection shall apply the filter for\nuplink traffic as if the filter was bidirectional. The PCF shall not use the value\nUNSPECIFIED in filters created by the network in NW-initiated procedures. The PCF shall only\ninclude the value UNSPECIFIED in filters in UE-initiated procedures if the same value is\nreceived from the SMF.\n"
+        ),
+    ]
+
+
+class FlowStatus1(StrEnum):
+    ENABLED_UPLINK = "ENABLED-UPLINK"
+    ENABLED_DOWNLINK = "ENABLED-DOWNLINK"
+    ENABLED = "ENABLED"
+    DISABLED = "DISABLED"
+    REMOVED = "REMOVED"
+
+
+class FlowStatus(RootModel[FlowStatus1 | str]):
+    root: Annotated[
+        FlowStatus1 | str,
+        Field(description="Describes whether the IP flow(s) are enabled or disabled."),
+    ]
+
+
+class FlowUsage1(StrEnum):
+    NO_INFO = "NO_INFO"
+    RTCP = "RTCP"
+    AF_SIGNALLING = "AF_SIGNALLING"
+
+
+class FlowUsage(RootModel[FlowUsage1 | str]):
+    root: Annotated[
+        FlowUsage1 | str,
+        Field(
+            description="Describes the flow usage of the flows described by a media subcomponent."
+        ),
+    ]
+
+
+class Flows(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    contVers: Annotated[list[ContentVersion] | None, Field(min_length=1)] = None
+    fNums: Annotated[list[int] | None, Field(min_length=1)] = None
+    medCompN: int
 
 
 class Fqdn(RootModel[str]):
@@ -1128,6 +1655,36 @@ class GroupId(RootModel[str]):
     ]
 
 
+class HeaderHandlingAction1(StrEnum):
+    DETECT = "DETECT"
+    REMOVE = "REMOVE"
+    REPLACE = "REPLACE"
+    INSERT = "INSERT"
+
+
+class HeaderHandlingAction(RootModel[HeaderHandlingAction1 | str]):
+    root: Annotated[
+        HeaderHandlingAction1 | str,
+        Field(
+            description="Represents the type of header handling actions.\nPossible values are:\n- DETECT: Indicates that the request is for the detection of a header field.\n- REMOVE: Indicates that the request is for the removal of a header field.\n- REPLACE: Indicates that the request is for the replacement of information in a header\n  field.\n- INSERT: Indicates that the request is for the addition of a header field.\n"
+        ),
+    ]
+
+
+class HeaderHandlingCond1(StrEnum):
+    EVERY_MATCH = "EVERY_MATCH"
+    FIRST_MATCH = "FIRST_MATCH"
+
+
+class HeaderHandlingCond(RootModel[HeaderHandlingCond1 | str]):
+    root: Annotated[
+        HeaderHandlingCond1 | str,
+        Field(
+            description="Represents the condition to apply header handling actions.\nPossible values are:\n- EVERY_MATCH: Indicates that the header handling action is applied to every match.\n- FIRST_MATCH: Indicates that the header handling action is applied only to the first\n  match.\n"
+        ),
+    ]
+
+
 class HfcNId(RootModel[str]):
     root: Annotated[
         str,
@@ -1136,6 +1693,13 @@ class HfcNId(RootModel[str]):
             max_length=6,
         ),
     ]
+
+
+class HfcNodeId(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    hfcNId: HfcNId
 
 
 class IdentityRange(BaseModel):
@@ -1286,7 +1850,26 @@ class Ipv4AddrMask(RootModel[str]):
     ]
 
 
+class Ipv4AddrRm(RootModel[str | None]):
+    root: Annotated[
+        str | None,
+        Field(
+            description="String identifying a IPv4 address formatted in the 'dotted decimal' notation as defined in RFC 1166 with the OpenAPI defined 'nullable: true' property.\n",
+            examples=["198.51.100.1"],
+            pattern="^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$",
+        ),
+    ] = None
+
+
 class Ipv4AddressRange(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    start: Ipv4Addr
+    end: Ipv4Addr
+
+
+class Ipv4AddressRangeTS29510(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
     )
@@ -1305,6 +1888,25 @@ class Ipv6Addr(RootModel[str]):
     ]
 
 
+class Ipv6AddrRm(RootModel[str | None]):
+    root: Annotated[
+        str | None,
+        Field(
+            description="String identifying an IPv6 address formatted according to clause 4 of RFC5952 with the OpenAPI 'nullable: true' property. The mixed IPv4 IPv6 notation according to clause 5 of RFC5952 shall not be used.\n",
+            examples=["2001:db8:85a3::8a2e:370:7334"],
+            pattern="^((:|(0?|([1-9a-f][0-9a-f]{0,3}))):)((0?|([1-9a-f][0-9a-f]{0,3})):){0,6}(:|(0?|([1-9a-f][0-9a-f]{0,3})))$",
+        ),
+    ] = None
+
+
+class Ipv6AddressRange(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    start: Ipv6Addr
+    end: Ipv6Addr
+
+
 class Ipv6Prefix(RootModel[str]):
     root: Annotated[
         str,
@@ -1317,6 +1919,14 @@ class Ipv6Prefix(RootModel[str]):
 
 
 class Ipv6PrefixRange(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    start: Ipv6Prefix
+    end: Ipv6Prefix
+
+
+class Ipv6PrefixRangeTS29510(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
     )
@@ -1347,6 +1957,42 @@ class JobType(RootModel[JobType1 | str]):
             description="The enumeration JobType defines Job Type in the trace. See 3GPP TS 32.422 for further  description of the values. It shall comply with the provisions defined in table 5.6.3.3-1.\n"
         ),
     ]
+
+
+class L4sNotifType1(StrEnum):
+    AVAILABLE = "AVAILABLE"
+    NOT_AVAILABLE = "NOT_AVAILABLE"
+
+
+class L4sNotifType(RootModel[L4sNotifType1 | str]):
+    root: Annotated[
+        L4sNotifType1 | str,
+        Field(
+            description="Indicates the notification type for ECN marking for L4S support in 5GS."
+        ),
+    ]
+
+
+class L4sSupport(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    notifType: L4sNotifType
+    flows: Annotated[list[Flows] | None, Field(min_length=1)] = None
+
+
+class L4sSupportInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    refPccRuleIds: Annotated[
+        list[str],
+        Field(
+            description="An array of PCC rule id references to the PCC rules associated with the ECN marking for L4S support info.\n",
+            min_length=1,
+        ),
+    ]
+    notifType: L4sNotifType
 
 
 class LMFIdentification(RootModel[str]):
@@ -1407,6 +2053,20 @@ class LimitIdToMonitoringKey(BaseModel):
     )
     limitId: str
     monkey: Annotated[list[str] | None, Field(min_length=1)] = None
+
+
+class LineType1(StrEnum):
+    DSL = "DSL"
+    PON = "PON"
+
+
+class LineType(RootModel[LineType1 | str]):
+    root: Annotated[
+        LineType1 | str,
+        Field(
+            description="Possible values are:\n- DSL: Identifies a DSL line\n- PON: Identifies a PON line\n"
+        ),
+    ]
 
 
 class AimlPosInd(Enum):
@@ -1515,6 +2175,80 @@ class LpHapType(RootModel[LpHapType1 | str]):
         LpHapType1 | str,
         Field(description="Type of Low Power and/or High Accuracy Positioning"),
     ]
+
+
+class MaPduIndication1(StrEnum):
+    MA_PDU_REQUEST = "MA_PDU_REQUEST"
+    MA_PDU_NETWORK_UPGRADE_ALLOWED = "MA_PDU_NETWORK_UPGRADE_ALLOWED"
+
+
+class MaPduIndication(RootModel[MaPduIndication1 | str]):
+    root: Annotated[
+        MaPduIndication1 | str,
+        Field(
+            description="Contains the MA PDU session indication, i.e., MA PDU Request or MA PDU Network-Upgrade Allowed.\n"
+        ),
+    ]
+
+
+class MacAddr48(RootModel[str]):
+    root: Annotated[
+        str,
+        Field(
+            description="String identifying a MAC address formatted in the hexadecimal notation according to clause 1.1 and clause 2.1 of RFC 7042.\n",
+            pattern="^([0-9a-fA-F]{2})((-[0-9a-fA-F]{2}){5})$",
+        ),
+    ]
+
+
+class MatchingOperator1(StrEnum):
+    FULL_MATCH = "FULL_MATCH"
+    MATCH_ALL = "MATCH_ALL"
+    STARTS_WITH = "STARTS_WITH"
+    NOT_START_WITH = "NOT_START_WITH"
+    ENDS_WITH = "ENDS_WITH"
+    NOT_END_WITH = "NOT_END_WITH"
+    CONTAINS = "CONTAINS"
+    NOT_CONTAIN = "NOT_CONTAIN"
+
+
+class MatchingOperator(RootModel[MatchingOperator1 | str]):
+    root: Annotated[
+        MatchingOperator1 | str, Field(description="the matching operation.")
+    ]
+
+
+class MaxDataBurstVol(RootModel[int]):
+    root: Annotated[
+        int,
+        Field(
+            description="Unsigned integer indicating Maximum Data Burst Volume (see clauses 5.7.3.7 and 5.7.4 of 3GPP TS 23.501), expressed in Bytes. \n",
+            ge=1,
+            le=4095,
+        ),
+    ]
+
+
+class MaxDataBurstVolRm(RootModel[int | None]):
+    root: Annotated[
+        int | None,
+        Field(
+            description="This data type is defined in the same way as the 'MaxDataBurstVol' data type, but with the OpenAPI 'nullable: true' property.\n",
+            ge=1,
+            le=4095,
+        ),
+    ] = None
+
+
+class MaxDataBurstVolTS29514(RootModel[int | None]):
+    root: Annotated[
+        int | None,
+        Field(
+            description="Unsigned integer indicating Maximum Data Burst Volume value.",
+            ge=1,
+            le=2000000,
+        ),
+    ] = None
 
 
 class MaxGroupDataRate(BaseModel):
@@ -1701,6 +2435,69 @@ class MediaCapability(RootModel[str]):
     ]
 
 
+class MediaComponentResourcesStatus1(StrEnum):
+    ACTIVE = "ACTIVE"
+    INACTIVE = "INACTIVE"
+
+
+class MediaComponentResourcesStatus(RootModel[MediaComponentResourcesStatus1 | str]):
+    root: Annotated[
+        MediaComponentResourcesStatus1 | str,
+        Field(
+            description="Indicates whether the media component is active or inactive."
+        ),
+    ]
+
+
+class MediaTransportProto1(StrEnum):
+    RTP = "RTP"
+    SRTP = "SRTP"
+    MOQT = "MOQT"
+
+
+class MediaTransportProto(RootModel[MediaTransportProto1 | str]):
+    root: Annotated[
+        MediaTransportProto1 | str,
+        Field(
+            description="The enumeration MediaTransportProto indicates the transport protocol used for a media flow.\n"
+        ),
+    ]
+
+
+class MediaType1(StrEnum):
+    AUDIO = "AUDIO"
+    VIDEO = "VIDEO"
+    DATA = "DATA"
+    APPLICATION = "APPLICATION"
+    CONTROL = "CONTROL"
+    TEXT = "TEXT"
+    MESSAGE = "MESSAGE"
+    OTHER = "OTHER"
+
+
+class MediaType(RootModel[MediaType1 | str]):
+    root: Annotated[
+        MediaType1 | str,
+        Field(description="Indicates the media type of a media component."),
+    ]
+
+
+class Metadata(RootModel[Base64Str | None]):
+    root: Annotated[
+        Base64Str | None,
+        Field(
+            description="A String which is transparently passed to the UPF to be applied for traffic to SFC.\n"
+        ),
+    ] = None
+
+
+class MeteringMethod1(StrEnum):
+    DURATION = "DURATION"
+    VOLUME = "VOLUME"
+    DURATION_VOLUME = "DURATION_VOLUME"
+    EVENT = "EVENT"
+
+
 class MfInfo(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -1714,6 +2511,14 @@ class MicoAllowed(RootModel[bool]):
     root: Annotated[
         bool, Field(description="Mobile Initiated Connection Only indicator")
     ]
+
+
+class MitigationInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    percValueNumUes: Annotated[int | None, Field(ge=0, le=100)] = None
+    newUesInd: bool | None = None
 
 
 class Mnc(RootModel[str]):
@@ -1744,6 +2549,24 @@ class MonthOfYear(RootModel[int]):
     ]
 
 
+class MpsAction1(StrEnum):
+    DISABLE_MPS_FOR_DTS = "DISABLE_MPS_FOR_DTS"
+    ENABLE_MPS_FOR_DTS = "ENABLE_MPS_FOR_DTS"
+    AUTHORIZE_AND_ENABLE_MPS_FOR_DTS = "AUTHORIZE_AND_ENABLE_MPS_FOR_DTS"
+    AUTHORIZE_AND_ENABLE_MPS_FOR_AF_SIGNALLING = "AUTHORIZE_AND_ENABLE_MPS_FOR_AF_SIGNALLING"
+    DISABLE_MPS_FOR_MESSAGING_FOR_AF_SIGNALLING = "DISABLE_MPS_FOR_MESSAGING_FOR_AF_SIGNALLING"
+    ENABLE_MPS_FOR_MESSAGING_FOR_AF_SIGNALLING = "ENABLE_MPS_FOR_MESSAGING_FOR_AF_SIGNALLING"
+
+
+class MpsAction(RootModel[MpsAction1 | str]):
+    root: Annotated[
+        MpsAction1 | str,
+        Field(
+            description="Indicates whether it is an invocation, a revocation or an invocation with authorization of the MPS for DTS or Messaging service.\n"
+        ),
+    ]
+
+
 class MpsPriorityIndicator(RootModel[bool]):
     root: Annotated[bool, Field(description="MPS priority indicator")]
 
@@ -1766,9 +2589,45 @@ class MrfpInfo(BaseModel):
     ] = None
 
 
+class MriTransferMethod1(StrEnum):
+    UDP_OPTION = "UDP_OPTION"
+
+
+class MriTransferMethod(RootModel[MriTransferMethod1 | str]):
+    root: Annotated[
+        MriTransferMethod1 | str,
+        Field(
+            description="This data type indicates the method used for transferring Media Related Information.  \n"
+        ),
+    ]
+
+
 class MtcProviderInformation(RootModel[str]):
     root: Annotated[
         str, Field(description="String uniquely identifying MTC provider information.")
+    ]
+
+
+class MultiModalId(RootModel[str]):
+    root: Annotated[
+        str,
+        Field(
+            description="This data type contains a multi-modal service identifier.\n"
+        ),
+    ]
+
+
+class MulticastAccessControl1(StrEnum):
+    ALLOWED = "ALLOWED"
+    NOT_ALLOWED = "NOT_ALLOWED"
+
+
+class MulticastAccessControl(RootModel[MulticastAccessControl1 | str]):
+    root: Annotated[
+        MulticastAccessControl1 | str,
+        Field(
+            description="Indicates whether the service data flow, corresponding to the service data flow template, is allowed or not allowed.\n"
+        ),
     ]
 
 
@@ -1785,6 +2644,42 @@ class N1MessageClass1(StrEnum):
 class N1MessageClass(RootModel[N1MessageClass1 | str]):
     root: Annotated[
         N1MessageClass1 | str, Field(description="Enumeration for N1 Message Class")
+    ]
+
+
+class N1N2MessTransferErrorReply1(StrEnum):
+    UE_NOT_REACHABLE = "UE_NOT_REACHABLE"
+    UNSPECIFIED = "UNSPECIFIED"
+
+
+class N1N2MessTransferErrorReply(RootModel[N1N2MessTransferErrorReply1 | str]):
+    root: Annotated[
+        N1N2MessTransferErrorReply1 | str,
+        Field(
+            description="Represents an N1N2 Message Transfer error.  \nPossible values are:\n- UE_NOT_REACHABLE: The UE is not reachable for paging.\n- UNSPECIFIED: Unspecified error.\n"
+        ),
+    ]
+
+
+class N1N2MessageTransferCause1(StrEnum):
+    ATTEMPTING_TO_REACH_UE = "ATTEMPTING_TO_REACH_UE"
+    N1_N2_TRANSFER_INITIATED = "N1_N2_TRANSFER_INITIATED"
+    WAITING_FOR_ASYNCHRONOUS_TRANSFER = "WAITING_FOR_ASYNCHRONOUS_TRANSFER"
+    UE_NOT_RESPONDING = "UE_NOT_RESPONDING"
+    N1_MSG_NOT_TRANSFERRED = "N1_MSG_NOT_TRANSFERRED"
+    N2_MSG_NOT_TRANSFERRED = "N2_MSG_NOT_TRANSFERRED"
+    UE_NOT_REACHABLE_FOR_SESSION = "UE_NOT_REACHABLE_FOR_SESSION"
+    TEMPORARY_REJECT_REGISTRATION_ONGOING = "TEMPORARY_REJECT_REGISTRATION_ONGOING"
+    TEMPORARY_REJECT_HANDOVER_ONGOING = "TEMPORARY_REJECT_HANDOVER_ONGOING"
+    REJECTION_DUE_TO_PAGING_RESTRICTION = "REJECTION_DUE_TO_PAGING_RESTRICTION"
+    AN_NOT_RESPONDING = "AN_NOT_RESPONDING"
+    FAILURE_CAUSE_UNSPECIFIED = "FAILURE_CAUSE_UNSPECIFIED"
+
+
+class N1N2MessageTransferCause(RootModel[N1N2MessageTransferCause1 | str]):
+    root: Annotated[
+        N1N2MessageTransferCause1 | str,
+        Field(description="Enumeration for N1N2Message Transfer Cause"),
     ]
 
 
@@ -1983,6 +2878,22 @@ class NefId(RootModel[str]):
     root: Annotated[str, Field(description="Identity of the NEF")]
 
 
+class NetLocAccessSupport1(StrEnum):
+    ANR_NOT_SUPPORTED = "ANR_NOT_SUPPORTED"
+    TZR_NOT_SUPPORTED = "TZR_NOT_SUPPORTED"
+    LOC_NOT_SUPPORTED = "LOC_NOT_SUPPORTED"
+    UE_SAT_NOT_SUPPORTED = "UE_SAT_NOT_SUPPORTED"
+
+
+class NetLocAccessSupport(RootModel[NetLocAccessSupport1 | str]):
+    root: Annotated[
+        NetLocAccessSupport1 | str,
+        Field(
+            description="Indicates the access network support of the report of the requested access network\ninformation.  \nPossible values are\n- ANR_NOT_SUPPORTED: Indicates that the access network does not support the report of access\nnetwork information.\n- TZR_NOT_SUPPORTED: Indicates that the access network does not support the report of UE\ntime zone.\n- LOC_NOT_SUPPORTED: Indicates that the access network does not support the report of UE\nLocation (or PLMN Id).\n- UE_SAT_NOT_SUPPORTED: Indicates that the access network does not support the report of\nUE’s satellite identifier.\n"
+        ),
+    ]
+
+
 class NetworkNodeDiameterAddress(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -2078,6 +2989,49 @@ class NoProfileMatchReason1(StrEnum):
 class NoProfileMatchReason(RootModel[NoProfileMatchReason1 | str]):
     root: Annotated[
         NoProfileMatchReason1 | str, Field(description="No Profile Match Reason")
+    ]
+
+
+class NotifCap1(StrEnum):
+    SUPPORTED = "SUPPORTED"
+    NOT_SUPPORTED = "NOT_SUPPORTED"
+
+
+class NotifCap(RootModel[NotifCap1 | str]):
+    root: Annotated[
+        NotifCap1 | str,
+        Field(
+            description="Indicates whether the notified capability is supported or not supported."
+        ),
+    ]
+
+
+class NotifCapType1(StrEnum):
+    PACKET_DELAY = "PACKET_DELAY"
+    CONGESTION = "CONGESTION"
+    AVAILABLE_BITRATE = "AVAILABLE_BITRATE"
+
+
+class NotifCapType(RootModel[NotifCapType1 | str]):
+    root: Annotated[
+        NotifCapType1 | str,
+        Field(
+            description="Indicates which type of QoS Monitoring capability report is applied.\nPossible values are:\n- PACKET_DELAY: Indication the Packet delay monitoring capability is monitored.\n- CONGESTION: Indication the Congestion information monitoring capability is monitored.\n- AVAILABLE_BITRATE: Indication the Available bitrate monitoring capability is monitored.\n"
+        ),
+    ]
+
+
+class NotificationControlIndication1(StrEnum):
+    DDN_FAILURE = "DDN_FAILURE"
+    DDD_STATUS = "DDD_STATUS"
+
+
+class NotificationControlIndication(RootModel[NotificationControlIndication1 | str]):
+    root: Annotated[
+        NotificationControlIndication1 | str,
+        Field(
+            description="Indicates that the notification of DDD Status is requested and/or that the notification of DDN Failure is requested.\n"
+        ),
     ]
 
 
@@ -2276,6 +3230,29 @@ class OdbPacketServices(RootModel[OdbPacketServices1 | str | NullValue]):
     ]
 
 
+class OffloadIdentifier(RootModel[str]):
+    root: Annotated[
+        str,
+        Field(
+            description="Offload identifier uniquely identifying a VPLMN offloading policy information instance\n",
+            pattern="^[0-9]{3}-[0-9]{2,3}-[A-Fa-f0-9]{8}(-v[0-9]{1,2}){0,1}$",
+        ),
+    ]
+
+
+class OnPathN6Method1(StrEnum):
+    CONNECT_UDP = "CONNECT_UDP"
+
+
+class OnPathN6Method(RootModel[OnPathN6Method1 | str]):
+    root: Annotated[
+        OnPathN6Method1 | str,
+        Field(
+            description="Represents the method of on-path N6 signaling.\nPossible values are:\n- CONNECT_UDP: Indicates that the method connect UDP is supported for on-path N6 signaling\n"
+        ),
+    ]
+
+
 class OpConfiguredCapability(RootModel[str]):
     root: Annotated[
         str,
@@ -2313,6 +3290,93 @@ class OsId(RootModel[UUID]):
     ]
 
 
+class OutOfCreditInformation(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    finUnitAct: FinalUnitAction
+    flows: Annotated[list[Flows] | None, Field(min_length=1)] = None
+
+
+class PacketDelBudget(RootModel[int]):
+    root: Annotated[
+        int,
+        Field(
+            description="Unsigned integer indicating Packet Delay Budget (see clauses 5.7.3.4 and 5.7.4 of 3GPP TS 23.501), expressed in milliseconds.\n",
+            ge=1,
+        ),
+    ]
+
+
+class PacketDelBudgetRm(RootModel[int | None]):
+    root: Annotated[
+        int | None,
+        Field(
+            description="This data type is defined in the same way as the 'PacketDelBudget' data type, but with the OpenAPI 'nullable: true' property.\n",
+            ge=1,
+        ),
+    ] = None
+
+
+class PacketErrRate(RootModel[str]):
+    root: Annotated[
+        str,
+        Field(
+            description='String representing Packet Error Rate (see clause 5.7.3.5 and 5.7.4 of 3GPP TS 23.501, expressed as a "scalar x 10-k" where the scalar and the exponent k are each encoded as one decimal digit.\n',
+            pattern="^([0-9]E-[0-9])$",
+        ),
+    ]
+
+
+class PacketErrRateRm(RootModel[str | None]):
+    root: Annotated[
+        str | None,
+        Field(
+            description="This data type is defined in the same way as the 'PacketErrRate' data type, but with the OpenAPI 'nullable: true' property.\n",
+            pattern="^([0-9]E-[0-9])$",
+        ),
+    ] = None
+
+
+class PacketFilterContent(RootModel[str]):
+    root: Annotated[str, Field(description="Defines a packet filter for an IP flow.")]
+
+
+class PacketFilterInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    packFiltId: Annotated[
+        str | None, Field(description="An identifier of packet filter.")
+    ] = None
+    packFiltCont: PacketFilterContent | None = None
+    tosTrafficClass: Annotated[
+        str | None,
+        Field(
+            description="Contains the Ipv4 Type-of-Service and mask field or the Ipv6 Traffic-Class field and mask field.\n"
+        ),
+    ] = None
+    spi: Annotated[
+        str | None,
+        Field(description="The security parameter index of the IPSec packet."),
+    ] = None
+    flowLabel: Annotated[
+        str | None, Field(description="The Ipv6 flow label header field.")
+    ] = None
+    flowDirection: FlowDirection | None = None
+
+
+class PacketLossRateRm(RootModel[int | None]):
+    root: Annotated[
+        int | None,
+        Field(
+            description="This data type is defined in the same way as the 'PacketLossRate' data type, but with the OpenAPI 'nullable: true' property.\n",
+            ge=0,
+            le=1000,
+        ),
+    ] = None
+
+
 class PatchOperation1(StrEnum):
     ADD = "add"
     COPY = "copy"
@@ -2326,6 +3390,22 @@ class PatchOperation(RootModel[PatchOperation1 | str]):
     root: Annotated[
         PatchOperation1 | str,
         Field(description="Operations as defined in IETF RFC 6902."),
+    ]
+
+
+class PcSessionRecoveryStatus1(StrEnum):
+    REST_REQUEST = "REST_REQUEST"
+    REST_TRIGGERED = "REST_TRIGGERED"
+    REST_NOT_TRIGGERED = "REST_NOT_TRIGGERED"
+    NOT_FOUND = "NOT_FOUND"
+
+
+class PcSessionRecoveryStatus(RootModel[PcSessionRecoveryStatus1 | str]):
+    root: Annotated[
+        PcSessionRecoveryStatus1 | str,
+        Field(
+            description="Describes whether the session is being restored or the session is not found.\nPossible values are:\n- REST_REQUEST: Information about whether PDU session is being restored is requested.\n- REST_TRIGGERED: The PDU session is being restored.\n- REST_NOT_TRIGGERED: The PDU session exists and it is not being restored.\n- NOT_FOUND: The PDU session was not found.\n"
+        ),
     ]
 
 
@@ -2355,6 +3435,18 @@ class PduSessionId(RootModel[int]):
     ]
 
 
+class PduSessionRelCause1(StrEnum):
+    PS_TO_CS_HO = "PS_TO_CS_HO"
+    RULE_ERROR = "RULE_ERROR"
+
+
+class PduSessionRelCause(RootModel[PduSessionRelCause1 | str]):
+    root: Annotated[
+        PduSessionRelCause1 | str,
+        Field(description="Contains the SMF PDU Session release cause."),
+    ]
+
+
 class PduSessionType1(StrEnum):
     IPV4 = "IPV4"
     IPV6 = "IPV6"
@@ -2380,6 +3472,71 @@ class PduSessionTypes(BaseModel):
     allowedSessionTypes: Annotated[list[PduSessionType] | None, Field(min_length=1)] = (
         None
     )
+
+
+class PduSetHandlingInfo1(StrEnum):
+    ALL_PDUS_NEEDED = "ALL_PDUS_NEEDED"
+    ALL_PDUS_NOT_NEEDED = "ALL_PDUS_NOT_NEEDED"
+
+
+class PduSetHandlingInfo(RootModel[PduSetHandlingInfo1 | str]):
+    root: Annotated[
+        PduSetHandlingInfo1 | str,
+        Field(
+            description='Possible values are:\n- "ALL_PDUS_NEEDED": All PDUs of the PDU Set are needed\n- "ALL_PDUS_NOT_NEEDED": All PDUs of the PDU Set are not needed\n'
+        ),
+    ]
+
+
+class PduSetHandlingInfoRm(RootModel[PduSetHandlingInfo | NullValue]):
+    root: Annotated[
+        PduSetHandlingInfo | NullValue,
+        Field(
+            description="This enumeration is defined in the same way as the 'PduSetHandlingInfo' enumeration, but with the OpenAPI 'nullable: true' property.\n"
+        ),
+    ]
+
+
+class PduSetQosPara(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    pduSetDelayBudget: ExtPacketDelBudget | None = None
+    pduSetErrRate: PacketErrRate | None = None
+    pduSetHandlingInfo: PduSetHandlingInfo | None = None
+
+
+class PduSetQosParaRm(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    pduSetDelayBudget: ExtPacketDelBudgetRm | None = None
+    pduSetErrRate: PacketErrRateRm | None = None
+    pduSetHandlingInfo: PduSetHandlingInfoRm | None = None
+
+
+class PdvMonitoringReport(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    flows: Annotated[
+        list[Flows] | None,
+        Field(description="Identification of the flows.", min_length=1),
+    ] = None
+    ulPdv: Annotated[
+        int | None,
+        Field(description="Uplink packet delay variation in units of milliseconds."),
+    ] = None
+    dlPdv: Annotated[
+        int | None,
+        Field(description="Downlink packet delay variation in units of milliseconds."),
+    ] = None
+    rtPdv: Annotated[
+        int | None,
+        Field(
+            description="Round trip packet delay variation in units of milliseconds."
+        ),
+    ] = None
 
 
 class Pei(RootModel[str]):
@@ -2489,6 +3646,74 @@ class PointList(RootModel[list[GeographicalCoordinates]]):
     ]
 
 
+class PolicyControlRequestTrigger1(StrEnum):
+    PLMN_CH = "PLMN_CH"
+    RES_MO_RE = "RES_MO_RE"
+    AC_TY_CH = "AC_TY_CH"
+    UE_IP_CH = "UE_IP_CH"
+    UE_MAC_CH = "UE_MAC_CH"
+    AN_CH_COR = "AN_CH_COR"
+    US_RE = "US_RE"
+    APP_STA = "APP_STA"
+    APP_STO = "APP_STO"
+    AN_INFO = "AN_INFO"
+    CM_SES_FAIL = "CM_SES_FAIL"
+    PS_DA_OFF = "PS_DA_OFF"
+    DEF_QOS_CH = "DEF_QOS_CH"
+    SE_AMBR_CH = "SE_AMBR_CH"
+    QOS_NOTIF = "QOS_NOTIF"
+    NO_CREDIT = "NO_CREDIT"
+    REALLO_OF_CREDIT = "REALLO_OF_CREDIT"
+    PRA_CH = "PRA_CH"
+    SAREA_CH = "SAREA_CH"
+    SCNN_CH = "SCNN_CH"
+    RE_TIMEOUT = "RE_TIMEOUT"
+    RES_RELEASE = "RES_RELEASE"
+    SUCC_RES_ALLO = "SUCC_RES_ALLO"
+    RAT_TY_CH = "RAT_TY_CH"
+    REF_QOS_IND_CH = "REF_QOS_IND_CH"
+    NUM_OF_PACKET_FILTER = "NUM_OF_PACKET_FILTER"
+    UE_STATUS_RESUME = "UE_STATUS_RESUME"
+    UE_TZ_CH = "UE_TZ_CH"
+    AUTH_PROF_CH = "AUTH_PROF_CH"
+    QOS_MONITORING = "QOS_MONITORING"
+    QOS_MON_CAP_REPO = "QOS_MON_CAP_REPO"
+    SCELL_CH = "SCELL_CH"
+    USER_LOCATION_CH = "USER_LOCATION_CH"
+    EPS_FALLBACK = "EPS_FALLBACK"
+    MA_PDU = "MA_PDU"
+    TSN_BRIDGE_INFO = "TSN_BRIDGE_INFO"
+    FIELD_5_G_RG_JOIN = "5G_RG_JOIN"
+    FIELD_5_G_RG_LEAVE = "5G_RG_LEAVE"
+    DDN_FAILURE = "DDN_FAILURE"
+    DDN_DELIVERY_STATUS = "DDN_DELIVERY_STATUS"
+    GROUP_ID_LIST_CHG = "GROUP_ID_LIST_CHG"
+    DDN_FAILURE_CANCELLATION = "DDN_FAILURE_CANCELLATION"
+    DDN_DELIVERY_STATUS_CANCELLATION = "DDN_DELIVERY_STATUS_CANCELLATION"
+    VPLMN_QOS_CH = "VPLMN_QOS_CH"
+    SUCC_QOS_UPDATE = "SUCC_QOS_UPDATE"
+    SAT_CATEGORY_CHG = "SAT_CATEGORY_CHG"
+    PCF_UE_NOTIF_IND = "PCF_UE_NOTIF_IND"
+    NWDAF_DATA_CHG = "NWDAF_DATA_CHG"
+    UE_POL_CONT_IND = "UE_POL_CONT_IND"
+    URSP_ENFORCEMENT_INFO = "URSP_ENFORCEMENT_INFO"
+    HR_SBO_IND_CHG = "HR_SBO_IND_CHG"
+    L4_S_SUPP = "L4S_SUPP"
+    NET_SLICE_REPL = "NET_SLICE_REPL"
+    BAT_OFFSET_INFO = "BAT_OFFSET_INFO"
+    UE_REACH_STATUS_CH = "UE_REACH_STATUS_CH"
+    N3_G_DEV_INFO = "N3G_DEV_INFO"
+
+
+class PolicyControlRequestTrigger(RootModel[PolicyControlRequestTrigger1 | str]):
+    root: Annotated[
+        PolicyControlRequestTrigger1 | str,
+        Field(
+            description="Indicates the policy control request trigger(s).  \nPossible values are:\n- PLMN_CH: PLMN Change\n- RES_MO_RE: A request for resource modification has been received by the SMF. The SMF\nalways reports to the PCF.\n- AC_TY_CH: Access Type Change.\n- UE_IP_CH: UE IP address change. The SMF always reports to the PCF.\n- UE_MAC_CH: A new UE MAC address is detected or a used UE MAC address is inactive for a\nspecific period.\n- AN_CH_COR: Access Network Charging Correlation Information\n- US_RE: The PDU Session or the Monitoring key specific resources consumed by a UE either\nreached the threshold or needs to be reported for other reasons.\n- APP_STA: The start of application traffic has been detected.\n- APP_STO: The stop of application traffic has been detected.\n- AN_INFO: Access Network Information report.\n- CM_SES_FAIL: Credit management session failure.\n- PS_DA_OFF: The SMF reports when the 3GPP PS Data Off status changes. The SMF always\nreports to the PCF.\n- DEF_QOS_CH: Default QoS Change. The SMF always reports to the PCF.\n- SE_AMBR_CH: Session-AMBR Change. The SMF always reports to the PCF.\n- QOS_NOTIF: The SMF notify the PCF when receiving notification from RAN that QoS targets of\nthe QoS Flow cannot be guranteed or gurateed again.\n- NO_CREDIT: Out of credit.\n- REALLO_OF_CREDIT: Reallocation of credit.\n- PRA_CH: Change of UE presence in Presence Reporting Area.\n- SAREA_CH: Location Change with respect to the Serving Area.\n- SCNN_CH: Location Change with respect to the Serving CN node.\n- RE_TIMEOUT: Indicates the SMF generated the request because there has been a PCC\nrevalidation timeout.\n- RES_RELEASE: Indicate that the SMF can inform the PCF of the outcome of the release of\nresources for those rules that require so.\n- SUCC_RES_ALLO: Indicates that the requested rule data is the successful resource\nallocation.\n- RAT_TY_CH: RAT Type Change.\n- REF_QOS_IND_CH: Reflective QoS indication Change\n- NUM_OF_PACKET_FILTER: Indicates that the SMF shall report the number of supported packet \nfilter for signalled QoS rules.\n- UE_STATUS_RESUME: Indicates that the UE's status is resumed.\n- UE_TZ_CH: UE Time Zone Change.\n- AUTH_PROF_CH: The DN-AAA authorization profile index has changed.\n- QOS_MONITORING: Indicate that the SMF notifies the PCF of the QoS Monitoring information.\n- QOS_MON_CAP_REPO: Indicates that the NF service consumer notifies the PCF about the\nsupport of QoS Monitoring Capability Report.\n- SCELL_CH: Location Change with respect to the Serving Cell.\n- USER_LOCATION_CH: Indicate that user location has been changed, applicable to serving area\nchange and serving cell change.\n- EPS_FALLBACK: EPS Fallback report is enabled in the SMF.\n- MA_PDU: UE Indicates that the SMF notifies the PCF of the MA PDU session request.\n- TSN_BRIDGE_INFO: TSC user plane node information available.\n- 5G_RG_JOIN: The 5G-RG has joined to an IP Multicast Group.\n- 5G_RG_LEAVE: The 5G-RG has left an IP Multicast Group.\n- DDN_FAILURE: Event subscription for DDN Failure event received.\n- DDN_DELIVERY_STATUS: Event subscription for DDN Delivery Status received.\n- GROUP_ID_LIST_CHG: UE Internal Group Identifier(s) has changed: the SMF reports that UDM\nprovided list of group Ids has changed.\n- DDN_FAILURE_CANCELLATION: The event subscription for DDN Failure event is cancelled.\n- DDN_DELIVERY_STATUS_CANCELLATION: The event subscription for DDD STATUS is cancelled.\n- VPLMN_QOS_CH: Change of the QoS supported in the VPLMN.\n- SUCC_QOS_UPDATE: Indicates that the requested MPS Action is successful.\n- SAT_CATEGORY_CHG: Indicates that the SMF has detected a change between different satellite\nbackhaul categories, or between a satellite backhaul and a non-satellite backhaul.\n- PCF_UE_NOTIF_IND: Indicates the SMF has detected the AMF forwarded the PCF for the UE\nindication to receive/stop receiving notifications of SM Policy association\nestablished/terminated events.\n- NWDAF_DATA_CHG: Indicates that the NWDAF instance IDs used for the PDU session and/or\nassociated Analytics IDs used for the PDU session and available in the SMF have changed.\n- UE_POL_CONT_IND: Indicates that a UE policy container or failure delivery report is\nreceived from the UE in EPC over a PDN connection.\n- URSP_ENFORCEMENT_INFO: Indicates a report of URSP rule enforcement information.\n- HR_SBO_IND_CHG: Indicates the HR-SBO support indication has changed.\n- L4S_SUPP: Indicates whether ECN marking for L4S is not available or available again\nin 5GS.\n- NET_SLICE_REPL: Indicates network slice replacement, i.e., a change between the initial\nS-NSSAI of the PDU Session and the Alternative S-NSSAI\n- BAT_OFFSET_INFO: Indicates that the SMF has detected the BAT offset and optionally\nadjusted periodicity.\n- UE_REACH_STATUS_CH: Indicates that there is a change in the UE reachability status.\n- N3G_DEV_INFO: Indicates that non-3gpp device information is being reported.\n"
+        ),
+    ]
+
+
 class PolicyCounterId(RootModel[str]):
     root: Annotated[str, Field(description="Identifies a policy counter.")]
 
@@ -2510,7 +3735,26 @@ class PolicyCounterInfo(BaseModel):
     ] = None
 
 
-class PortRange(BaseModel):
+class PolicyDecisionFailureCode1(StrEnum):
+    TRA_CTRL_DECS_ERR = "TRA_CTRL_DECS_ERR"
+    QOS_DECS_ERR = "QOS_DECS_ERR"
+    CHG_DECS_ERR = "CHG_DECS_ERR"
+    USA_MON_DECS_ERR = "USA_MON_DECS_ERR"
+    QOS_MON_DECS_ERR = "QOS_MON_DECS_ERR"
+    CON_DATA_ERR = "CON_DATA_ERR"
+    POLICY_PARAM_ERR = "POLICY_PARAM_ERR"
+
+
+class PolicyDecisionFailureCode(RootModel[PolicyDecisionFailureCode1 | str]):
+    root: Annotated[
+        PolicyDecisionFailureCode1 | str,
+        Field(
+            description="Indicates the type of the failed policy decision and/or condition data."
+        ),
+    ]
+
+
+class PortRangeTS29510(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
     )
@@ -2563,6 +3807,39 @@ class PreemptionCapability(RootModel[PreemptionCapability1 | str]):
     ]
 
 
+class PreemptionCapabilityRm(RootModel[PreemptionCapability | NullValue]):
+    root: Annotated[
+        PreemptionCapability | NullValue,
+        Field(
+            description="This enumeration is defined in the same way as the 'PreemptionCapability' enumeration, but with the OpenAPI 'nullable: true' property.\n"
+        ),
+    ]
+
+
+class PreemptionControlInformation1(StrEnum):
+    MOST_RECENT = "MOST_RECENT"
+    LEAST_RECENT = "LEAST_RECENT"
+    HIGHEST_BW = "HIGHEST_BW"
+
+
+class PreemptionControlInformation(RootModel[PreemptionControlInformation1 | str]):
+    root: Annotated[
+        PreemptionControlInformation1 | str,
+        Field(description="Represents Pre-emption control information."),
+    ]
+
+
+class PreemptionControlInformationRm(
+    RootModel[PreemptionControlInformation | NullValue]
+):
+    root: Annotated[
+        PreemptionControlInformation | NullValue,
+        Field(
+            description="This data type is defined in the same way as the PreemptionControlInformation data type, but with the OpenAPI nullable property set to true.\n"
+        ),
+    ]
+
+
 class PreemptionVulnerability1(StrEnum):
     NOT_PREEMPTABLE = "NOT_PREEMPTABLE"
     PREEMPTABLE = "PREEMPTABLE"
@@ -2573,6 +3850,15 @@ class PreemptionVulnerability(RootModel[PreemptionVulnerability1 | str]):
         PreemptionVulnerability1 | str,
         Field(
             description="The enumeration PreemptionVulnerability indicates the pre-emption vulnerability of the QoS flow to pre-emption from other QoS flows. See clause 5.7.2.2 of 3GPP TS 23.501. It shall comply with the provisions defined in table 5.5.3.2-1\n"
+        ),
+    ]
+
+
+class PreemptionVulnerabilityRm(RootModel[PreemptionVulnerability | NullValue]):
+    root: Annotated[
+        PreemptionVulnerability | NullValue,
+        Field(
+            description='This enumeration is defined in the same way as the \'PreemptionVulnerability\' enumeration, but with the OpenAPI \'nullable: true\' property." \n'
         ),
     ]
 
@@ -2590,6 +3876,18 @@ class PresenceState(RootModel[PresenceState1 | str]):
         Field(
             description="Possible values are:\n-IN_AREA: Indicates that the UE is inside or enters the presence reporting area.\n-OUT_OF_AREA: Indicates that the UE is outside or leaves the presence reporting area\n-UNKNOW: Indicates it is unknown whether the UE is in the presence reporting area or not\n-INACTIVE: Indicates that the presence reporting area is inactive in the serving node. \n"
         ),
+    ]
+
+
+class PrioritySharingIndicator1(StrEnum):
+    ENABLED = "ENABLED"
+    DISABLED = "DISABLED"
+
+
+class PrioritySharingIndicator(RootModel[PrioritySharingIndicator1 | str]):
+    root: Annotated[
+        PrioritySharingIndicator1 | str,
+        Field(description="Represents the Priority sharing indicator."),
     ]
 
 
@@ -2722,6 +4020,145 @@ class QoeServiceType(RootModel[QoeServiceType1 | str]):
     ]
 
 
+class QosFlowUsage1(StrEnum):
+    GENERAL = "GENERAL"
+    IMS_SIG = "IMS_SIG"
+
+
+class QosFlowUsage(RootModel[QosFlowUsage1 | str]):
+    root: Annotated[
+        QosFlowUsage1 | str,
+        Field(
+            description="Indicates a QoS flow usage information.  \nPossible values are\n- GENERAL: Indicate no specific QoS flow usage information is available.\n- IMS_SIG: Indicate that the QoS flow is used for IMS signalling only.\n"
+        ),
+    ]
+
+
+class QosMonitoringParamType1(StrEnum):
+    PACKET_DELAY = "PACKET_DELAY"
+    CONGESTION = "CONGESTION"
+    DATA_RATE = "DATA_RATE"
+    AVAILABLE_BITRATE = "AVAILABLE_BITRATE"
+
+
+class QosMonitoringParamType(RootModel[QosMonitoringParamType1 | str]):
+    root: Annotated[
+        QosMonitoringParamType1 | str,
+        Field(
+            description="Indicates the QoS monitoring parameter type.  \nPossible values are:\n- PACKET_DELAY: Indicates that the QoS monitoring parameter to be measured is packet delay.\n- CONGESTION: Indicates that the QoS monitoring parameter to be measured is congestion.\n- DATA_RATE: Indicates that the QoS monitoring parameter to be measured is data rate.\n- AVAILABLE_BITRATE: Indicates that the QoS monitoring parameter to be measured is available\n  bitrate.\n"
+        ),
+    ]
+
+
+class QosMonitoringReportTS29514(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    flows: Annotated[list[Flows] | None, Field(min_length=1)] = None
+    ulDelays: Annotated[list[int] | None, Field(min_length=1)] = None
+    dlDelays: Annotated[list[int] | None, Field(min_length=1)] = None
+    rtDelays: Annotated[list[int] | None, Field(min_length=1)] = None
+    pdmf: Annotated[
+        bool | None,
+        Field(description="Represents the packet delay measurement failure indicator."),
+    ] = None
+    ulConInfo: Annotated[list[int] | None, Field(min_length=1)] = None
+    dlConInfo: Annotated[list[int] | None, Field(min_length=1)] = None
+    ulDataRate: BitRate | None = None
+    dlDataRate: BitRate | None = None
+
+
+class QosNotifType1(StrEnum):
+    GUARANTEED = "GUARANTEED"
+    NOT_GUARANTEED = "NOT_GUARANTEED"
+    NOT_GUARANTEED_DL = "NOT_GUARANTEED_DL"
+    NOT_GUARANTEED_UL = "NOT_GUARANTEED_UL"
+
+
+class QosNotifType(RootModel[QosNotifType1 | str]):
+    root: Annotated[
+        QosNotifType1 | str,
+        Field(
+            description="Indicates the notification type for QoS Notification Control.\nPossible values are:\n- GUARANTEED: The QoS targets of one or more SDFs are guaranteed. When ExtQoSR19 feature\n  is enabled, The QoS targets of one or more SDFs are guaranteed again in both DL and UL\n  directions.\n- NOT_GUARANTEED: The QoS targets of one or more SDFs are not being guaranteed. When\n  ExtQoSR19 feature is enabled, The QoS targets of one or more SDFs are not being\n  guaranteed in both DL and UL directions.\n- NOT_GUARANTEED_DL: The QoS targets of one or more SDFs are not being guaranteed in DL\n  direction.\n- NOT_GUARANTEED_UL: The QoS targets of one or more SDFs are not being guaranteed in DL\n  direction.\n"
+        ),
+    ]
+
+
+ExtContVersAdditionalProperty = TypeAliasType(
+    "ExtContVersAdditionalProperty",
+    Annotated[list[ContentVersion], Field(min_length=1)],
+)
+
+
+class QosNotificationControlInfoTS29512(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    refPccRuleIds: Annotated[
+        list[str],
+        Field(
+            description="An array of PCC rule id references to the PCC rules associated with the QoS notification control info.\n",
+            min_length=1,
+        ),
+    ]
+    notifType: QosNotifType
+    contVer: ContentVersion | None = None
+    extContVers: Annotated[
+        dict[str, ExtContVersAdditionalProperty] | None,
+        Field(
+            description='Contains the version(s) of the PCC rule(s). The key of the map shall be set to the PCC rule ID among the ones provided within "refPccRuleIds" attribute. When the "RuleVersioning_Ext" feature is supported, the content version(s) shall be included if it/they was/were included when the corresponding PCC rule was installed or modified.\n',
+            min_length=1,
+        ),
+    ] = None
+    altQosParamId: Annotated[
+        str | None,
+        Field(
+            description="Indicates the alternative QoS parameter set the NG-RAN can guarantee. When it is omitted and the notifType attribute is set to NOT_GUAARANTEED it indicates that the lowest priority alternative QoS profile could not be fulfilled.\n"
+        ),
+    ] = None
+    altQosNotSuppInd: Annotated[
+        bool | None,
+        Field(
+            description="When present and set to true it indicates that the Alternative QoS profiles are not supported by NG-RAN.\n"
+        ),
+    ] = None
+
+
+class QosNotificationControlInfoTS29514(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    notifType: QosNotifType
+    flows: Annotated[list[Flows] | None, Field(min_length=1)] = None
+    altSerReq: Annotated[
+        str | None,
+        Field(
+            description="Indicates the alternative service requirement NG-RAN can guarantee. When it is omitted and the notifType attribute is set to NOT_GUAARANTEED it indicates that the lowest priority alternative alternative service requirement could not be fulfilled by NG-RAN.\n"
+        ),
+    ] = None
+    altSerReqNotSuppInd: Annotated[
+        bool | None,
+        Field(
+            description="When present and set to true it indicates that Alternative Service Requirements are not  supported by NG-RAN.\n"
+        ),
+    ] = None
+
+
+class QosResourceType1(StrEnum):
+    NON_GBR = "NON_GBR"
+    NON_CRITICAL_GBR = "NON_CRITICAL_GBR"
+    CRITICAL_GBR = "CRITICAL_GBR"
+
+
+class QosResourceType(RootModel[QosResourceType1 | str]):
+    root: Annotated[
+        QosResourceType1 | str,
+        Field(
+            description="The enumeration QosResourceType indicates whether a QoS Flow is non-GBR, delay critical GBR, or non-delay critical GBR (see clauses 5.7.3.4 and 5.7.3.5 of 3GPP TS 23.501). It shall comply with the provisions defined in table 5.5.3.6-1. \n"
+        ),
+    ]
+
+
 class QueryParameter(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -2812,6 +4249,33 @@ class RatType(RootModel[RatType1]):
     root: Annotated[RatType1, Field(description="Indicates the radio access used.")]
 
 
+class RateLimitRepo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    rateLimitRepoUl: Annotated[
+        list[BitRate] | None,
+        Field(
+            description='Indicates the maximum uplink data rate authorized for the non-GBR service data flow(s) as indicated in the attribute "flows". If no flows are provided, the maximum data rate applies for all the flows.\n',
+            min_length=1,
+        ),
+    ] = None
+    rateLimitRepoDl: Annotated[
+        list[BitRate] | None,
+        Field(
+            description='Indicates the maximum downlink data rate authorized for the non-GBR service data flow(s) as indicated in the attribute "flows". If no flows are provided, the maximum data rate applies for all the flows.\n',
+            min_length=1,
+        ),
+    ] = None
+    flows: Annotated[
+        list[Flows] | None,
+        Field(
+            description="Identifications of the non-GBR service data flows.",
+            min_length=1,
+        ),
+    ] = None
+
+
 class RcfId(RootModel[str]):
     root: Annotated[str, Field(description="Identifier of a Resource Content Filter")]
 
@@ -2835,6 +4299,38 @@ class RecurType(RootModel[RecurType1 | str]):
         RecurType1 | str,
         Field(description="Indicates the recurrence applicable to a time window."),
     ]
+
+
+class RedirectAddressType1(StrEnum):
+    IPV4_ADDR = "IPV4_ADDR"
+    IPV6_ADDR = "IPV6_ADDR"
+    URL = "URL"
+    SIP_URI = "SIP_URI"
+
+
+class RedirectAddressType(RootModel[RedirectAddressType1 | str]):
+    root: Annotated[
+        RedirectAddressType1 | str,
+        Field(
+            description='Indicates the redirect address type.  \nPossible values are\n- IPV4_ADDR: Indicates that the address type is in the form of "dotted-decimal" IPv4\naddress.\n- IPV6_ADDR: Indicates that the address type is in the form of IPv6 address.\n- URL: Indicates that the address type is in the form of Uniform Resource Locator.\n- SIP_URI: Indicates that the address type is in the form of SIP Uniform Resource\nIdentifier.\n'
+        ),
+    ]
+
+
+class RedirectInformation(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    redirectEnabled: Annotated[
+        bool | None, Field(description="Indicates the redirect is enable.")
+    ] = None
+    redirectAddressType: RedirectAddressType | None = None
+    redirectServerAddress: Annotated[
+        str | None,
+        Field(
+            description='Indicates the address of the redirect server. If "redirectAddressType" attribute indicates the IPV4_ADDR, the encoding is the same as the Ipv4Addr data type defined in 3GPP TS 29.571.If "redirectAddressType" attribute indicates the IPV6_ADDR, the encoding is the same as the Ipv6Addr data type defined in 3GPP TS 29.571.If "redirectAddressType" attribute indicates the URL or SIP_URI, the encoding is the same as the Uri data type defined in 3GPP TS 29.571.\n'
+        ),
+    ] = None
 
 
 class RegistrationReason1(StrEnum):
@@ -2934,6 +4430,33 @@ class ReportTypeMdt(RootModel[ReportTypeMdt1 | str]):
     ]
 
 
+class ReportingFrequency1(StrEnum):
+    EVENT_TRIGGERED = "EVENT_TRIGGERED"
+    PERIODIC = "PERIODIC"
+
+
+class ReportingFrequency(RootModel[ReportingFrequency1 | str]):
+    root: Annotated[
+        ReportingFrequency1 | str,
+        Field(description="Indicates the frequency for the reporting."),
+    ]
+
+
+class ReportingLevel1(StrEnum):
+    SER_ID_LEVEL = "SER_ID_LEVEL"
+    RAT_GR_LEVEL = "RAT_GR_LEVEL"
+    SPON_CON_LEVEL = "SPON_CON_LEVEL"
+
+
+class ReportingLevel(RootModel[ReportingLevel1 | NullValue | str]):
+    root: Annotated[
+        ReportingLevel1 | NullValue | str,
+        Field(
+            description="Indicates the reporting level.  \nPossible values are:\n- SER_ID_LEVEL: Indicates that the usage shall be reported on service id and rating group\ncombination level.\n- RAT_GR_LEVEL: Indicates that the usage shall be reported on rating group level.\n- SPON_CON_LEVEL: Indicates that the usage shall be reported on sponsor identity and rating\ngroup combination level.\n"
+        ),
+    ]
+
+
 class ReportingTrigger1(StrEnum):
     PERIODICAL = "PERIODICAL"
     EVENT_A2 = "EVENT_A2"
@@ -2948,6 +4471,171 @@ class ReportingTrigger(RootModel[ReportingTrigger1 | str]):
             description="The enumeration ReportingTrigger defines Reporting Triggers for MDT in the trace. See 3GPP TS 32.42] for further  description of the values. It shall comply with the provisions defined in table 5.6.3.8-1.\n"
         ),
     ]
+
+
+class ReportingUrgency1(StrEnum):
+    DELAY_TOLERANT = "DELAY_TOLERANT"
+    NON_DELAY_TOLERANT = "NON_DELAY_TOLERANT"
+
+
+class ReportingUrgency(RootModel[ReportingUrgency1 | str]):
+    root: Annotated[ReportingUrgency1 | str, Field(description="Reporting Urgency")]
+
+
+class RequestTrigger1(StrEnum):
+    LOC_CH = "LOC_CH"
+    PRA_CH = "PRA_CH"
+    SERV_AREA_CH = "SERV_AREA_CH"
+    RFSP_CH = "RFSP_CH"
+    ALLOWED_NSSAI_CH = "ALLOWED_NSSAI_CH"
+    UE_AMBR_CH = "UE_AMBR_CH"
+    UE_SLICE_MBR_CH = "UE_SLICE_MBR_CH"
+    SMF_SELECT_CH = "SMF_SELECT_CH"
+    ACCESS_TYPE_CH = "ACCESS_TYPE_CH"
+    NWDAF_DATA_CH = "NWDAF_DATA_CH"
+    TARGET_NSSAI = "TARGET_NSSAI"
+    SLICE_REPLACE_MGMT = "SLICE_REPLACE_MGMT"
+    FEAT_RENEG = "FEAT_RENEG"
+    PARTIALLY_ALLOWED_NSSAI_CH = "PARTIALLY_ALLOWED_NSSAI_CH"
+    SNSSAIS_PARTIALLY_REJECTED_CH = "SNSSAIS_PARTIALLY_REJECTED_CH"
+    REJECTED_SNSSAIS_CH = "REJECTED_SNSSAIS_CH"
+    PENDING_NSSAI_CH = "PENDING_NSSAI_CH"
+    RAT_TYPE_CH = "RAT_TYPE_CH"
+    SLICE_REPLACE_OUTCOME = "SLICE_REPLACE_OUTCOME"
+    ENERGY_SAV_IND_CH = "ENERGY_SAV_IND_CH"
+
+
+class RequestTrigger(RootModel[RequestTrigger1 | str]):
+    root: Annotated[
+        RequestTrigger1 | str,
+        Field(
+            description="Represents the possible request triggers.  \nPossible values are:\n- LOC_CH: Location change (tracking area). The tracking area of the UE has changed.\n- PRA_CH: Change of UE presence in PRA. The AMF reports the current presence status\n  of the UE in a Presence Reporting Area, and notifies that the UE enters/leaves the\n  Presence Reporting Area.\n- SERV_AREA_CH: Service Area Restriction change. The UDM notifies the AMF that the\n  subscribed service area restriction information has changed.\n- RFSP_CH: RFSP index change. The UDM notifies the AMF that the subscribed RFSP index has\n  changed.\n- ALLOWED_NSSAI_CH: Allowed NSSAI change. The AMF notifies that the set of UE allowed\n  S-NSSAIs has changed.\n- UE_AMBR_CH: UE-AMBR change. The UDM notifies the AMF that the subscribed UE-AMBR has\n  changed.\n- SMF_SELECT_CH: SMF selection information change. The UE requested for an unsupported\n  DNN or UE requested for a DNN within the list of DNN candidates for replacement per\n  S-NSSAI.\n- ACCESS_TYPE_CH: Access Type change. The AMF notifies that the access type and the RAT\n  type for a UE has changed. \n- UE_SLICE_MBR_CH: UE-Slice-MBR change. The NF service consumer notifies any changes \n  in the subscribed UE-Slice-MBR for each subscribed S-NSSAI of the home PLMN mapping \n  to a S-NSSAI of the serving PLMN.\n- NWDAF_DATA_CH: NDWAF DATA CHANGE. The AMF notifies that the NWDAF instance IDs used\n  for the UE and/or associated Analytics IDs used for the UE and available in the AMF\n  have changed.\n- TARGET_NSSAI: Generation of Target NSSAI. The NF service consumer notifies that the\n  Target NSSAI was generated.\n- SLICE_REPLACE_MGMT: Indicates that slice replacement is needed for one or more S-NSSAI(s) \n  of the UE's Allowed NSSAI and/or Partially Allowed NSSAI.\n- FEAT_RENEG: The NF service consumer notifies that the target AMF is requesting feature\n  re-negotiation.\n- PARTIALLY_ALLOWED_NSSAI_CH: Partially Allowed NSSAI change. The NF service consumer\n  notifies that the set of Partially Allowed S-NSSAI(s) of the UE has changed.\n- SNSSAIS_PARTIALLY_REJECTED_CH: Change of the S-NSSAI(s) rejected partially in the RA. The\n  NF service consumer notifies that the set of S-NSSAI(s) rejected partially in the RA for\n  the UE has changed.\n- REJECTED_SNSSAIS_CH: Change of the Rejected S-NSSAI(s) in the RA. The NF service consumer\n  notifies that the set of the Rejected S-NSSAI(s) in the RA for the UE has changed.\n- PENDING_NSSAI_CH: Pending NSSAI change. The NF service consumer notifies that the set of\n  Pending S-NSSAI(s) of the UE has changed.\n- RAT_TYPE_CH: RAT Type change. The AMF notifies that the RAT type within same Access type \n  has changed for the UE.\n- SLICE_REPLACE_OUTCOME: Outcome of the AF requested Network Slice Replacement initiation\n  or the AF requested Network Slice Replacement termination.\n- ENERGY_SAV_IND_CH: Energy Saving Indicator change. The NF consumer notifies that\n  the subscribed Energy Saving Indicator value has changed for the UE.\n"
+        ),
+    ]
+
+
+class RequestedQos(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    field_5qi: Annotated[Field5Qi, Field(alias="5qi")]
+    gbrUl: BitRate | None = None
+    gbrDl: BitRate | None = None
+
+
+class RequestedQosMonitoringParameter1(StrEnum):
+    DOWNLINK = "DOWNLINK"
+    UPLINK = "UPLINK"
+    ROUND_TRIP = "ROUND_TRIP"
+    DOWNLINK_DATA_RATE = "DOWNLINK_DATA_RATE"
+    UPLINK_DATA_RATE = "UPLINK_DATA_RATE"
+    DOWNLINK_CONGESTION = "DOWNLINK_CONGESTION"
+    UPLINK_CONGESTION = "UPLINK_CONGESTION"
+    DOWNLINK_AVAILABLE_BITRATE = "DOWNLINK_AVAILABLE_BITRATE"
+    UPLINK_AVAILABLE_BITRATE = "UPLINK_AVAILABLE_BITRATE"
+
+
+class RequestedQosMonitoringParameter(
+    RootModel[RequestedQosMonitoringParameter1 | str]
+):
+    root: Annotated[
+        RequestedQosMonitoringParameter1 | str,
+        Field(
+            description="Indicates the requested QoS monitoring parameters to be measured."
+        ),
+    ]
+
+
+class RequestedRuleDataType1(StrEnum):
+    CH_ID = "CH_ID"
+    MS_TIME_ZONE = "MS_TIME_ZONE"
+    USER_LOC_INFO = "USER_LOC_INFO"
+    RES_RELEASE = "RES_RELEASE"
+    SUCC_RES_ALLO = "SUCC_RES_ALLO"
+    EPS_FALLBACK = "EPS_FALLBACK"
+    UE_SAT_INFO = "UE_SAT_INFO"
+
+
+class RequestedRuleDataType(RootModel[RequestedRuleDataType1 | str]):
+    root: Annotated[
+        RequestedRuleDataType1 | str,
+        Field(
+            description="Indicates the type of rule data requested by the PCF.  \nPossible values are:\n- CH_ID: Indicates that the requested rule data is the charging identifier.\n- MS_TIME_ZONE: Indicates that the requested access network info type is the UE's timezone.\n- USER_LOC_INFO: Indicates that the requested access network info type is the UE's location.\n- RES_RELEASE: Indicates that the requested rule data is the result of the release of\nresource.\n- SUCC_RES_ALLO: Indicates that the requested rule data is the successful resource\nallocation.\n- EPS_FALLBACK: Indicates that the requested rule data is the report of QoS flow rejection\ndue to EPS fallback.\n- UE_SAT_INFO: Indicates that the requested rule data is the UE's satellite identifier.\n"
+        ),
+    ]
+
+
+class RequestedUsageData(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    refUmIds: Annotated[
+        list[str] | None,
+        Field(
+            description="An array of usage monitoring data id references to the usage monitoring data instances for which the PCF is requesting a usage report. This attribute shall only be provided when allUmIds is not set to true.\n",
+            min_length=1,
+        ),
+    ] = None
+    allUmIds: Annotated[
+        bool | None,
+        Field(
+            description="This boolean indicates whether requested usage data applies to all usage monitoring data instances. When it's not included, it means requested usage data shall only apply to the usage monitoring data instances referenced by the refUmIds attribute.\n"
+        ),
+    ] = None
+
+
+class RequiredAccessInfo1(StrEnum):
+    USER_LOCATION = "USER_LOCATION"
+    UE_TIME_ZONE = "UE_TIME_ZONE"
+    UE_SAT_INFO = "UE_SAT_INFO"
+
+
+class RequiredAccessInfo(RootModel[RequiredAccessInfo1 | str]):
+    root: Annotated[
+        RequiredAccessInfo1 | str,
+        Field(
+            description="Indicates the access network information required for an AF session."
+        ),
+    ]
+
+
+class ReservPriority1(StrEnum):
+    PRIO_1 = "PRIO_1"
+    PRIO_2 = "PRIO_2"
+    PRIO_3 = "PRIO_3"
+    PRIO_4 = "PRIO_4"
+    PRIO_5 = "PRIO_5"
+    PRIO_6 = "PRIO_6"
+    PRIO_7 = "PRIO_7"
+    PRIO_8 = "PRIO_8"
+    PRIO_9 = "PRIO_9"
+    PRIO_10 = "PRIO_10"
+    PRIO_11 = "PRIO_11"
+    PRIO_12 = "PRIO_12"
+    PRIO_13 = "PRIO_13"
+    PRIO_14 = "PRIO_14"
+    PRIO_15 = "PRIO_15"
+    PRIO_16 = "PRIO_16"
+
+
+class ReservPriority(RootModel[ReservPriority1 | str]):
+    root: Annotated[
+        ReservPriority1 | str, Field(description="Indicates the reservation priority.")
+    ]
+
+
+class ResourcesAllocationInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    mcResourcStatus: MediaComponentResourcesStatus | None = None
+    flows: Annotated[list[Flows] | None, Field(min_length=1)] = None
+    altSerReq: Annotated[
+        str | None,
+        Field(
+            description="Indicates whether NG-RAN supports alternative QoS parameters. The default value false shall apply if the attribute is not present. It shall be set to false to indicate that the lowest priority alternative QoS profile could not be fulfilled.\n"
+        ),
+    ] = None
 
 
 class RestrictedStatus(BaseModel):
@@ -2968,6 +4656,17 @@ class RestrictionType(RootModel[RestrictionType1 | str]):
         RestrictionType1 | str,
         Field(
             description="It contains the restriction type ALLOWED_AREAS or NOT_ALLOWED_AREAS."
+        ),
+    ]
+
+
+class RfspIndex(RootModel[int]):
+    root: Annotated[
+        int,
+        Field(
+            description='Unsigned integer representing the "Subscriber Profile ID for RAT/Frequency Priority"  as specified in 3GPP TS 36.413.\n',
+            ge=1,
+            le=256,
         ),
     ]
 
@@ -3035,6 +4734,76 @@ class RoutingId(RootModel[str]):
     ]
 
 
+class RtpHeaderExtType1(StrEnum):
+    PDU_SET_MARKING = "PDU_SET_MARKING"
+    DYN_CHANGING_TRAFFIC_CHAR = "DYN_CHANGING_TRAFFIC_CHAR"
+    EXPEDITED_TRANSFER_IND = "EXPEDITED_TRANSFER_IND"
+
+
+class RtpHeaderExtType(RootModel[RtpHeaderExtType1 | str]):
+    root: Annotated[
+        RtpHeaderExtType1 | str,
+        Field(
+            description="The enumeration indicates the type of Rtp Header Extension type \n"
+        ),
+    ]
+
+
+class RtpHeaderExtTypeRm(RootModel[RtpHeaderExtType | NullValue]):
+    root: Annotated[
+        RtpHeaderExtType | NullValue,
+        Field(
+            description="This data type is defined in the same way as the 'RtpHeaderExtType' data type,  but with the OpenAPI 'nullable: true' property.\n"
+        ),
+    ]
+
+
+class RtpPayloadFormat1(StrEnum):
+    H264 = "H264"
+    H265 = "H265"
+
+
+class RtpPayloadFormat(RootModel[RtpPayloadFormat1 | str]):
+    root: Annotated[
+        RtpPayloadFormat1 | str,
+        Field(
+            description="The enumeration RtpPayloadFormat indicates the RTP Payload format \n"
+        ),
+    ]
+
+
+class RtpPayloadTypeListItem(RootModel[int]):
+    root: Annotated[int, Field(ge=0, le=127)]
+
+
+class RtpPayloadInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    rtpPayloadTypeList: Annotated[
+        list[RtpPayloadTypeListItem] | None, Field(min_length=1)
+    ] = None
+    rtpPayloadFormat: RtpPayloadFormat | None = None
+
+
+class RuleOperation1(StrEnum):
+    CREATE_PCC_RULE = "CREATE_PCC_RULE"
+    DELETE_PCC_RULE = "DELETE_PCC_RULE"
+    MODIFY_PCC_RULE_AND_ADD_PACKET_FILTERS = "MODIFY_PCC_RULE_AND_ADD_PACKET_FILTERS"
+    MODIFY__PCC_RULE_AND_REPLACE_PACKET_FILTERS = "MODIFY_ PCC_RULE_AND_REPLACE_PACKET_FILTERS"
+    MODIFY__PCC_RULE_AND_DELETE_PACKET_FILTERS = "MODIFY_ PCC_RULE_AND_DELETE_PACKET_FILTERS"
+    MODIFY_PCC_RULE_WITHOUT_MODIFY_PACKET_FILTERS = "MODIFY_PCC_RULE_WITHOUT_MODIFY_PACKET_FILTERS"
+
+
+class RuleOperation(RootModel[RuleOperation1 | str]):
+    root: Annotated[
+        RuleOperation1 | str,
+        Field(
+            description="Indicates a UE initiated resource operation that causes a request for PCC rules.  \nPossible values are\n- CREATE_PCC_RULE: Indicates to create a new PCC rule to reserve the resource requested by\nthe UE. \n- DELETE_PCC_RULE: Indicates to delete a PCC rule corresponding to reserve the resource\nrequested by the UE.\n- MODIFY_PCC_RULE_AND_ADD_PACKET_FILTERS: Indicates to modify the PCC rule by adding new\npacket filter(s).\n- MODIFY_ PCC_RULE_AND_REPLACE_PACKET_FILTERS: Indicates to modify the PCC rule by replacing\nthe existing packet filter(s).\n- MODIFY_ PCC_RULE_AND_DELETE_PACKET_FILTERS: Indicates to modify the PCC rule by deleting\nthe existing packet filter(s).\n- MODIFY_PCC_RULE_WITHOUT_MODIFY_PACKET_FILTERS: Indicates to modify the PCC rule by\nmodifying the QoS of the PCC rule.\n"
+        ),
+    ]
+
+
 class RuleSetAction1(StrEnum):
     ALLOW = "ALLOW"
     DENY = "DENY"
@@ -3047,6 +4816,43 @@ class RuleSetAction(RootModel[RuleSetAction1 | str]):
             description="Specifies whether access/scope is allowed or denied for a specific NF-Consumer.\n"
         ),
     ]
+
+
+class RuleStatus1(StrEnum):
+    ACTIVE = "ACTIVE"
+    INACTIVE = "INACTIVE"
+
+
+class RuleStatus(RootModel[RuleStatus1 | str]):
+    root: Annotated[
+        RuleStatus1 | str,
+        Field(
+            description="Indicates the status of PCC or session rule.  \nPossible values are\n- ACTIVE: Indicates that the PCC rule(s) are successfully installed (for those provisioned \nfrom PCF) or activated (for those pre-defined in SMF), or the session rule(s) are \nsuccessfully installed \n- INACTIVE: Indicates that the PCC rule(s) are removed (for those provisioned from PCF) or \ninactive (for those pre-defined in SMF) or the session rule(s) are removed.\n"
+        ),
+    ]
+
+
+class SatelliteBackhaulCategory1(StrEnum):
+    GEO = "GEO"
+    MEO = "MEO"
+    LEO = "LEO"
+    OTHER_SAT = "OTHER_SAT"
+    DYNAMIC_GEO = "DYNAMIC_GEO"
+    DYNAMIC_MEO = "DYNAMIC_MEO"
+    DYNAMIC_LEO = "DYNAMIC_LEO"
+    DYNAMIC_OTHER_SAT = "DYNAMIC_OTHER_SAT"
+    NON_SATELLITE = "NON_SATELLITE"
+
+
+class SatelliteBackhaulCategory(RootModel[SatelliteBackhaulCategory1 | str]):
+    root: Annotated[
+        SatelliteBackhaulCategory1 | str,
+        Field(description="Indicates the satellite backhaul used."),
+    ]
+
+
+class SatelliteId(RootModel[str]):
+    root: Annotated[str, Field(description="Unique identifier of a satellite.\n")]
 
 
 class ScheduledCommunicationType1(StrEnum):
@@ -3167,6 +4973,60 @@ LastIndexesAdditionalProperty = TypeAliasType(
         ),
     ],
 )
+
+
+class ServAuthInfo1(StrEnum):
+    TP_NOT_KNOWN = "TP_NOT_KNOWN"
+    TP_EXPIRED = "TP_EXPIRED"
+    TP_NOT_YET_OCURRED = "TP_NOT_YET_OCURRED"
+    ROUT_REQ_NOT_AUTHORIZED = "ROUT_REQ_NOT_AUTHORIZED"
+    DIRECT_NOTIF_NOT_POSSIBLE = "DIRECT_NOTIF_NOT_POSSIBLE"
+    MPX_MEDIA_NOT_SUPPORTED_IN_UE = "MPX_MEDIA_NOT_SUPPORTED_IN_UE"
+
+
+class ServAuthInfo(RootModel[ServAuthInfo1 | str]):
+    root: Annotated[
+        ServAuthInfo1 | str,
+        Field(
+            description="Indicates the result of the Policy Authorization service request from the AF."
+        ),
+    ]
+
+
+class ServerAddressingInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    ipv4Addresses: Annotated[list[Ipv4Addr] | None, Field(min_length=1)] = None
+    ipv6Addresses: Annotated[list[Ipv6Addr] | None, Field(min_length=1)] = None
+    fqdnList: Annotated[list[Fqdn] | None, Field(min_length=1)] = None
+
+
+class ServiceAreaId(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    plmnId: PlmnId
+    lac: Annotated[
+        str, Field(description="Location Area Code.", pattern="^[A-Fa-f0-9]{4}$")
+    ]
+    sac: Annotated[
+        str, Field(description="Service Area Code.", pattern="^[A-Fa-f0-9]{4}$")
+    ]
+
+
+class ServiceInfoStatus1(StrEnum):
+    FINAL = "FINAL"
+    PRELIMINARY = "PRELIMINARY"
+
+
+class ServiceInfoStatus(RootModel[ServiceInfoStatus1 | str]):
+    root: Annotated[
+        ServiceInfoStatus1 | str,
+        Field(
+            description="Represents the preliminary or final service information status."
+        ),
+    ]
 
 
 class ServiceName1(StrEnum):
@@ -3391,6 +5251,15 @@ class ServiceScenarioInd(RootModel[ServiceScenarioInd1 | str]):
     ]
 
 
+class ServiceUrn(RootModel[str]):
+    root: Annotated[
+        str,
+        Field(
+            description="Contains values of the service URN and may include subservices."
+        ),
+    ]
+
+
 class ServingNetworkName(RootModel[str]):
     root: Annotated[
         str,
@@ -3398,6 +5267,53 @@ class ServingNetworkName(RootModel[str]):
             pattern="^(5G:mnc[0-9]{3}[.]mcc[0-9]{3}[.]3gppnetwork[.]org(:[A-F0-9]{11})?)$"
         ),
     ]
+
+
+class SessionRuleFailureCode1(StrEnum):
+    NF_MAL = "NF_MAL"
+    RES_LIM = "RES_LIM"
+    SESSION_RESOURCE_ALLOCATION_FAILURE = "SESSION_RESOURCE_ALLOCATION_FAILURE"
+    UNSUCC_QOS_VAL = "UNSUCC_QOS_VAL"
+    INCORRECT_UM = "INCORRECT_UM"
+    UE_STA_SUSP = "UE_STA_SUSP"
+    UNKNOWN_REF_ID = "UNKNOWN_REF_ID"
+    INCORRECT_COND_DATA = "INCORRECT_COND_DATA"
+    REF_ID_COLLISION = "REF_ID_COLLISION"
+    AN_GW_FAILED = "AN_GW_FAILED"
+    DEFAULT_QOS_MODIFICATION_FAILURE = "DEFAULT_QOS_MODIFICATION_FAILURE"
+    SESSION_AMBR_MODIFICATION_FAILURE = "SESSION_AMBR_MODIFICATION_FAILURE"
+
+
+class SessionRuleFailureCode(RootModel[SessionRuleFailureCode1 | str]):
+    root: Annotated[
+        SessionRuleFailureCode1 | str,
+        Field(
+            description="Indicates the reason of the session rule failure.  \nPossible values are\n- NF_MAL: Indicates that the PCC rule could not be successfully installed (for those\nprovisioned from the PCF) or activated (for those pre-defined in SMF) or enforced (for those\nalready successfully installed) due to SMF/UPF malfunction.\n- RES_LIM: Indicates that the PCC rule could not be successfully installed (for those\nprovisioned from PCF) or activated (for those pre-defined in SMF) or enforced (for those\nalready successfully installed) due to a limitation of resources at the SMF/UPF.\n- SESSION_RESOURCE_ALLOCATION_FAILURE: Indicates the session rule could not be successfully\nenforced due to failure during the allocation of resources for the PDU session in the UE,\nRAN or AMF.\n- UNSUCC_QOS_VAL: indicates that the QoS validation has failed.\n- INCORRECT_UM: The usage monitoring data of the enforced session rule is not the same for\nall the provisioned session rule(s).\n- UE_STA_SUSP: Indicates that the UE is in suspend state.\n- UNKNOWN_REF_ID: Indicates that the session rule could not be successfully \ninstalled/modified because the referenced identifier to a Policy Decision Data or to a\nCondition Data is unknown to the SMF.\n- INCORRECT_COND_DATA: Indicates that the session rule could not be successfully\ninstalled/modified because the referenced Condition data are incorrect.\n- REF_ID_COLLISION: Indicates that the session rule could not be successfully\ninstalled/modified because the same Policy Decision is referenced by a PCC rule (e.g. the\nsession rule and the PCC rule refer to the same Usage Monitoring decision data).\n- AN_GW_FAILED: Indicates that the AN-Gateway has failed and that the PCF should refrain\nfrom sending policy decisions to the SMF until it is informed that the S-GW has been\nrecovered. This value shall not be used if the SM Policy association modification procedure\nis initiated for session rule removal only.\n- DEFAULT_QOS_MODIFICATION_FAILURE: Indicates that the enforcement of the default QoS\nmodification failed. The SMF shall use this value to indicate to the PCF that the default\nQoS modification has failed.\n- SESSION_AMBR_MODIFICATION_FAILURE: Indicates that the enforcement of the session-AMBR\nmodification failed. The SMF shall use this value to indicate to the PCF that the\nsession-AMBR modification has failed.\n"
+        ),
+    ]
+
+
+class SessionRuleReport(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    ruleIds: Annotated[
+        list[str],
+        Field(
+            description="Contains the identifier of the affected session rule(s).",
+            min_length=1,
+        ),
+    ]
+    ruleStatus: RuleStatus
+    sessRuleFailureCode: SessionRuleFailureCode | None = None
+
+
+class SgsnAddress(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    sgsnIpv4Addr: Ipv4Addr | None = None
+    sgsnIpv6Addr: Ipv6Addr | None = None
 
 
 class SharedDataId(RootModel[str]):
@@ -3434,6 +5350,20 @@ class Sign(StrEnum):
     NEGATIVE = "NEGATIVE"
 
 
+class SipForkingIndication1(StrEnum):
+    SINGLE_DIALOGUE = "SINGLE_DIALOGUE"
+    SEVERAL_DIALOGUES = "SEVERAL_DIALOGUES"
+
+
+class SipForkingIndication(RootModel[SipForkingIndication1 | str]):
+    root: Annotated[
+        SipForkingIndication1 | str,
+        Field(
+            description='Indicates whether several SIP dialogues are related to an "Individual Application Session Context" resource.\n'
+        ),
+    ]
+
+
 class SliceMbr(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -3445,6 +5375,85 @@ class SliceMbr(BaseModel):
 class SliceMbrRm(RootModel[SliceMbr | NullValue]):
     root: Annotated[
         SliceMbr | NullValue, Field(description="SliceMbr with nullable: true")
+    ]
+
+
+class SliceReplFailureCause1(StrEnum):
+    UNSPECIFIED = "UNSPECIFIED"
+    NOT_WITHIN_UE_SUBSCRIPTION = "NOT_WITHIN_UE_SUBSCRIPTION"
+    NOT_SUPPORTED_IN_RA = "NOT_SUPPORTED_IN_RA"
+    PARTIAL_NET_SLICE_NOT_SUPPORTED = "PARTIAL_NET_SLICE_NOT_SUPPORTED"
+    INSUFFICIENT_RES = "INSUFFICIENT_RES"
+
+
+class SliceReplFailureCause(RootModel[SliceReplFailureCause1 | str]):
+    root: Annotated[
+        SliceReplFailureCause1 | str,
+        Field(
+            description="Represents the failure cause of the enforcement of the AF requested Network Slice\nReplacement requirements.\nPossible values are:\n- UNSPECIFIED: Indicates that the failure cause of the enforcement of the AF requested\n  Network Slice Replacement requirements is for unspecified reasons.\n- NOT_WITHIN_UE_SUBSCRIPTION: Indicates that the failure cause of the enforcement of the AF\n  requested Network Slice Replacement requirements is because the provided\n  Alternative/Initial S-NSSAI combination is not part of the UE's subscription.\n- NOT_SUPPORTED_IN_RA: Indicates that the failure cause of the enforcement of the AF\n  requested Network Slice Replacement requirements is because the provided\n  Alternative/Initial S-NSSAI combination is not supported in the UE's Registration Area.\n- PARTIAL_NET_SLICE_NOT_SUPPORTED: Indicates that the failure cause of the enforcement of\n  the AF requested Network Slice Replacement requirements is because the Partial Network\n  Slice Support feature is not supported by the UE for the case where the AF requested\n  Alternative S-NSSAI is not uniformly supported in the UE's Registration Area.\n- INSUFFICIENT_RES: Indicates that the failure cause of the enforcement of the AF\n  requested Network Slice Replacement requirements is because of insufficient resources\n  in the provided Alternative/Initial S-NSSAI.\n"
+        ),
+    ]
+
+
+class SliceReplOutcome1(StrEnum):
+    SUCCESSFUL = "SUCCESSFUL"
+    UNSUCCESSFUL = "UNSUCCESSFUL"
+
+
+class SliceReplOutcome(RootModel[SliceReplOutcome1 | str]):
+    root: Annotated[
+        SliceReplOutcome1 | str,
+        Field(
+            description="Represents the AF requested Network Slice replacement outcome related information.\nPossible values are:\n- SUCCESSFUL: Indicates that the AF requested Network Slice replacement initiation or AF\n  requested Network Slice Replacement termination is successful.\n- UNSUCCESSFUL: Indicates that the AF requested Network Slice replacement initiation or AF\n  requested Network Slice Replacement termination is unsuccessful.\n"
+        ),
+    ]
+
+
+class SliceReplOutcomeInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    result: SliceReplOutcome
+    failCause: SliceReplFailureCause | None = None
+
+
+class SliceReplType1(StrEnum):
+    INITIATE_AF_REQ_SLICE_REP = "INITIATE_AF_REQ_SLICE_REP"
+    TERMINATE_AF_REQ_SLICE_REP = "TERMINATE_AF_REQ_SLICE_REP"
+
+
+class SliceReplType(RootModel[SliceReplType1 | str]):
+    root: Annotated[
+        SliceReplType1 | str,
+        Field(
+            description="Represents the type of the requested Network Slice Replacement.\nPossible values are:\n- INITIATE_AF_REQ_SLICE_REP: Indicates that the type of the requested Network Slice\n  Replacement is the initiation of an AF requested Network Slice Replacement.\n- TERMINATE_AF_REQ_SLICE_REP: Indicates that the type of the requested Network Slice\n  Replacement is the termination of a previously requested Network Slice Replacement from\n  the AF.\n"
+        ),
+    ]
+
+
+class SliceUsgCtrlInfoTS29512(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    pduSessInactivTimer: DurationSecRm | None = None
+
+
+class SmPolicyAssociationReleaseCause1(StrEnum):
+    UNSPECIFIED = "UNSPECIFIED"
+    UE_SUBSCRIPTION = "UE_SUBSCRIPTION"
+    INSUFFICIENT_RES = "INSUFFICIENT_RES"
+    VALIDATION_CONDITION_NOT_MET = "VALIDATION_CONDITION_NOT_MET"
+    REACTIVATION_REQUESTED = "REACTIVATION_REQUESTED"
+
+
+class SmPolicyAssociationReleaseCause(
+    RootModel[SmPolicyAssociationReleaseCause1 | str]
+):
+    root: Annotated[
+        SmPolicyAssociationReleaseCause1 | str,
+        Field(
+            description="Represents the cause due to which the PCF requests the termination of the SM policy association.\n"
+        ),
     ]
 
 
@@ -3504,6 +5513,17 @@ class SnssaiExtension(BaseModel):
     ] = None
 
 
+class SnssaiStatus1(StrEnum):
+    AVAILABLE = "AVAILABLE"
+    UNAVAILABLE = "UNAVAILABLE"
+
+
+class SnssaiStatus(RootModel[SnssaiStatus1 | str]):
+    root: Annotated[
+        SnssaiStatus1 | str, Field(description="Indicates the S-NSSAI availability.")
+    ]
+
+
 class SorMac(RootModel[str]):
     root: Annotated[
         str,
@@ -3523,6 +5543,24 @@ class SorUpdateIndicator(RootModel[SorUpdateIndicator1 | str]):
     root: Annotated[
         SorUpdateIndicator1 | str,
         Field(description="Indicates serving node PLMN identity."),
+    ]
+
+
+class SponId(RootModel[str]):
+    root: Annotated[str, Field(description="Contains an identity of a sponsor.")]
+
+
+class SponsoringStatus1(StrEnum):
+    SPONSOR_DISABLED = "SPONSOR_DISABLED"
+    SPONSOR_ENABLED = "SPONSOR_ENABLED"
+
+
+class SponsoringStatus(RootModel[SponsoringStatus1 | str]):
+    root: Annotated[
+        SponsoringStatus1 | str,
+        Field(
+            description="Indicates whether sponsored data connectivity is enabled or disabled/not enabled."
+        ),
     ]
 
 
@@ -3587,6 +5625,52 @@ class StationaryIndicationRm(RootModel[StationaryIndication | NullValue]):
     ]
 
 
+class SteerModeIndicator1(StrEnum):
+    AUTO_LOAD_BALANCE = "AUTO_LOAD_BALANCE"
+    UE_ASSISTANCE = "UE_ASSISTANCE"
+
+
+class SteerModeIndicator(RootModel[SteerModeIndicator1 | str]):
+    root: Annotated[
+        SteerModeIndicator1 | str,
+        Field(
+            description="Contains Autonomous load-balance indicator or UE-assistance indicator."
+        ),
+    ]
+
+
+class SteerModeValue1(StrEnum):
+    ACTIVE_STANDBY = "ACTIVE_STANDBY"
+    LOAD_BALANCING = "LOAD_BALANCING"
+    SMALLEST_DELAY = "SMALLEST_DELAY"
+    PRIORITY_BASED = "PRIORITY_BASED"
+    REDUNDANT = "REDUNDANT"
+
+
+class SteerModeValue(RootModel[SteerModeValue1 | str]):
+    root: Annotated[
+        SteerModeValue1 | str,
+        Field(description="Indicates the steering mode value determined by the PCF."),
+    ]
+
+
+class SteeringFunctionality1(StrEnum):
+    MPTCP = "MPTCP"
+    MPQUIC = "MPQUIC"
+    ATSSS_LL = "ATSSS_LL"
+    MPQUIC_IP = "MPQUIC_IP"
+    MPQUIC_E = "MPQUIC_E"
+
+
+class SteeringFunctionality(RootModel[SteeringFunctionality1 | str]):
+    root: Annotated[
+        SteeringFunctionality1 | str,
+        Field(
+            description="Indicates functionality to support traffic steering, switching and splitting determined\nby the PCF.  \nPossible values are\n  - MPTCP: Indicates that PCF authorizes the MPTCP functionality to support traffic\n  steering, switching and splitting.\n  - MPQUIC: Indicates that PCF authorizes the MPQUIC-UDP functionality to support traffic\n  steering, switching and splitting.\n  - ATSSS_LL: Indicates that PCF authorizes the ATSSS-LL functionality to support traffic\n  steering, switching and splitting.\n  - MPQUIC_IP: Indicates that PCF authorizes the MPQUIC-IP functionality to support traffic\n  steering, switching and splitting.\n  - MPQUIC_E: Indicates that PCF authorizes the MPQUIC-E functionality to support traffic\n  steering, switching and splitting.\n"
+        ),
+    ]
+
+
 class SteeringInfo(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -3611,6 +5695,23 @@ class StnSrRm(RootModel[str | None]):
             description="String representing the STN-SR as defined in clause 18.6 of 3GPP TS 23.003 with the OpenAPI 'nullable: true' property. \n"
         ),
     ] = None
+
+
+class StringMatchingCondition(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    matchingString: str | None = None
+    matchingOperator: MatchingOperator
+
+
+class StringMatchingRule(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    stringMatchingConditions: Annotated[
+        list[StringMatchingCondition], Field(min_length=1)
+    ]
 
 
 class Success(RootModel[bool]):
@@ -3788,6 +5889,18 @@ class TemporalValidity(BaseModel):
     stopTime: DateTime | None = None
 
 
+class TerminationIndication1(StrEnum):
+    NEW_UES_TERMINATION = "NEW_UES_TERMINATION"
+    ALL_UES_TERMINATION = "ALL_UES_TERMINATION"
+
+
+class TerminationIndication(RootModel[TerminationIndication1 | str]):
+    root: Annotated[
+        TerminationIndication1 | str,
+        Field(description="Indicates the termination of Network Slice Replacement."),
+    ]
+
+
 class TimeOfDay(RootModel[str]):
     root: Annotated[
         str,
@@ -3819,6 +5932,16 @@ class TimeWindow(BaseModel):
     )
     startTime: DateTimeTS29122
     stopTime: DateTimeTS29122
+
+
+class TimeZone(RootModel[str]):
+    root: Annotated[
+        str,
+        Field(
+            description='String with format "time-numoffset" optionally appended by "daylightSavingTime", where \n- "time-numoffset" shall represent the time zone adjusted for daylight saving time and be\n   encoded as time-numoffset as defined in clause\xa05.6 of IETF RFC 3339; \n- "daylightSavingTime" shall represent the adjustment that has been made and shall be\n   encoded as "+1" or "+2" for a +1 or +2 hours adjustment. \n\nThe example is for 8 hours behind UTC, +1 hour adjustment for Daylight Saving Time.\n',
+            examples=["-08:00+1"],
+        ),
+    ]
 
 
 class Tmgi(BaseModel):
@@ -3888,6 +6011,15 @@ class TosTrafficClass(RootModel[str]):
     ]
 
 
+class TosTrafficClassRm(RootModel[str | None]):
+    root: Annotated[
+        str | None,
+        Field(
+            description="This data type is defined in the same way as the TosTrafficClass data type, but with the OpenAPI nullable property set to true.\n"
+        ),
+    ] = None
+
+
 class TraceDepth1(StrEnum):
     MINIMUM = "MINIMUM"
     MEDIUM = "MEDIUM"
@@ -3903,6 +6035,19 @@ class TraceDepth(RootModel[TraceDepth1 | str]):
         Field(
             description="The enumeration TraceDepth defines how detailed information should be recorded in the trace. See 3GPP TS 32.422 for further description of the values. It shall comply with the provisions defined in table 5.6.3.1-1\n"
         ),
+    ]
+
+
+class TrafficParameterMeas1(StrEnum):
+    DL_N6_JITTER = "DL_N6_JITTER"
+    DL_PERIOD = "DL_PERIOD"
+    UL_PERIOD = "UL_PERIOD"
+
+
+class TrafficParameterMeas(RootModel[TrafficParameterMeas1 | str]):
+    root: Annotated[
+        TrafficParameterMeas1 | str,
+        Field(description="Indicates the traffic parameters to be measured."),
     ]
 
 
@@ -3932,7 +6077,23 @@ class TrafficProfileRm(RootModel[TrafficProfile | NullValue]):
     ]
 
 
+class TransportMode1(StrEnum):
+    DATAGRAM_MODE_1 = "DATAGRAM_MODE_1"
+    DATAGRAM_MODE_2 = "DATAGRAM_MODE_2"
+    STREAM_MODE = "STREAM_MODE"
+
+
+class TransportMode(RootModel[TransportMode1 | str]):
+    root: Annotated[
+        TransportMode1 | str,
+        Field(
+            description="Indicates the Transport Mode when the steering functionality is MPQUIC-UDP, MPQUIC-IE, or MPQUIC-E functionality.\n"
+        ),
+    ]
+
+
 class TransportProtocol1(StrEnum):
+    UDP = "UDP"
     TCP = "TCP"
 
 
@@ -3940,9 +6101,40 @@ class TransportProtocol(RootModel[TransportProtocol1 | str]):
     root: Annotated[
         TransportProtocol1 | str,
         Field(
+            description="Possible values are:\n- UDP: User Datagram Protocol.\n- TCP: Transmission Control Protocol. \n"
+        ),
+    ]
+
+
+class TransportProtocolTS295101(StrEnum):
+    TCP = "TCP"
+
+
+class TransportProtocolTS29510(RootModel[TransportProtocolTS295101 | str]):
+    root: Annotated[
+        TransportProtocolTS295101 | str,
+        Field(
             description="Types of transport protocol used in a given IP endpoint of an NF Service Instance"
         ),
     ]
+
+
+class TscPriorityLevel(RootModel[int]):
+    root: Annotated[
+        int,
+        Field(description="Represents the priority level of TSC Flows.", ge=1, le=8),
+    ]
+
+
+class TscPriorityLevelRm(RootModel[int | None]):
+    root: Annotated[
+        int | None,
+        Field(
+            description="This data type is defined in the same way as the TscPriorityLevel data type, but with the OpenAPI nullable property set to true.\n",
+            ge=1,
+            le=8,
+        ),
+    ] = None
 
 
 class TsctsfInfo(BaseModel):
@@ -3963,6 +6155,47 @@ class TsctsfInfo(BaseModel):
     internalGroupIdentifiersRanges: Annotated[
         list[InternalGroupIdRange] | None, Field(min_length=1)
     ] = None
+
+
+class TsnQosContainer(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    maxTscBurstSize: ExtMaxDataBurstVol | None = None
+    maxTscBurstSizeSmall: MaxDataBurstVol | None = None
+    tscPackDelay: PacketDelBudget | None = None
+    maxPer: PacketErrRate | None = None
+    tscPrioLevel: TscPriorityLevel | None = None
+
+
+class TsnQosContainerRm(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    maxTscBurstSize: ExtMaxDataBurstVolRm | None = None
+    maxTscBurstSizeSmall: MaxDataBurstVolRm | None = None
+    tscPackDelay: PacketDelBudgetRm | None = None
+    maxPer: PacketErrRateRm | None = None
+    tscPrioLevel: TscPriorityLevelRm | None = None
+
+
+class TwapId(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    ssId: Annotated[
+        str,
+        Field(
+            description="This IE shall contain the SSID of the access point to which the UE is attached, that is received over NGAP, see IEEE Std 802.11-2012. \n"
+        ),
+    ]
+    bssId: Annotated[
+        str | None,
+        Field(
+            description="When present, it shall contain the BSSID of the access point to which the UE is attached, for trusted WLAN access, see IEEE Std 802.11-2012. \n"
+        ),
+    ] = None
+    civicAddress: Bytes | None = None
 
 
 class TwifInfo(BaseModel):
@@ -4081,6 +6314,26 @@ class UeAuth(RootModel[UeAuth1 | str]):
     ]
 
 
+class UeIdentityInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    gpsi: Gpsi | None = None
+    pei: Pei | None = None
+    supi: Supi | None = None
+
+
+class UeInitiatedResourceRequest(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    pccRuleId: str | None = None
+    ruleOp: RuleOperation
+    precedence: int | None = None
+    packFiltInfo: Annotated[list[PacketFilterInfo], Field(min_length=1)]
+    reqQos: RequestedQos | None = None
+
+
 class UeLevelMeasurementsConfiguration(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -4088,6 +6341,29 @@ class UeLevelMeasurementsConfiguration(BaseModel):
     jobType: JobType
     ueLevelMeasurementsList: Annotated[list[MeasurementType], Field(min_length=1)]
     granularityPeriod: DurationSec | None = None
+
+
+class UePolicyTransferFailureCause(
+    RootModel[N1N2MessageTransferCause | N1N2MessTransferErrorReply]
+):
+    root: Annotated[
+        N1N2MessageTransferCause | N1N2MessTransferErrorReply,
+        Field(description="UE Policy Transfer Failure Cause."),
+    ]
+
+
+class UeReachabilityStatus1(StrEnum):
+    REACHABLE = "REACHABLE"
+    UNREACHABLE = "UNREACHABLE"
+
+
+class UeReachabilityStatus(RootModel[UeReachabilityStatus1 | str]):
+    root: Annotated[
+        UeReachabilityStatus1 | str,
+        Field(
+            description="Indicates the UE rechability status.  \nPossible values are:\n- REACHABLE: Indicates that the UE is reachable.\n- UNREACHABLE: Indicates that the UE is unreachable.\n"
+        ),
+    ]
 
 
 class UeReachableInd1(StrEnum):
@@ -4098,6 +6374,21 @@ class UeReachableInd1(StrEnum):
 
 class UeReachableInd(RootModel[UeReachableInd1 | str]):
     root: Annotated[UeReachableInd1 | str, Field(description="UE Reachable Indication")]
+
+
+class UeSliceMbr(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    sliceMbr: Annotated[
+        dict[str, SliceMbr],
+        Field(
+            description="Contains the MBR for uplink and the MBR for downlink.",
+            min_length=1,
+        ),
+    ]
+    servingSnssai: Snssai
+    mappedHomeSnssai: Snssai | None = None
 
 
 class UeUsageType(RootModel[int]):
@@ -4115,6 +6406,17 @@ class Uint16(RootModel[int]):
     ]
 
 
+class Uint16Rm(RootModel[int | None]):
+    root: Annotated[
+        int | None,
+        Field(
+            description="Integer where the allowed values correspond to the value range of an unsigned  16-bit integer with the OpenAPI 'nullable: true' property.\n",
+            ge=0,
+            le=65535,
+        ),
+    ] = None
+
+
 class Uint32(RootModel[int]):
     root: Annotated[
         int,
@@ -4124,6 +6426,17 @@ class Uint32(RootModel[int]):
             le=4294967295,
         ),
     ]
+
+
+class Uint32Rm(RootModel[int | None]):
+    root: Annotated[
+        int | None,
+        Field(
+            description="Integer where the allowed values correspond to the value range of an unsigned 32-bit integer with the OpenAPI 'nullable: true' property.\n",
+            ge=0,
+            le=4294967295,
+        ),
+    ] = None
 
 
 class Uint64(RootModel[int]):
@@ -4145,6 +6458,16 @@ class Uinteger(RootModel[int]):
             ge=0,
         ),
     ]
+
+
+class UintegerRm(RootModel[int | None]):
+    root: Annotated[
+        int | None,
+        Field(
+            description="Unsigned Integer, i.e. only value 0 and integers above 0 are permissible with the OpenAPI 'nullable: true' property.\n",
+            ge=0,
+        ),
+    ] = None
 
 
 class UmtTime(BaseModel):
@@ -4235,6 +6558,21 @@ class UpfPacketInspectionFunctionality(
     ]
 
 
+class UplinkDownlinkSupport1(StrEnum):
+    UL = "UL"
+    DL = "DL"
+    UL_DL = "UL_DL"
+
+
+class UplinkDownlinkSupport(RootModel[UplinkDownlinkSupport1 | str]):
+    root: Annotated[
+        UplinkDownlinkSupport1 | str,
+        Field(
+            description="Represents whether an indication or capability is supported for the UL, the DL or both, UL and DL.\n"
+        ),
+    ]
+
+
 class UpuAckInd(RootModel[bool]):
     root: Annotated[
         bool,
@@ -4278,6 +6616,15 @@ class Uri(RootModel[str]):
         str,
         Field(description="String providing an URI formatted according to RFC 3986."),
     ]
+
+
+class UriRm(RootModel[str | None]):
+    root: Annotated[
+        str | None,
+        Field(
+            description="String providing an URI formatted according to RFC 3986 with the OpenAPI 'nullable: true' property.\n"
+        ),
+    ] = None
 
 
 class UriScheme1(StrEnum):
@@ -4411,6 +6758,24 @@ class Volume(RootModel[int]):
     ]
 
 
+class VolumeRm(RootModel[int | None]):
+    root: Annotated[
+        int | None,
+        Field(
+            description='Unsigned integer identifying a volume in units of bytes with "nullable=true" property.\n',
+            ge=0,
+        ),
+    ] = None
+
+
+class VplmnDlAmbr(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    vplmnId: PlmnId
+    sessionDlAmbr: BitRate
+
+
 class WAgfId(RootModel[str]):
     root: Annotated[
         str,
@@ -4477,6 +6842,93 @@ class Field5GDdnmfInfo(BaseModel):
     plmnId: PlmnId
 
 
+class AccNetChId(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    accNetChaIdValue: ChargingId | None = None
+    accNetChargId: Annotated[
+        str | None,
+        Field(
+            description="A character string containing the access network charging id."
+        ),
+    ] = None
+    refPccRuleIds: Annotated[
+        list[str] | None,
+        Field(
+            description="Contains the identifier of the PCC rule(s) associated to the provided Access Network Charging Identifier.\n",
+            min_length=1,
+        ),
+    ] = None
+    sessionChScope: Annotated[
+        bool | None,
+        Field(
+            description="When it is included and set to true, indicates the Access Network Charging Identifier applies to the whole PDU Session\n"
+        ),
+    ] = None
+
+
+class AccNetChargingAddress(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    anChargIpv4Addr: Ipv4Addr | None = None
+    anChargIpv6Addr: Ipv6Addr | None = None
+
+
+class AccessNetChargingIdentifier(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    accNetChaIdValue: ChargingId | None = None
+    accNetChargIdString: Annotated[
+        str | None,
+        Field(
+            description="A character string containing the access network charging identifier."
+        ),
+    ] = None
+    flows: Annotated[list[Flows] | None, Field(min_length=1)] = None
+
+
+class AccessTypeRm(RootModel[AccessType | NullValue]):
+    root: Annotated[
+        AccessType | NullValue,
+        Field(
+            description='Indicates wether the access is via 3GPP or via non-3GPP but with the OpenAPI  \'nullable: true\' property."\n'
+        ),
+    ]
+
+
+class AccuUsageReport(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    refUmIds: Annotated[
+        str,
+        Field(
+            description="An id referencing UsageMonitoringData objects associated with this usage report.\n"
+        ),
+    ]
+    volUsage: Volume | None = None
+    volUsageUplink: Volume | None = None
+    volUsageDownlink: Volume | None = None
+    timeUsage: DurationSec | None = None
+    nextVolUsage: Volume | None = None
+    nextVolUsageUplink: Volume | None = None
+    nextVolUsageDownlink: Volume | None = None
+    nextTimeUsage: DurationSec | None = None
+
+
+class AccumulatedUsage(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    duration: DurationSecTS29122 | None = None
+    totalVolume: Volume | None = None
+    downlinkVolume: Volume | None = None
+    uplinkVolume: Volume | None = None
+
+
 class AcsInfo(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -4493,6 +6945,33 @@ class AcsInfoRm(RootModel[AcsInfo | NullValue]):
             description="This data type is defined in the same way as the 'AcsInfo' data type, but with the  OpenAPI 'nullable: true' property.\n"
         ),
     ]
+
+
+class AddFlowDescriptionInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    spi: Annotated[
+        str | None,
+        Field(
+            description="4-octet string representing the security parameter index of the IPSec packet in hexadecimal representation.\n"
+        ),
+    ] = None
+    flowLabel: Annotated[
+        str | None,
+        Field(
+            description="3-octet string representing the IPv6 flow label header field in hexadecimal representation.\n"
+        ),
+    ] = None
+    flowDir: FlowDirection | None = None
+
+
+class AdditionalAccessInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    accessType: AccessType
+    ratType: RatType | None = None
 
 
 class AdditionalSmfSelectionInfo(BaseModel):
@@ -4514,11 +6993,47 @@ class AfEventExposureData(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
     )
-    afEvents: Annotated[list[AfEvent], Field(min_length=1)]
+    afEvents: Annotated[list[AfEventTS29517], Field(min_length=1)]
     afIds: Annotated[list[str] | None, Field(min_length=1)] = None
     appIds: Annotated[list[str] | None, Field(min_length=1)] = None
     taiList: Annotated[list[Tai] | None, Field(min_length=1)] = None
     taiRangeList: Annotated[list[TaiRange] | None, Field(min_length=1)] = None
+
+
+class AfEventNotification(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    event: AfEventTS29514
+    flows: Annotated[list[Flows] | None, Field(min_length=1)] = None
+    retryAfter: Uinteger | None = None
+
+
+class AfEventSubscription(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    event: AfEventTS29514
+    notifMethod: AfNotifMethod | None = None
+    repPeriod: DurationSec | None = None
+    waitTime: DurationSec | None = None
+    qosMonParamType: QosMonitoringParamType | None = None
+    capTypes: Annotated[
+        list[NotifCapType] | None,
+        Field(
+            description="Contains the type(s) of QoS Monitoring capability report is applied.\n",
+            min_length=1,
+        ),
+    ] = None
+
+
+class AfSigProtocol(RootModel[AfSigProtocol1 | NullValue | str]):
+    root: Annotated[
+        AfSigProtocol1 | NullValue | str,
+        Field(
+            description="Indicates the protocol used for signalling between the UE and the AF.  \nPossible values are\n- NO_INFORMATION: Indicate that no information about the AF signalling protocol is being\nprovided.\n- SIP: Indicate that the signalling protocol is Session Initiation Protocol.\n"
+        ),
+    ]
 
 
 class AiotAreaId(BaseModel):
@@ -4552,6 +7067,24 @@ class AllowedMtcProviderInfo(BaseModel):
     afId: str | None = None
 
 
+class AlternativeServiceRequirementsData(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    altQosParamSetRef: Annotated[
+        str,
+        Field(description="Reference to this alternative QoS related parameter set."),
+    ]
+    gbrUl: BitRate | None = None
+    gbrDl: BitRate | None = None
+    pdb: PacketDelBudget | None = None
+    per: PacketErrRate | None = None
+    averWindow: Annotated[AverWindow | None, Field(validate_default=True)] = 2000
+    maxDataBurstVol: MaxDataBurstVolTS29514 | None = None
+    pduSetQosDl: PduSetQosParaRm | None = None
+    pduSetQosUl: PduSetQosParaRm | None = None
+
+
 class Ambr(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -4567,6 +7100,14 @@ class AmbrRm(RootModel[Ambr | NullValue]):
             description='This data type is defined in the same way as the \'Ambr\' data type, but with the OpenAPI \'nullable: true\' property."\n'
         ),
     ]
+
+
+class AnGwAddress(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    anGwIpv4Addr: Ipv4Addr | None = None
+    anGwIpv6Addr: Ipv6Addr | None = None
 
 
 class AppDescriptor(BaseModel):
@@ -4624,6 +7165,62 @@ class AuthEvent(BaseModel):
     nswoInd: bool | None = False
 
 
+class AuthorizedDefaultQos(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    field_5qi: Annotated[Field5Qi | None, Field(alias="5qi")] = None
+    arp: Arp | None = None
+    priorityLevel: Field5QiPriorityLevelRm | None = None
+    averWindow: Annotated[AverWindowRm | None, Field(validate_default=True)] = 2000
+    maxDataBurstVol: MaxDataBurstVolRm | None = None
+    maxbrUl: BitRateRm | None = None
+    maxbrDl: BitRateRm | None = None
+    gbrUl: BitRateRm | None = None
+    gbrDl: BitRateRm | None = None
+    extMaxDataBurstVol: ExtMaxDataBurstVolRm | None = None
+
+
+class BatOffsetInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    ranBatOffsetNotif: Annotated[
+        int,
+        Field(
+            description="Indicates the BAT offset of the arrival time of the data burst in units of milliseconds.\n"
+        ),
+    ]
+    adjPeriod: Uinteger | None = None
+    flows: Annotated[
+        list[Flows] | None,
+        Field(
+            description="Identification of the flows. If no flows are provided, the BAT offset applies for all flows of the AF session.\n",
+            min_length=1,
+        ),
+    ] = None
+
+
+class BatOffsetInfoPcc(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    ranBatOffsetNotif: Annotated[
+        int,
+        Field(
+            description="Indicates the BAT offset of the arrival time of the data burst in units of milliseconds.\n"
+        ),
+    ]
+    adjPeriod: Uinteger | None = None
+    refPccRuleIds: Annotated[
+        list[str],
+        Field(
+            description="Identification of the PCC rules associated with the BAT offset and the optionally adjusted periodicity.\n",
+            min_length=1,
+        ),
+    ]
+
+
 class BatteryIndicationRm(RootModel[BatteryIndication | NullValue]):
     root: Annotated[
         BatteryIndication | NullValue,
@@ -4643,18 +7240,25 @@ class BluetoothMeasurement(BaseModel):
     bluetoothRssi: BluetoothRssi | None = None
 
 
+class BridgeManagementContainer(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    bridgeManCont: Bytes
+
+
 class BsfInfo(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
     )
     dnnList: Annotated[list[Dnn] | None, Field(min_length=1)] = None
     ipDomainList: Annotated[list[str] | None, Field(min_length=1)] = None
-    ipv4AddressRanges: Annotated[list[Ipv4AddressRange] | None, Field(min_length=1)] = (
-        None
-    )
-    ipv6PrefixRanges: Annotated[list[Ipv6PrefixRange] | None, Field(min_length=1)] = (
-        None
-    )
+    ipv4AddressRanges: Annotated[
+        list[Ipv4AddressRangeTS29510] | None, Field(min_length=1)
+    ] = None
+    ipv6PrefixRanges: Annotated[
+        list[Ipv6PrefixRangeTS29510] | None, Field(min_length=1)
+    ] = None
     rxDiamHost: Fqdn | None = None
     rxDiamRealm: Fqdn | None = None
     groupId: NfGroupId | None = None
@@ -4688,6 +7292,39 @@ class CagProvisionInformation(BaseModel):
         ),
     ] = None
     provisionOperation: CagProvisionOperation | None = None
+
+
+class CallInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    callingPartyAddrs: Annotated[list[str] | None, Field(min_length=1)] = None
+    calleeInfo: CalleeInfo | None = None
+
+
+class CandidateForReplacement(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    snssai: Snssai
+    dnns: Annotated[list[Dnn] | None, Field(min_length=1)] = None
+
+
+class CapabilityReport(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    capReport: NotifCap
+    capType: NotifCapType
+
+
+class CellGlobalId(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    plmnId: PlmnId
+    lac: Annotated[str, Field(pattern="^[A-Fa-f0-9]{4}$")]
+    cellId: Annotated[str, Field(pattern="^[A-Fa-f0-9]{4}$")]
 
 
 class CellIdNid(BaseModel):
@@ -4751,6 +7388,26 @@ class ClockQualityAcceptanceCriterion(BaseModel):
     parentTimeSource: Annotated[list[TimeSource] | None, Field(min_length=1)] = None
 
 
+class ClockQualityDetailLevelRm(RootModel[ClockQualityDetailLevel | NullValue]):
+    root: Annotated[
+        ClockQualityDetailLevel | NullValue,
+        Field(
+            description="This data type is defined in the same way as the 'ClockQualityDetailLevel' data type, but with the OpenAPI 'nullable: true' property.\n"
+        ),
+    ]
+
+
+class ClockQualityRm(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    traceabilityToGnss: bool | None = None
+    traceabilityToUtc: bool | None = None
+    frequencyStability: Uint16Rm | None = None
+    clockAccuracyIndex: Annotated[str | None, Field(pattern="^[A-Fa-f0-9]{2}$")] = None
+    clockAccuracyValue: Annotated[int | None, Field(ge=1, le=40000000)] = None
+
+
 class CollocatedNfInstance(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -4765,6 +7422,22 @@ class CombGciAndHfcNIds(BaseModel):
     )
     globalCableId: Gci | None = None
     hfcNId: HfcNId | None = None
+
+
+class ConditionData(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    condId: Annotated[
+        str,
+        Field(
+            description="Uniquely identifies the condition data within a PDU session."
+        ),
+    ]
+    activationTime: DateTimeRm | None = None
+    deactivationTime: DateTimeRm | None = None
+    accessType: AccessType | None = None
+    ratType: RatType | None = None
 
 
 class ConditionItem(BaseModel):
@@ -4831,6 +7504,16 @@ class DcsfInfo(BaseModel):
     msisdnRanges: Annotated[list[IdentityRange] | None, Field(min_length=1)] = None
 
 
+class DddTrafficDescriptor(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    ipv4Addr: Ipv4Addr | None = None
+    ipv6Addr: Ipv6Addr | None = None
+    portNumber: Uinteger | None = None
+    macAddr: MacAddr48 | None = None
+
+
 class DefSubServiceInfo(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -4860,6 +7543,14 @@ class DefaultNotificationSubscription(BaseModel):
         ),
     ] = None
     callbackUriPrefix: str | None = None
+
+
+class DirectNotificationReport(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    qosMonParamType: QosMonitoringParamType
+    flows: Annotated[list[Flows] | None, Field(min_length=1)] = None
 
 
 class DnnEasdfInfoItem(BaseModel):
@@ -4938,8 +7629,32 @@ class DnnTsctsfInfoItem(BaseModel):
 
 PrivateIpv4AddressRangesPerIpDomainAdditionalProperty = TypeAliasType(
     "PrivateIpv4AddressRangesPerIpDomainAdditionalProperty",
-    Annotated[list[Ipv4AddressRange], Field(min_length=1)],
+    Annotated[list[Ipv4AddressRangeTS29510], Field(min_length=1)],
 )
+
+
+class DownlinkDataNotificationControl(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    notifCtrlInds: Annotated[
+        list[NotificationControlIndication] | None, Field(min_length=1)
+    ] = None
+    typesOfNotif: Annotated[list[DlDataDeliveryStatus] | None, Field(min_length=1)] = (
+        None
+    )
+
+
+class DownlinkDataNotificationControlRm(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    notifCtrlInds: Annotated[
+        list[NotificationControlIndication] | None, Field(min_length=1)
+    ] = None
+    typesOfNotif: Annotated[list[DlDataDeliveryStatus] | None, Field(min_length=1)] = (
+        None
+    )
 
 
 class Ecgi(BaseModel):
@@ -4976,10 +7691,41 @@ class EpsIwkPgw(BaseModel):
     plmnId: PlmnId | None = None
 
 
+class EthFlowDescription(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    destMacAddr: MacAddr48 | None = None
+    ethType: str
+    fDesc: FlowDescriptionTS29514 | None = None
+    fDir: FlowDirection | None = None
+    sourceMacAddr: MacAddr48 | None = None
+    vlanTags: Annotated[list[str] | None, Field(max_length=2, min_length=1)] = None
+    srcMacAddrEnd: MacAddr48 | None = None
+    destMacAddrEnd: MacAddr48 | None = None
+
+
 class ExtSnssai(Snssai, SnssaiExtension):
     model_config = ConfigDict(
         populate_by_name=True,
     )
+
+
+class FlowDirectionRm(RootModel[FlowDirection | NullValue]):
+    root: Annotated[
+        FlowDirection | NullValue,
+        Field(
+            description='This data type is defined in the same way as the "FlowDirection" data type, with the only  difference that it allows null value.\n'
+        ),
+    ]
+
+
+class FqdnPatternMatchingRule(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    regex: str | None = None
+    stringMatchingRule: StringMatchingRule | None = None
 
 
 class FrameRouteInfo(BaseModel):
@@ -5065,7 +7811,7 @@ class InterfaceUpfInfoItem(BaseModel):
     ipv6EndpointAddresses: Annotated[list[Ipv6Addr] | None, Field(min_length=1)] = None
     endpointFqdn: Fqdn | None = None
     networkInstance: str | None = None
-    portRangeList: Annotated[list[PortRange] | None, Field(min_length=1)] = None
+    portRangeList: Annotated[list[PortRangeTS29510] | None, Field(min_length=1)] = None
 
 
 class IpAddr(BaseModel):
@@ -5092,8 +7838,18 @@ class IpEndPoint(BaseModel):
     )
     ipv4Address: Ipv4Addr | None = None
     ipv6Address: Ipv6Addr | None = None
-    transport: TransportProtocol | None = None
+    transport: TransportProtocolTS29510 | None = None
     port: Annotated[int | None, Field(ge=0, le=65535)] = None
+
+
+class IpMulticastAddressInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    srcIpv4Addr: Ipv4Addr | None = None
+    ipv4MulAddr: Ipv4Addr | None = None
+    srcIpv6Addr: Ipv6Addr | None = None
+    ipv6MulAddr: Ipv6Addr | None = None
 
 
 class IwmscInfo(BaseModel):
@@ -5122,6 +7878,28 @@ class LcsSubscriptionData(BaseModel):
     pruInd: PruInd | None = None
     lpHapType: LpHapType | None = None
     userPlanePosIndLmf: bool | None = False
+
+
+class LocalOffloadingManagementInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    offloadIdentifier: OffloadIdentifier | None = None
+    allowedTraffic: bool | None = True
+    ipv4AddressRanges: Annotated[list[Ipv4AddressRange] | None, Field(min_length=1)] = (
+        None
+    )
+    ipv4AddrMasks: Annotated[list[Ipv4AddrMask] | None, Field(min_length=1)] = None
+    ipv6AddressRanges: Annotated[list[Ipv6AddressRange] | None, Field(min_length=1)] = (
+        None
+    )
+    ipv6PrefixRanges: Annotated[list[Ipv6PrefixRange] | None, Field(min_length=1)] = (
+        None
+    )
+    fqdnList: Annotated[list[Fqdn] | None, Field(min_length=1)] = None
+    fqdnPatterns: Annotated[
+        list[FqdnPatternMatchingRule] | None, Field(min_length=1)
+    ] = None
 
 
 class LocationAreaId(BaseModel):
@@ -5166,6 +7944,14 @@ class LteV2xAuth(BaseModel):
     pedestrianUeAuth: UeAuth | None = None
 
 
+class MappingOfSnssai(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    servingSnssai: Snssai
+    homeSnssai: Snssai
+
+
 class MbSmfInfo(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -5198,6 +7984,24 @@ class MbsrLocationInfo(BaseModel):
     )
     mbsrLocation: Annotated[list[Tai] | None, Field(min_length=1)] = None
     mbsrLocationAreas: Annotated[list[AreaCode] | None, Field(min_length=1)] = None
+
+
+class MediaTransportProtoRm(RootModel[MediaTransportProto | NullValue]):
+    root: Annotated[
+        MediaTransportProto | NullValue,
+        Field(
+            description="This data type is defined in the same way as the 'MediaTransportProto' data type,  but with the OpenAPI 'nullable: true' property.\n"
+        ),
+    ]
+
+
+class MeteringMethod(RootModel[MeteringMethod1 | NullValue | str]):
+    root: Annotated[
+        MeteringMethod1 | NullValue | str,
+        Field(
+            description="Indicates the metering method.  \nPossible values are:\n- DURATION: Indicates that the duration of the service data flow traffic shall be metered.\n- VOLUME: Indicates that volume of the service data flow traffic shall be metered.\n- DURATION_VOLUME: Indicates that the duration and the volume of the service data flow\ntraffic shall be metered.\n- EVENT: Indicates that events of the service data flow traffic shall be metered.\n"
+        ),
+    ]
 
 
 class MfafInfo(BaseModel):
@@ -5248,12 +8052,45 @@ class MpxMediaInfo(BaseModel):
     rtcpPacketType: Annotated[int | None, Field(ge=0, le=255)] = None
 
 
+class MriTransferMethodRm(RootModel[MriTransferMethod | NullValue]):
+    root: Annotated[
+        MriTransferMethod | NullValue,
+        Field(
+            description="This data type is defined in the same way as the 'MriTransferMethod' data type,  but with the OpenAPI 'nullable: true' property.\n"
+        ),
+    ]
+
+
 class MtcProvider(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
     )
     mtcProviderInformation: MtcProviderInformation | None = None
     afId: str | None = None
+
+
+class N3gaLocation(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    n3gppTai: Tai | None = None
+    n3IwfId: Annotated[
+        str | None,
+        Field(
+            description='This IE shall contain the N3IWF identifier received over NGAP and shall be encoded as a  string of hexadecimal characters. Each character in the string shall take a value of "0"  to "9", "a" to "f" or "A" to "F" and shall represent 4 bits. The most significant  character representing the 4 most significant bits of the N3IWF ID shall appear first in  the string, and the character representing the 4 least significant bit of the N3IWF ID  shall appear last in the string. \n',
+            pattern="^[A-Fa-f0-9]+$",
+        ),
+    ] = None
+    ueIpv4Addr: Ipv4Addr | None = None
+    ueIpv6Addr: Ipv6Addr | None = None
+    portNumber: Uinteger | None = None
+    protocol: TransportProtocol | None = None
+    tnapId: TnapId | None = None
+    twapId: TwapId | None = None
+    hfcNodeId: HfcNodeId | None = None
+    gli: Bytes | None = None
+    w5gbanLineType: LineType | None = None
+    gci: Gci | None = None
 
 
 SupportedVendorSpecificFeaturesAdditionalProperty = TypeAliasType(
@@ -5301,6 +8138,14 @@ class NetworkAreaInfo(BaseModel):
         list[Tai] | None,
         Field(description="Contains a list of tracking area identities.", min_length=1),
     ] = None
+
+
+class NgApCause(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    group: Uinteger
+    value: Uinteger
 
 
 class NrA2xAuth(BaseModel):
@@ -5451,11 +8296,44 @@ class NssaafInfo(BaseModel):
     ] = None
 
 
+class NtnTaiInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    plmnId: PlmnIdNid
+    tacList: Annotated[list[Tac], Field(min_length=1)]
+    derivedTac: Tac | None = None
+
+
+class NwdafData(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    nwdafInstanceId: NfInstanceId
+    nwdafEvents: Annotated[list[NwdafEvent] | None, Field(min_length=1)] = None
+
+
 class OdbData(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
     )
     roamingOdb: RoamingOdb | None = None
+
+
+class OnPathN6SigInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    onPathN6Method: OnPathN6Method
+    asProxyAddr: IpAddr | None = None
+
+
+class PartiallyAllowedSnssai(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    snssai: Snssai
+    allowedTaiList: Annotated[list[Tai], Field(min_length=1)]
 
 
 class PatchItem(BaseModel):
@@ -5509,6 +8387,14 @@ class PcfSelectionAssistanceInfo(BaseModel):
     singleNssai: Snssai
 
 
+class PcfUeCallbackInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    callbackUri: Uri
+    bindingInfo: str | None = None
+
+
 class PcscfInfo(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -5522,15 +8408,33 @@ class PcscfInfo(BaseModel):
     mwIpv4Addresses: Annotated[list[Ipv4Addr] | None, Field(min_length=1)] = None
     mwIpv6Addresses: Annotated[list[Ipv6Addr] | None, Field(min_length=1)] = None
     servedIpv4AddressRanges: Annotated[
-        list[Ipv4AddressRange] | None, Field(min_length=1)
+        list[Ipv4AddressRangeTS29510] | None, Field(min_length=1)
     ] = None
     servedIpv6PrefixRanges: Annotated[
-        list[Ipv6PrefixRange] | None, Field(min_length=1)
+        list[Ipv6PrefixRangeTS29510] | None, Field(min_length=1)
     ] = None
     supiRanges: Annotated[list[SupiRange] | None, Field(min_length=1)] = None
     gpsiRanges: Annotated[list[IdentityRange] | None, Field(min_length=1)] = None
     groupId: NfGroupId | None = None
     servingPlmns: Annotated[list[PlmnId] | None, Field(min_length=1)] = None
+
+
+class PduSessionInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    snssai: Snssai
+    dnn: Dnn
+
+
+class PeriodicityRange(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    lowerBound: Uinteger | None = None
+    upperBound: Uinteger | None = None
+    periodicVals: Annotated[list[Uinteger] | None, Field(min_length=1)] = None
+    addPeriodicVals: Annotated[list[Uinteger] | None, Field(min_length=1)] = None
 
 
 class PlmnEcInfo(BaseModel):
@@ -5600,6 +8504,22 @@ class Polygon(GADShape):
         populate_by_name=True,
     )
     pointList: PointList
+
+
+class PortManagementContainer(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    portManCont: Bytes
+    portNum: Uinteger
+
+
+class PortRangeTS29512(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    startPort: Uinteger
+    endPort: Uinteger
 
 
 class PpActiveTime(BaseModel):
@@ -5732,6 +8652,59 @@ class PresenceInfo(BaseModel):
     ] = None
 
 
+class PresenceInfoRm(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    praId: Annotated[
+        str | None,
+        Field(
+            description='Represents an identifier of the Presence Reporting Area (see clause 28.10 of \n3GPP TS 23.003. This IE shall be present  if the Area of Interest subscribed or\nreported is a Presence Reporting Area or a Set of Core Network predefined Presence\nReporting Areas. When present, it shall be encoded as a string representing an integer\nin the following ranges:\n- 0 to 8 388 607 for UE-dedicated PRA\n- 8 388 608 to 16 777 215 for Core Network predefined PRA\nExamples:\nPRA ID 123 is encoded as "123"\nPRA ID 11 238 660 is encoded as "11238660"\n'
+        ),
+    ] = None
+    additionalPraId: Annotated[
+        str | None,
+        Field(
+            description="This IE may be present if the praId IE is present and if it contains a PRA identifier referring to a set of Core Network predefined Presence Reporting Areas. When present, this IE shall contain a PRA Identifier of an individual PRA within the Set of Core Network predefined Presence Reporting Areas indicated by the praId IE.\n"
+        ),
+    ] = None
+    presenceState: PresenceState | None = None
+    trackingAreaList: Annotated[
+        list[Tai] | None,
+        Field(
+            description="Represents the list of tracking areas that constitutes the area. This IE shall be present if the subscription or the event report  is for tracking UE presence in the tracking areas. For non 3GPP access the TAI shall be the N3GPP TAI.\n",
+            min_length=0,
+        ),
+    ] = None
+    ecgiList: Annotated[
+        list[Ecgi] | None,
+        Field(
+            description="Represents the list of EUTRAN cell Ids that constitutes the area. This IE shall be present if the Area of Interest subscribed is a list of EUTRAN cell Ids.\n",
+            min_length=0,
+        ),
+    ] = None
+    ncgiList: Annotated[
+        list[Ncgi] | None,
+        Field(
+            description="Represents the list of NR cell Ids that constitutes the area. This IE shall be present if the Area of Interest subscribed is a list of NR cell Ids.\n",
+            min_length=0,
+        ),
+    ] = None
+    globalRanNodeIdList: Annotated[
+        list[GlobalRanNodeId] | None,
+        Field(
+            description="Represents the list of NG RAN node identifiers that constitutes the area. This IE shall be present if the Area of Interest subscribed is a list of NG RAN node identifiers.\n"
+        ),
+    ] = None
+    globaleNbIdList: Annotated[
+        list[GlobalRanNodeId] | None,
+        Field(
+            description="Represents the list of eNodeB identifiers that constitutes the area. This IE shall be present if the Area of Interest subscribed is a list of eNodeB identifiers.\n",
+            min_length=1,
+        ),
+    ] = None
+
+
 class ProSeAllowedPlmn(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -5804,11 +8777,234 @@ class QoeTarget(BaseModel):
     imsi: Imsi | None = None
 
 
+class QosCharacteristics(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    field_5qi: Annotated[Field5Qi, Field(alias="5qi")]
+    resourceType: QosResourceType
+    priorityLevel: Field5QiPriorityLevel
+    packetDelayBudget: PacketDelBudget
+    packetErrorRate: PacketErrRate
+    averagingWindow: Annotated[AverWindow | None, Field(validate_default=True)] = 2000
+    maxDataBurstVol: MaxDataBurstVol | None = None
+    extMaxDataBurstVol: ExtMaxDataBurstVol | None = None
+
+
+class QosData(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    qosId: Annotated[
+        str,
+        Field(
+            description="Univocally identifies the QoS control policy data within a PDU session."
+        ),
+    ]
+    field_5qi: Annotated[Field5Qi | None, Field(alias="5qi")] = None
+    maxbrUl: BitRateRm | None = None
+    maxbrDl: BitRateRm | None = None
+    gbrUl: BitRateRm | None = None
+    gbrDl: BitRateRm | None = None
+    arp: Arp | None = None
+    qnc: Annotated[
+        bool | None,
+        Field(
+            description="Indicates whether notifications are requested from 3GPP NG-RAN when the GFBR can no longer (or again) be guaranteed for a QoS Flow during the lifetime of the QoS Flow.\n"
+        ),
+    ] = None
+    priorityLevel: Field5QiPriorityLevelRm | None = None
+    averWindow: Annotated[AverWindowRm | None, Field(validate_default=True)] = 2000
+    maxDataBurstVol: MaxDataBurstVolRm | None = None
+    reflectiveQos: Annotated[
+        bool | None,
+        Field(
+            description="Indicates whether the QoS information is reflective for the corresponding service data  flow.\n"
+        ),
+    ] = None
+    sharingKeyDl: Annotated[
+        str | None,
+        Field(
+            description="Indicates, by containing the same value, what PCC rules may share resource in downlink  direction.\n"
+        ),
+    ] = None
+    sharingKeyUl: Annotated[
+        str | None,
+        Field(
+            description="Indicates, by containing the same value, what PCC rules may share resource in uplink  direction.\n"
+        ),
+    ] = None
+    maxPacketLossRateDl: PacketLossRateRm | None = None
+    maxPacketLossRateUl: PacketLossRateRm | None = None
+    defQosFlowIndication: Annotated[
+        bool | None,
+        Field(
+            description="Indicates that the dynamic PCC rule shall always have its binding with the QoS Flow  associated with the default QoS rule\n"
+        ),
+    ] = None
+    extMaxDataBurstVol: ExtMaxDataBurstVolRm | None = None
+    packetDelayBudget: PacketDelBudget | None = None
+    packetErrorRate: PacketErrRate | None = None
+    pduSetQosDl: PduSetQosParaRm | None = None
+    pduSetQosUl: PduSetQosParaRm | None = None
+
+
+class QosMonitoringData(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    qmId: Annotated[
+        str,
+        Field(
+            description="Univocally identifies the QoS monitoring policy data within a PDU session."
+        ),
+    ]
+    qosMonParamType: QosMonitoringParamType | None = None
+    reqQosMonParams: Annotated[
+        list[RequestedQosMonitoringParameter],
+        Field(
+            description="Indicates the QoS information to be monitored when the QoS Monitoring is enabled for the service data flow.\n",
+            min_length=1,
+        ),
+    ]
+    repFreqs: Annotated[
+        list[ReportingFrequency],
+        Field(
+            description="Indicates the frequency for the reporting, such as event triggered and/or periodic.\n",
+            min_length=1,
+        ),
+    ]
+    repThreshDl: Annotated[
+        int | None,
+        Field(
+            description="Indicates the period of time in units of miliiseconds for DL packet delay."
+        ),
+    ] = None
+    repThreshUl: Annotated[
+        int | None,
+        Field(
+            description="Indicates the period of time in units of miliiseconds for UL packet delay."
+        ),
+    ] = None
+    repThreshRp: Annotated[
+        int | None,
+        Field(
+            description="Indicates the period of time in units of miliiseconds for round trip packet delay.\n"
+        ),
+    ] = None
+    conThreshDl: UintegerRm | None = None
+    conThreshUl: UintegerRm | None = None
+    waitTime: DurationSecRm | None = None
+    repPeriod: DurationSecRm | None = None
+    notifyUri: UriRm | None = None
+    notifyCorreId: str | None = None
+    directNotifInd: Annotated[
+        bool | None,
+        Field(
+            description="Indicates that the direct event notification sent by UPF to the Local NEF or AF is  requested if it is included and set to true.\n"
+        ),
+    ] = None
+    avrgWndw: Annotated[AverWindowRm | None, Field(validate_default=True)] = 2000
+    repThreshDatRateUl: BitRateRm | None = None
+    repThreshDatRateDl: BitRateRm | None = None
+    avlBitrateUlThrs: Annotated[
+        list[BitRateRm] | None,
+        Field(
+            description="Indicates a list of thresholds for uplink available bitrate reporting.",
+            min_length=1,
+        ),
+    ] = None
+    avlBitrateDlThrs: Annotated[
+        list[BitRateRm] | None,
+        Field(
+            description="Indicates a list of thresholds for uplink available bitrate reporting.",
+            min_length=1,
+        ),
+    ] = None
+    dataCollAppId: ApplicationId | None = None
+
+
+class QosMonitoringInformation(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    repThreshDl: int | None = None
+    repThreshUl: int | None = None
+    repThreshRp: int | None = None
+    repThreshDatRateUl: BitRate | None = None
+    repThreshDatRateDl: BitRate | None = None
+    conThreshDl: Uinteger | None = None
+    conThreshUl: Uinteger | None = None
+    avlBitrateUlThrs: Annotated[
+        list[BitRate] | None,
+        Field(
+            description="Indicates a list of thresholds for uplink available bitrate reporting.",
+            min_length=1,
+        ),
+    ] = None
+    avlBitrateDlThrs: Annotated[
+        list[BitRate] | None,
+        Field(
+            description="Indicates a list of thresholds for downlink available bitrate reporting.",
+            min_length=1,
+        ),
+    ] = None
+
+
+class QosMonitoringInformationRm(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    repThreshDl: int | None = None
+    repThreshUl: int | None = None
+    repThreshRp: int | None = None
+    repThreshDatRateUl: BitRateRm | None = None
+    repThreshDatRateDl: BitRateRm | None = None
+    conThreshDl: UintegerRm | None = None
+    conThreshUl: UintegerRm | None = None
+    avlBitrateUlThrs: Annotated[list[BitRateRm] | None, Field(min_length=1)] = None
+    avlBitrateDlThrs: Annotated[list[BitRateRm] | None, Field(min_length=1)] = None
+
+
+class QosMonitoringReportTS29512(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    refPccRuleIds: Annotated[
+        list[str],
+        Field(
+            description="An array of PCC rule id references to the PCC rules associated with the QoS monitoring report.\n",
+            min_length=1,
+        ),
+    ]
+    ulDelays: Annotated[list[int] | None, Field(min_length=1)] = None
+    dlDelays: Annotated[list[int] | None, Field(min_length=1)] = None
+    rtDelays: Annotated[list[int] | None, Field(min_length=1)] = None
+    pdmf: Annotated[
+        bool | None,
+        Field(description="Represents the packet delay measurement failure indicator."),
+    ] = None
+    ulDataRate: BitRate | None = None
+    dlDataRate: BitRate | None = None
+    ulCongInfo: Uinteger | None = None
+    dlCongInfo: Uinteger | None = None
+
+
 class QueryParamCombination(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
     )
     queryParams: Annotated[list[QueryParameter], Field(min_length=1)]
+
+
+class RanNasRelCause(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    ngApCause: NgApCause | None = None
+    field_5gMmCause: Annotated[Uinteger | None, Field(alias="5gMmCause")] = None
+    field_5gSmCause: Annotated[Uinteger | None, Field(alias="5gSmCause")] = None
+    epsCause: EpsRanNasRelCause | None = None
 
 
 class RecurTime(BaseModel):
@@ -5824,12 +9020,132 @@ class RecurTime(BaseModel):
     recurEndTime: DateTime | None = None
 
 
+class ReportingSuggestionInformation(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    reportingUrgency: ReportingUrgency
+    reportingTimeInfo: DurationSec | None = None
+
+
+class RequestedRuleData(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    refPccRuleIds: Annotated[
+        list[str],
+        Field(
+            description="An array of PCC rule id references to the PCC rules associated with the control data. \n",
+            min_length=1,
+        ),
+    ]
+    reqData: Annotated[
+        list[RequestedRuleDataType],
+        Field(
+            description="Array of requested rule data type elements indicating what type of rule data is requested for the corresponding referenced PCC rules.\n",
+            min_length=1,
+        ),
+    ]
+
+
+class RouteInformation(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    ipv4Addr: Ipv4Addr | None = None
+    ipv6Addr: Ipv6Addr | None = None
+    portNumber: Uinteger
+
+
+class RouteToLocation(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    dnai: Dnai
+    routeInfo: RouteInformation | None = None
+    routeProfId: Annotated[
+        str | None, Field(description="Identifies the routing profile Id.")
+    ] = None
+
+
 class Rslppi(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
     )
     rangingSlPrivacyInd: RangingSlPrivacyInd
     validTimePeriod: ValidTimePeriod | None = None
+
+
+class RtpHeaderExtInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    rtpHeaderExtType: RtpHeaderExtType | None = None
+    rtpHeaderExtId: Annotated[int | None, Field(ge=1, le=255)] = None
+    longFormat: bool | None = None
+    pduSetSizeActive: bool | None = None
+    pduSetPduCountActive: bool | None = None
+
+
+class RtpHeaderExtInfoRm(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    rtpHeaderExtType: RtpHeaderExtTypeRm | None = None
+    rtpHeaderExtId: Annotated[int | None, Field(ge=1, le=255)] = None
+    longFormat: bool | None = None
+    pduSetSizeActive: bool | None = None
+    pduSetPduCountActive: bool | None = None
+
+
+class RttFlowReference(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    flowDir: FlowDirection | None = None
+    sharedKey: Uint32
+
+
+class RttFlowReferenceRm(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    flowDir: FlowDirection | None = None
+    sharedKey: Uint32
+
+
+class RuleReport(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    pccRuleIds: Annotated[
+        list[str],
+        Field(
+            description="Contains the identifier of the affected PCC rule(s).",
+            min_length=1,
+        ),
+    ]
+    ruleStatus: RuleStatus
+    contVers: Annotated[
+        list[ContentVersion] | None,
+        Field(description="Indicates the version of a PCC rule.", min_length=1),
+    ] = None
+    failureCode: FailureCode | None = None
+    retryAfter: Uinteger | None = None
+    finUnitAct: FinalUnitAction | None = None
+    ranNasRelCauses: Annotated[
+        list[RanNasRelCause] | None,
+        Field(
+            description="indicates the RAN or NAS release cause code information.",
+            min_length=1,
+        ),
+    ] = None
+    altQosParamId: Annotated[
+        str | None,
+        Field(
+            description="Indicates the alternative QoS parameter set that the NG-RAN can guarantee. It is included during the report of successfull resource allocation and indicates that NG-RAN used an alternative QoS profile because the requested QoS could not be allocated..\n"
+        ),
+    ] = None
 
 
 class RuleSet(BaseModel):
@@ -5910,10 +9226,12 @@ class ScpInfo(BaseModel):
     addressDomains: Annotated[list[str] | None, Field(min_length=1)] = None
     ipv4Addresses: Annotated[list[Ipv4Addr] | None, Field(min_length=1)] = None
     ipv6Prefixes: Annotated[list[Ipv6Prefix] | None, Field(min_length=1)] = None
-    ipv4AddrRanges: Annotated[list[Ipv4AddressRange] | None, Field(min_length=1)] = None
-    ipv6PrefixRanges: Annotated[list[Ipv6PrefixRange] | None, Field(min_length=1)] = (
-        None
-    )
+    ipv4AddrRanges: Annotated[
+        list[Ipv4AddressRangeTS29510] | None, Field(min_length=1)
+    ] = None
+    ipv6PrefixRanges: Annotated[
+        list[Ipv6PrefixRangeTS29510] | None, Field(min_length=1)
+    ] = None
     servedNfSetIdList: Annotated[list[NfSetId] | None, Field(min_length=1)] = None
     remotePlmnList: Annotated[list[PlmnId] | None, Field(min_length=1)] = None
     remoteSnpnList: Annotated[list[PlmnIdNid] | None, Field(min_length=1)] = None
@@ -5942,6 +9260,64 @@ class ServiceAreaRestriction(BaseModel):
     maxNumOfTAsForNotAllowedAreas: Uinteger | None = None
 
 
+class ServingNfIdentity(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    servNfInstId: NfInstanceId | None = None
+    guami: Guami | None = None
+    anGwAddr: AnGwAddress | None = None
+    sgsnAddr: SgsnAddress | None = None
+
+
+class SessionRule(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    authSessAmbr: Ambr | None = None
+    authDefQos: AuthorizedDefaultQos | None = None
+    sessRuleId: Annotated[
+        str,
+        Field(
+            description="Univocally identifies the session rule within a PDU session."
+        ),
+    ]
+    refUmData: Annotated[
+        str | None,
+        Field(
+            description="A reference to UsageMonitoringData policy decision type. It is the umId described in  clause 5.6.2.12.\n"
+        ),
+    ] = None
+    refUmN3gData: Annotated[
+        str | None,
+        Field(
+            description="A reference to UsageMonitoringData policy decision type to apply for Non-3GPP access. It  is the umId described in clause 5.6.2.12.\n"
+        ),
+    ] = None
+    refCondData: Annotated[
+        str | None,
+        Field(
+            description="A reference to the condition data. It is the condId described in clause 5.6.2.9.\n"
+        ),
+    ] = None
+
+
+class SimConnFailEvent(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    notificationUri: Uri
+    notifCorreId: str
+
+
+class SliceReplReqInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    snssai: Snssai
+    altSnssai: Snssai
+
+
 class SliceScopePerPlmn(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -5957,6 +9333,14 @@ class SliceUsageControlInfo(BaseModel):
     sNssai: Snssai
     deregInactTimer: DurationSec | None = None
     sessInactTimer: DurationSec | None = None
+
+
+class SliceUsgCtrlInfoTS29507(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    snssai: Snssai
+    deregInactivTimer: DurationSecRm | None = None
 
 
 class SmPolicyDnnData(BaseModel):
@@ -6073,6 +9457,23 @@ class SmfRegistration(BaseModel):
     wildcardInd: bool | None = None
 
 
+class SmfSelectionData(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    unsuppDnn: bool | None = None
+    candidates: Annotated[
+        dict[str, CandidateForReplacement] | None,
+        Field(
+            description="Contains the list of DNNs per S-NSSAI that are candidates for replacement. The snssai attribute within the CandidateForReplacement data type is the key of the map.\n",
+            min_length=1,
+        ),
+    ] = None
+    snssai: Snssai | None = None
+    mappingSnssai: Snssai | None = None
+    dnn: Dnn | None = None
+
+
 class SmsSubscriptionData(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -6113,6 +9514,27 @@ class SnssaiMbSmfInfoItem(BaseModel):
     dnnInfoList: Annotated[list[DnnMbSmfInfoItem], Field(min_length=1)]
 
 
+class SnssaiPartRejected(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    snssai: Snssai
+    allowedTaiList: Annotated[list[Tai] | None, Field(min_length=1)] = None
+    rejectedTaiList: Annotated[list[Tai] | None, Field(min_length=1)] = None
+
+
+class SnssaiReplaceInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    snssai: Snssai
+    status: SnssaiStatus | None = None
+    altSnssai: Snssai | None = None
+    nsReplTerminInd: TerminationIndication | None = None
+    plmnId: PlmnId | None = None
+    mitigationInfo: MitigationInfo | None = None
+
+
 class SnssaiSmfInfoItem(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -6128,6 +9550,32 @@ class SnssaiTsctsfInfoItem(BaseModel):
     )
     sNssai: ExtSnssai
     dnnInfoList: Annotated[list[DnnTsctsfInfoItem], Field(min_length=1)]
+
+
+class SpatialValidity(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    presenceInfoList: Annotated[
+        dict[str, PresenceInfo],
+        Field(
+            description="Defines the presence information provisioned by the AF. The praId attribute within the PresenceInfo data type is the key of the map.\n",
+            min_length=1,
+        ),
+    ]
+
+
+class SpatialValidityRm(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    presenceInfoList: Annotated[
+        dict[str, PresenceInfo],
+        Field(
+            description="Defines the presence information provisioned by the AF. The praId attribute within the  PresenceInfo data type is the key of the map.\n",
+            min_length=1,
+        ),
+    ]
 
 
 class Ssm(BaseModel):
@@ -6168,6 +9616,14 @@ class SubscribedDefaultQos(BaseModel):
     field_5qi: Annotated[Field5Qi, Field(alias="5qi")]
     arp: Arp
     priorityLevel: Field5QiPriorityLevel | None = None
+
+
+class ThresholdValue(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    rttThres: UintegerRm | None = None
+    plrThres: PacketLossRateRm | None = None
 
 
 class TimePeriod(BaseModel):
@@ -6229,6 +9685,83 @@ class TraceData(BaseModel):
     jobType: JobType | None = None
 
 
+class TraffRouteReqOutcomeEvent(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    notificationUri: Uri
+    notifCorreId: str
+
+
+class TrafficCorrelationInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    corrType: CorrelationType | None = None
+    tfcCorrId: Annotated[
+        str | None,
+        Field(
+            description="Identification of a set of UEs accessing the application identified by the  Application Identifier or traffic filtering information.\n"
+        ),
+    ] = None
+    comEasIpv4Addr: Ipv4AddrRm | None = None
+    comEasIpv6Addr: Ipv6AddrRm | None = None
+    fqdnRange: Annotated[list[FqdnPatternMatchingRule] | None, Field(min_length=1)] = (
+        None
+    )
+    notifUri: UriRm | None = None
+    notifCorrId: Annotated[
+        str | None, Field(description="Notification correlation identifier.")
+    ] = None
+
+
+class TrafficParaData(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    periodUl: DurationMilliSecRm | None = None
+    periodDl: DurationMilliSecRm | None = None
+    reqTrafficParas: Annotated[
+        list[TrafficParameterMeas] | None,
+        Field(
+            description="Indicates the traffic parameters to be measured.", min_length=1
+        ),
+    ] = None
+    repFreqs: Annotated[
+        list[ReportingFrequency] | None,
+        Field(
+            description="Represents the notification method (periodic or on event detection).",
+            min_length=1,
+        ),
+    ] = None
+    dlN6JitterThr: Uinteger | None = None
+    repPeriod: DurationSecRm | None = None
+
+
+class TscaiInputContainer(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    periodicity: Uinteger | None = None
+    burstArrivalTime: DateTime | None = None
+    surTimeInNumMsg: Uinteger | None = None
+    surTimeInTime: Uinteger | None = None
+    burstArrivalTimeWnd: TimeWindow | None = None
+    periodicityRange: PeriodicityRange | None = None
+
+
+class TsnBridgeInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    bridgeId: Uint64 | None = None
+    dsttAddr: MacAddr48 | None = None
+    dsttPortNum: Uinteger | None = None
+    dsttResidTime: Uinteger | None = None
+    mtuIpv4: Uint16 | None = None
+    mtuIpv6: Uint32 | None = None
+
+
 class UcSubscriptionData(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -6240,6 +9773,21 @@ class UcSubscriptionData(BaseModel):
             min_length=1,
         ),
     ] = None
+
+
+class UpPathChgEvent(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    notificationUri: Uri
+    notifCorreId: Annotated[
+        str,
+        Field(
+            description="It is used to set the value of Notification Correlation ID in the notification sent by the SMF.\n"
+        ),
+    ]
+    dnaiChgType: DnaiChangeType
+    afAckInd: bool | None = None
 
 
 class UpfFunctionalityData(BaseModel):
@@ -6271,6 +9819,35 @@ class UpuInfo(BaseModel):
     upuTransparentContainer: Bytes | None = None
 
 
+class UsageMonitoringData(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    umId: Annotated[
+        str,
+        Field(
+            description="Univocally identifies the usage monitoring policy data within a PDU session."
+        ),
+    ]
+    volumeThreshold: VolumeRm | None = None
+    volumeThresholdUplink: VolumeRm | None = None
+    volumeThresholdDownlink: VolumeRm | None = None
+    timeThreshold: DurationSecRm | None = None
+    monitoringTime: DateTimeRm | None = None
+    nextVolThreshold: VolumeRm | None = None
+    nextVolThresholdUplink: VolumeRm | None = None
+    nextVolThresholdDownlink: VolumeRm | None = None
+    nextTimeThreshold: DurationSecRm | None = None
+    inactivityTime: DurationSecRm | None = None
+    exUsagePccRuleIds: Annotated[
+        list[str] | None,
+        Field(
+            description="Contains the PCC rule identifier(s) which corresponding service data flow(s) shall be excluded from PDU Session usage monitoring. It is only included in the UsageMonitoringData instance for session level usage monitoring.\n",
+            min_length=1,
+        ),
+    ] = None
+
+
 class UsageThreshold(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -6279,6 +9856,74 @@ class UsageThreshold(BaseModel):
     totalVolume: Volume | None = None
     downlinkVolume: Volume | None = None
     uplinkVolume: Volume | None = None
+
+
+class UsageThresholdRm(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    duration: DurationSecRmTS29122 | None = None
+    totalVolume: VolumeRm | None = None
+    downlinkVolume: VolumeRm | None = None
+    uplinkVolume: VolumeRm | None = None
+
+
+class UserPlaneAddress1(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    ipv4Addr: Ipv4Addr | None = None
+    ipv4PortRanges: Annotated[
+        list[PortRangeTS29512] | None,
+        Field(description="Contains Ipv4 address range(s).", min_length=1),
+    ] = None
+    ipv6Addr: Ipv6Addr | None = None
+    ipv6Prefix: Ipv6Prefix | None = None
+    ipv6PortRanges: Annotated[
+        list[PortRangeTS29512] | None,
+        Field(description="Contains Ipv6 address port range(s).", min_length=1),
+    ] = None
+    macAddr: MacAddr48 | None = None
+    vlanTag: Annotated[str | None, Field(description="Contains a VLAN Tag ID.")] = None
+
+
+class UserPlaneAddress(RootModel[UserPlaneAddress1]):
+    root: Annotated[
+        UserPlaneAddress1, Field(description="Represents a user plane address.")
+    ]
+
+
+class UtraLocation(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    cgi: CellGlobalId | None = None
+    sai: ServiceAreaId | None = None
+    lai: LocationAreaId | None = None
+    rai: RoutingAreaId | None = None
+    ageOfLocationInformation: Annotated[
+        int | None,
+        Field(
+            description='The value represents the elapsed time in minutes since the last network contact of the mobile station.  Value "0" indicates that the location information was obtained after a successful paging procedure for Active Location Retrieval when the UE is in idle mode\n or after a successful location reporting procedure the UE is in connected mode. Any\nother value than "0" indicates that the location information is the last known one.  See 3GPP TS 29.002 clause 17.7.8.\n',
+            ge=0,
+            le=32767,
+        ),
+    ] = None
+    ueLocationTimestamp: DateTime | None = None
+    geographicalInformation: Annotated[
+        str | None,
+        Field(
+            description="Refer to geographical Information.See 3GPP TS 23.032 clause 7.3.2. Only the description of an ellipsoid point with uncertainty circle is allowed to be used.\n",
+            pattern="^[0-9A-F]{16}$",
+        ),
+    ] = None
+    geodeticInformation: Annotated[
+        str | None,
+        Field(
+            description="Refers to Calling Geodetic Location. See ITU-T\xa0Recommendation Q.763 (1999) clause 3.88.2. Only the description of an ellipsoid point with uncertainty circle is allowed to be used.\n",
+            pattern="^[0-9A-F]{20}$",
+        ),
+    ] = None
 
 
 class V2xSubscriptionData(BaseModel):
@@ -6334,6 +9979,44 @@ class VnGroupData(BaseModel):
         Field(alias="5gVnGroupCommunicationType"),
     ] = None
     maxGroupDataRate: MaxGroupDataRate | None = None
+
+
+class VplmnOffloadingInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    offloadIdentifier: OffloadIdentifier | None = None
+    vplmnId: PlmnId | None = None
+    allowedTraffic: bool | None = True
+    ipv4AddressRanges: Annotated[list[Ipv4AddressRange] | None, Field(min_length=1)] = (
+        None
+    )
+    ipv4AddrMasks: Annotated[list[Ipv4AddrMask] | None, Field(min_length=1)] = None
+    ipv6AddressRanges: Annotated[list[Ipv6AddressRange] | None, Field(min_length=1)] = (
+        None
+    )
+    ipv6PrefixRanges: Annotated[list[Ipv6PrefixRange] | None, Field(min_length=1)] = (
+        None
+    )
+    fqdnList: Annotated[list[Fqdn] | None, Field(min_length=1)] = None
+    fqdnPatterns: Annotated[
+        list[FqdnPatternMatchingRule] | None, Field(min_length=1)
+    ] = None
+
+
+class VplmnQos(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    field_5qi: Annotated[Field5Qi | None, Field(alias="5qi")] = None
+    add5QiList: Annotated[list[Field5Qi] | None, Field(min_length=1)] = None
+    arp: Arp | None = None
+    sessionAmbr: Ambr | None = None
+    maxFbrDl: BitRate | None = None
+    maxFbrUl: BitRate | None = None
+    guaFbrDl: BitRate | None = None
+    guaFbrUl: BitRate | None = None
+    field_5qiPL: Annotated[Field5QiPriorityLevel | None, Field(alias="5qiPL")] = None
 
 
 class WirelineArea(BaseModel):
@@ -6460,6 +10143,22 @@ class AfReqDefaultQoS(BaseModel):
     priorityLevel: Field5QiPriorityLevel | None = None
 
 
+class AfSfcRequirement(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    sfcIdDl: Annotated[
+        str | None,
+        Field(description="Reference to a pre-configured SFC for downlink traffic."),
+    ] = None
+    sfcIdUl: Annotated[
+        str | None,
+        Field(description="Reference to a pre-configured SFC for uplink traffic."),
+    ] = None
+    spVal: SpatialValidityRm | None = None
+    metadata: Metadata | None = None
+
+
 class AmPolicyData(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -6508,6 +10207,22 @@ class AmfInfo(BaseModel):
     amfEvents: Annotated[list[AmfEventType] | None, Field(min_length=1)] = None
     praIdList: Annotated[list[str] | None, Field(min_length=1)] = None
     mobileIabInd: MobileIabInd | None = None
+
+
+class AppSessionContextRespData(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    servAuthInfo: ServAuthInfo | None = None
+    directNotifReports: Annotated[
+        list[DirectNotificationReport] | None,
+        Field(
+            description="QoS monitoring parameter(s) that cannot be directly notified for the indicated flows.\n",
+            min_length=1,
+        ),
+    ] = None
+    ueIds: Annotated[list[UeIdentityInfo] | None, Field(min_length=1)] = None
+    suppFeat: SupportedFeatures | None = None
 
 
 class AreaScope(BaseModel):
@@ -6624,6 +10339,60 @@ class CagData(BaseModel):
     provisioningTime: DateTime | None = None
 
 
+class ChargingData(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    chgId: Annotated[
+        str,
+        Field(
+            description="Univocally identifies the charging control policy data within a PDU session."
+        ),
+    ]
+    meteringMethod: MeteringMethod | None = None
+    offline: Annotated[
+        bool | None,
+        Field(
+            description="Indicates the offline charging is applicable to the PCC rule when it is included and set  to true.\n"
+        ),
+    ] = None
+    online: Annotated[
+        bool | None,
+        Field(
+            description="Indicates the online charging is applicable to the PCC rule when it is included and set  to true.\n"
+        ),
+    ] = None
+    sdfHandl: Annotated[
+        bool | None,
+        Field(
+            description="Indicates whether the service data flow is allowed to start while the SMF is waiting for  the response to the credit request.\n"
+        ),
+    ] = None
+    ratingGroup: Uint32 | None = None
+    reportingLevel: ReportingLevel | None = None
+    serviceId: Uint32 | None = None
+    sponsorId: Annotated[
+        str | None, Field(description="Indicates the sponsor identity.")
+    ] = None
+    appSvcProvId: Annotated[
+        str | None,
+        Field(description="Indicates the application service provider identity."),
+    ] = None
+    afChargingIdentifier: ChargingId | None = None
+    afChargId: ApplicationChargingId | None = None
+
+
+class ClockQualityAcceptanceCriterionRm(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    synchronizationState: Annotated[
+        list[SynchronizationState] | None, Field(min_length=1)
+    ] = None
+    clockQuality: ClockQualityRm | None = None
+    parentTimeSource: Annotated[list[TimeSource] | None, Field(min_length=1)] = None
+
+
 class CommunicationCharacteristics(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -6654,17 +10423,17 @@ class DnnUpfInfoItem(BaseModel):
     dnn: Dnn
     dnaiList: Annotated[list[Dnai] | None, Field(min_length=1)] = None
     pduSessionTypes: Annotated[list[PduSessionType] | None, Field(min_length=1)] = None
-    ipv4AddressRanges: Annotated[list[Ipv4AddressRange] | None, Field(min_length=1)] = (
-        None
-    )
-    ipv6PrefixRanges: Annotated[list[Ipv6PrefixRange] | None, Field(min_length=1)] = (
-        None
-    )
+    ipv4AddressRanges: Annotated[
+        list[Ipv4AddressRangeTS29510] | None, Field(min_length=1)
+    ] = None
+    ipv6PrefixRanges: Annotated[
+        list[Ipv6PrefixRangeTS29510] | None, Field(min_length=1)
+    ] = None
     natedIpv4AddressRanges: Annotated[
-        list[Ipv4AddressRange] | None, Field(min_length=1)
+        list[Ipv4AddressRangeTS29510] | None, Field(min_length=1)
     ] = None
     natedIpv6PrefixRanges: Annotated[
-        list[Ipv6PrefixRange] | None, Field(min_length=1)
+        list[Ipv6PrefixRangeTS29510] | None, Field(min_length=1)
     ] = None
     ipv4IndexList: Annotated[list[IpIndexTS29503] | None, Field(min_length=1)] = None
     ipv6IndexList: Annotated[list[IpIndexTS29503] | None, Field(min_length=1)] = None
@@ -6691,6 +10460,14 @@ class DnnUpfInfoItem(BaseModel):
             min_length=1,
         ),
     ] = None
+
+
+class EasServerAddress(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    ip: IpAddr
+    port: Uinteger
 
 
 class EasdfInfo(BaseModel):
@@ -6783,6 +10560,109 @@ class EpsInterworkingInfo(BaseModel):
     registrationTime: DateTime | None = None
 
 
+class EutraLocation(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    tai: Tai
+    ignoreTai: bool | None = False
+    ecgi: Ecgi
+    ignoreEcgi: Annotated[
+        bool | None,
+        Field(
+            description="This flag when present shall indicate that the Ecgi shall be ignored When present, it shall be set as follows: - true: ecgi shall be ignored. - false (default): ecgi shall not be ignored.\n"
+        ),
+    ] = False
+    ageOfLocationInformation: Annotated[
+        int | None,
+        Field(
+            description='The value represents the elapsed time in minutes since the last network contact of the mobile station.  Value "0" indicates that the location information was obtained after a successful paging procedure for Active Location Retrieval when the UE is in idle mode or after a successful NG-RAN location reporting procedure with the eNB when the UE is in connected mode.  Any other value than "0" indicates that the location information is the last known one.  See 3GPP TS 29.002 clause 17.7.8.\n',
+            ge=0,
+            le=32767,
+        ),
+    ] = None
+    ueLocationTimestamp: DateTime | None = None
+    geographicalInformation: Annotated[
+        str | None,
+        Field(
+            description="Refer to geographical Information. See 3GPP TS 23.032 clause 7.3.2. Only the description of an ellipsoid point with uncertainty circle is allowed to be used.\n",
+            pattern="^[0-9A-F]{16}$",
+        ),
+    ] = None
+    geodeticInformation: Annotated[
+        str | None,
+        Field(
+            description="Refers to Calling Geodetic Location. See ITU-T Recommendation Q.763 (1999) [24] clause 3.88.2. Only the description of an ellipsoid point with uncertainty circle is allowed to be used.\n",
+            pattern="^[0-9A-F]{20}$",
+        ),
+    ] = None
+    globalNgenbId: GlobalRanNodeId | None = None
+    globalENbId: GlobalRanNodeId | None = None
+
+
+class EventsSubscReqData(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    events: Annotated[list[AfEventSubscription], Field(min_length=1)]
+    notifUri: Uri | None = None
+    reqQosMonParams: Annotated[
+        list[RequestedQosMonitoringParameter] | None, Field(min_length=1)
+    ] = None
+    qosMon: QosMonitoringInformation | None = None
+    qosMonDatRate: QosMonitoringInformation | None = None
+    pdvReqMonParams: Annotated[
+        list[RequestedQosMonitoringParameter] | None, Field(min_length=1)
+    ] = None
+    pdvMon: QosMonitoringInformation | None = None
+    congestMon: QosMonitoringInformation | None = None
+    rttMon: QosMonitoringInformation | None = None
+    avlBitRateMon: QosMonitoringInformation | None = None
+    rttFlowRef: RttFlowReference | None = None
+    reqAnis: Annotated[list[RequiredAccessInfo] | None, Field(min_length=1)] = None
+    usgThres: UsageThreshold | None = None
+    notifCorreId: str | None = None
+    afAppIds: Annotated[list[AfAppId] | None, Field(min_length=1)] = None
+    directNotifInd: Annotated[
+        bool | None,
+        Field(
+            description="Indicates whether the direct event notification is requested (true) or not (false) for the provided QoS monitoring parameters. Default value is false.\n"
+        ),
+    ] = None
+    avrgWndw: Annotated[AverWindow | None, Field(validate_default=True)] = 2000
+
+
+class EventsSubscReqDataRm(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    events: Annotated[list[AfEventSubscription], Field(min_length=1)]
+    notifUri: Uri | None = None
+    reqQosMonParams: Annotated[
+        list[RequestedQosMonitoringParameter] | None, Field(min_length=1)
+    ] = None
+    qosMon: QosMonitoringInformationRm | None = None
+    qosMonDatRate: QosMonitoringInformationRm | None = None
+    pdvReqMonParams: Annotated[
+        list[RequestedQosMonitoringParameter] | None, Field(min_length=1)
+    ] = None
+    pdvMon: QosMonitoringInformationRm | None = None
+    congestMon: QosMonitoringInformationRm | None = None
+    rttMon: QosMonitoringInformationRm | None = None
+    rttFlowRef: RttFlowReferenceRm | None = None
+    avlBitRateMon: QosMonitoringInformationRm | None = None
+    reqAnis: Annotated[list[RequiredAccessInfo] | None, Field(min_length=1)] = None
+    usgThres: UsageThresholdRm | None = None
+    notifCorreId: str | None = None
+    directNotifInd: Annotated[
+        bool | None,
+        Field(
+            description="Indicates whether the direct event notification is requested (true) or not (false) for the provided and/or previously provided QoS monitoring parameters.\n"
+        ),
+    ] = None
+    avrgWndw: Annotated[AverWindowRm | None, Field(validate_default=True)] = 2000
+
+
 class FlowInfo(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -6813,6 +10693,51 @@ class FlowInfo(BaseModel):
     ] = None
 
 
+class FlowInformation(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    flowDescription: FlowDescriptionTS29512 | None = None
+    ethFlowDescription: EthFlowDescription | None = None
+    packFiltId: Annotated[
+        str | None, Field(description="An identifier of packet filter.")
+    ] = None
+    packetFilterUsage: Annotated[
+        bool | None,
+        Field(
+            description='Indicates whether the packet filter shall be sent to the UE. true indicates that Tthe packet filter shall be sent to the UE. false indicates that the packet filter shall not be sent to the UE.  The default value is "false" shall apply, if the attribute is not present and has not been supplied previously.\n'
+        ),
+    ] = None
+    tosTrafficClass: Annotated[
+        str | None,
+        Field(
+            description="Contains the Ipv4 Type-of-Service and mask field or the Ipv6 Traffic-Class field and  mask field.\n"
+        ),
+    ] = None
+    spi: Annotated[
+        str | None,
+        Field(description="the security parameter index of the IPSec packet."),
+    ] = None
+    flowLabel: Annotated[
+        str | None, Field(description="the Ipv6 flow label header field.")
+    ] = None
+    flowDirection: FlowDirectionRm | None = None
+    mpxMediaUlInfos: Annotated[
+        list[MpxMediaInfo] | None,
+        Field(
+            description="(S)RTP Multiplexed media information for the Uplink IP flow.",
+            min_length=1,
+        ),
+    ] = None
+    mpxMediaDlInfos: Annotated[
+        list[MpxMediaInfo] | None,
+        Field(
+            description="(S)RTP Multiplexed media information for the Downlink IP flow.",
+            min_length=1,
+        ),
+    ] = None
+
+
 class GeographicArea(
     RootModel[
         Point
@@ -6828,6 +10753,70 @@ class GeographicArea(
         Point | PointUncertaintyCircle | PointUncertaintyEllipse | Polygon | PointAltitude | PointAltitudeUncertainty | EllipsoidArc,
         Field(description="Geographic area specified by different shape."),
     ]
+
+
+class GeraLocation(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    locationNumber: Annotated[
+        str | None,
+        Field(
+            description="Location number within the PLMN. See 3GPP TS 23.003, clause 4.5."
+        ),
+    ] = None
+    cgi: CellGlobalId | None = None
+    sai: ServiceAreaId | None = None
+    lai: LocationAreaId | None = None
+    rai: RoutingAreaId | None = None
+    vlrNumber: Annotated[
+        str | None, Field(description="VLR number. See 3GPP TS 23.003 clause 5.1.")
+    ] = None
+    mscNumber: Annotated[
+        str | None, Field(description="MSC number. See 3GPP TS 23.003 clause 5.1.")
+    ] = None
+    ageOfLocationInformation: Annotated[
+        int | None,
+        Field(
+            description='The value represents the elapsed time in minutes since the last network contact of the mobile station. Value "0" indicates that the location information was obtained after a successful paging procedure for  Active Location Retrieval when the UE is in idle mode or after a successful location reporting procedure the UE is in connected mode. Any other value than "0" indicates that the location information is the last known one. See 3GPP TS 29.002 clause 17.7.8.\n',
+            ge=0,
+            le=32767,
+        ),
+    ] = None
+    ueLocationTimestamp: DateTime | None = None
+    geographicalInformation: Annotated[
+        str | None,
+        Field(
+            description="Refer to geographical Information.See 3GPP TS 23.032 clause 7.3.2. Only the description of an ellipsoid point with uncertainty circle is allowed to be used.\n",
+            pattern="^[0-9A-F]{16}$",
+        ),
+    ] = None
+    geodeticInformation: Annotated[
+        str | None,
+        Field(
+            description="Refers to Calling Geodetic Location.See ITU-T Recommendation Q.763 (1999) clause 3.88.2.  Only the description of an ellipsoid point with uncertainty circle is allowed to be used.\n",
+            pattern="^[0-9A-F]{20}$",
+        ),
+    ] = None
+
+
+class HeaderHandlingReporting(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    notifFlag: Annotated[
+        bool | None,
+        Field(
+            description="Indicates whether reporting is requested for the performed Header Handling Action. True indicates a reporting is requested. False indicates a reporting is not requested.\n"
+        ),
+    ] = None
+    repSuggInfo: ReportingSuggestionInformation | None = None
+    oneTimeInd: Annotated[
+        bool | None,
+        Field(
+            description="Indicates whether the reporting of a first occurrence of the action per packet flow is enough. True indicates that the reporting applies to the first occurrence. False indicates that the reporting applies to all occurrences.\n"
+        ),
+    ] = None
 
 
 class LcsClientExternal(BaseModel):
@@ -7074,6 +11063,90 @@ class MdtConfiguration(BaseModel):
     ] = None
 
 
+class MediaSubComponent(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    afSigProtocol: AfSigProtocol | None = None
+    ethfDescs: Annotated[
+        list[EthFlowDescription] | None, Field(max_length=2, min_length=1)
+    ] = None
+    fNum: int
+    fDescs: Annotated[
+        list[FlowDescriptionTS29514] | None, Field(max_length=2, min_length=1)
+    ] = None
+    addInfoFlowDescs: Annotated[
+        list[AddFlowDescriptionInfo] | None,
+        Field(
+            description="Represents additional flow description information (flow label and IPsec SPI) per Uplink and/or Downlink IP flows.\n",
+            max_length=2,
+            min_length=1,
+        ),
+    ] = None
+    fStatus: FlowStatus | None = None
+    marBwDl: BitRate | None = None
+    marBwUl: BitRate | None = None
+    tosTrCl: TosTrafficClass | None = None
+    flowUsage: FlowUsage | None = None
+    evSubsc: EventsSubscReqData | None = None
+    mpxMediaUlInfos: Annotated[
+        list[MpxMediaInfo] | None,
+        Field(
+            description="(S)RTP Multiplexed media identification information for the Uplink IP flow.",
+            min_length=1,
+        ),
+    ] = None
+    mpxMediaDlInfos: Annotated[
+        list[MpxMediaInfo] | None,
+        Field(
+            description="(S)RTP Multiplexed media identification information for the Downlink IP flow.",
+            min_length=1,
+        ),
+    ] = None
+
+
+class MediaSubComponentRm(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    afSigProtocol: AfSigProtocol | None = None
+    ethfDescs: Annotated[
+        list[EthFlowDescription] | None, Field(max_length=2, min_length=1)
+    ] = None
+    fNum: int
+    fDescs: Annotated[
+        list[FlowDescriptionTS29514] | None, Field(max_length=2, min_length=1)
+    ] = None
+    addInfoFlowDescs: Annotated[
+        list[AddFlowDescriptionInfo] | None,
+        Field(
+            description="Represents additional flow description information (flow label and IPsec SPI) per Uplink and/or Downlink IP flows.\n",
+            max_length=2,
+            min_length=1,
+        ),
+    ] = None
+    fStatus: FlowStatus | None = None
+    marBwDl: BitRateRm | None = None
+    marBwUl: BitRateRm | None = None
+    tosTrCl: TosTrafficClassRm | None = None
+    flowUsage: FlowUsage | None = None
+    evSubsc: EventsSubscReqDataRm | None = None
+    mpxMediaUlInfos: Annotated[
+        list[MpxMediaInfo] | None,
+        Field(
+            description="(S)RTP Multiplexed media identification information for the Uplink IP flow.",
+            min_length=1,
+        ),
+    ] = None
+    mpxMediaDlInfos: Annotated[
+        list[MpxMediaInfo] | None,
+        Field(
+            description="(S)RTP Multiplexed media identification information for the Downlink IP flow.",
+            min_length=1,
+        ),
+    ] = None
+
+
 class MlAnalyticsInfo(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -7101,6 +11174,50 @@ class NoProfileMatchInfo(BaseModel):
     queryParamCombinationList: Annotated[
         list[QueryParamCombination] | None, Field(min_length=1)
     ] = None
+
+
+class Non3gppDeviceInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    n3gDevId: Annotated[
+        str, Field(description="The identifier of the non-3gpp device.")
+    ]
+    n3gDevAddr: UserPlaneAddress
+
+
+class NrLocation(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    tai: Tai
+    ncgi: Ncgi
+    ignoreNcgi: bool | None = False
+    ageOfLocationInformation: Annotated[
+        int | None,
+        Field(
+            description='The value represents the elapsed time in minutes since the last network contact of the mobile station. Value "0" indicates that the location information was obtained after a successful paging procedure for Active Location Retrieval when the UE is in idle mode or after a successful  NG-RAN location reporting procedure with the eNB when the UE is in connected mode. Any other value than "0" indicates that the location information is the last known one. See 3GPP TS 29.002 clause 17.7.8.\n',
+            ge=0,
+            le=32767,
+        ),
+    ] = None
+    ueLocationTimestamp: DateTime | None = None
+    geographicalInformation: Annotated[
+        str | None,
+        Field(
+            description="Refer to geographical Information. See 3GPP TS 23.032 clause 7.3.2. Only the description of an ellipsoid point with uncertainty circle is allowed to be used.\n",
+            pattern="^[0-9A-F]{16}$",
+        ),
+    ] = None
+    geodeticInformation: Annotated[
+        str | None,
+        Field(
+            description="Refers to Calling Geodetic Location. See ITU-T Recommendation Q.763 (1999) [24] clause 3.88.2. Only the description of an ellipsoid point with uncertainty circle is allowed to be used.\n",
+            pattern="^[0-9A-F]{20}$",
+        ),
+    ] = None
+    globalGnbId: GlobalRanNodeId | None = None
+    ntnTaiInfo: NtnTaiInfo | None = None
 
 
 ServedAmfInfoListAdditionalProperty = TypeAliasType(
@@ -7236,6 +11353,36 @@ class ProblemDetails(BaseModel):
     noProfileMatchInfo: NoProfileMatchInfo | None = None
 
 
+class ProtocolDescription(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    transportProto: MediaTransportProto | None = None
+    rtpHeaderExtInfo: RtpHeaderExtInfo | None = None
+    addRtpHeaderExtInfo: Annotated[
+        list[RtpHeaderExtInfo] | None, Field(min_length=1)
+    ] = None
+    rtpPayloadInfoList: Annotated[list[RtpPayloadInfo] | None, Field(min_length=1)] = (
+        None
+    )
+    mriTransferInfo: MriTransferMethod | None = None
+
+
+class ProtocolDescriptionRm(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    transportProto: MediaTransportProtoRm | None = None
+    rtpHeaderExtInfo: RtpHeaderExtInfoRm | None = None
+    addRtpHeaderExtInfo: Annotated[
+        list[RtpHeaderExtInfo] | None, Field(min_length=1)
+    ] = None
+    rtpPayloadInfoList: Annotated[list[RtpPayloadInfo] | None, Field(min_length=1)] = (
+        None
+    )
+    mriTransferInfo: MriTransferMethodRm | None = None
+
+
 class QmcConfigInfo(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -7325,6 +11472,14 @@ class ServiceTypeUnrelatedClass(BaseModel):
     codeWordInd: CodeWordInd | None = None
     validTimePeriod: ValidTimePeriod | None = None
     codeWordList: Annotated[list[CodeWord] | None, Field(min_length=1)] = None
+
+
+class SliceReplReq(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    type: SliceReplType
+    afSliceReplReq: SliceReplReqInfo | None = None
 
 
 class SmfInfo(BaseModel):
@@ -7418,6 +11573,20 @@ class SorInfo(BaseModel):
     usimSupportOfSorCmci: bool | None = None
 
 
+class SteeringMode(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    steerModeValue: SteerModeValue
+    active: AccessType | None = None
+    standby: AccessTypeRm | None = None
+    field_3gLoad: Annotated[Uinteger | None, Field(alias="3gLoad")] = None
+    prioAcc: AccessType | None = None
+    thresValue: ThresholdValue | None = None
+    steerModeInd: SteerModeIndicator | None = None
+    primary: AccessTypeRm | None = None
+
+
 class TrajectorySegment(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -7430,7 +11599,7 @@ class TrustAfInfo(BaseModel):
         populate_by_name=True,
     )
     sNssaiInfoList: Annotated[list[SnssaiInfoItem] | None, Field(min_length=1)] = None
-    afEvents: Annotated[list[AfEvent] | None, Field(min_length=1)] = None
+    afEvents: Annotated[list[AfEventTS29517] | None, Field(min_length=1)] = None
     appIds: Annotated[list[str] | None, Field(min_length=1)] = None
     internalGroupId: Annotated[list[GroupId] | None, Field(min_length=1)] = None
     mappingInd: bool | None = False
@@ -7543,6 +11712,17 @@ class UsageMonDataLimit(BaseModel):
     resetPeriod: TimePeriod | None = None
 
 
+class UserLocation(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    eutraLocation: EutraLocation | None = None
+    nrLocation: NrLocation | None = None
+    n3gaLocation: N3gaLocation | None = None
+    utraLocation: UtraLocation | None = None
+    geraLocation: GeraLocation | None = None
+
+
 class Field5MbsAuthorizationInfo(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -7607,6 +11787,31 @@ class Amf3GppAccessRegistration(BaseModel):
     ueSnpnSubscriptionInd: bool | None = None
 
 
+class AppDetectionInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    appId: Annotated[
+        str,
+        Field(
+            description="A reference to the application detection filter configured at the UPF"
+        ),
+    ]
+    instanceId: Annotated[
+        str | None,
+        Field(
+            description="Identifier sent by the SMF in order to allow correlation of application Start and Stop events to the specific service data flow description, if service data flow descriptions are deducible.\n"
+        ),
+    ] = None
+    sdfDescriptions: Annotated[
+        list[FlowInformation] | None,
+        Field(
+            description="Contains the detected service data flow descriptions if they are deducible.",
+            min_length=1,
+        ),
+    ] = None
+
+
 class AppSpecificExpectedUeBehaviourData(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -7623,6 +11828,21 @@ class AppSpecificExpectedUeBehaviourData(BaseModel):
     )
 
 
+class AsTimeDistributionParam(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    asTimeDistInd: Annotated[
+        bool | None,
+        Field(
+            description="Indicates the access stratum time distribution via Uu reference point is Activated or not.\n"
+        ),
+    ] = None
+    uuErrorBudget: UintegerRm | None = None
+    clkQltDetLvl: ClockQualityDetailLevelRm | None = None
+    clkQltAcptCri: ClockQualityAcceptanceCriterionRm | None = None
+
+
 class DefaultUnrelatedClass(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -7634,6 +11854,101 @@ class DefaultUnrelatedClass(BaseModel):
     codeWordInd: CodeWordInd | None = None
     validTimePeriod: ValidTimePeriod | None = None
     codeWordList: Annotated[list[CodeWord] | None, Field(min_length=1)] = None
+
+
+class EasIpReplacementInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    source: EasServerAddress
+    target: EasServerAddress
+
+
+class EventsNotification(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    adReports: Annotated[
+        list[AppDetectionReport] | None,
+        Field(description="Includes the detected application report.", min_length=1),
+    ] = None
+    accessType: AccessType | None = None
+    addAccessInfo: AdditionalAccessInfo | None = None
+    relAccessInfo: AdditionalAccessInfo | None = None
+    anChargAddr: AccNetChargingAddress | None = None
+    anChargIds: Annotated[
+        list[AccessNetChargingIdentifier] | None, Field(min_length=1)
+    ] = None
+    anGwAddr: AnGwAddress | None = None
+    l4sReports: Annotated[list[L4sSupport] | None, Field(min_length=1)] = None
+    evSubsUri: Uri
+    evNotifs: Annotated[list[AfEventNotification], Field(min_length=1)]
+    failedResourcAllocReports: Annotated[
+        list[ResourcesAllocationInfo] | None, Field(min_length=1)
+    ] = None
+    succResourcAllocReports: Annotated[
+        list[ResourcesAllocationInfo] | None, Field(min_length=1)
+    ] = None
+    noNetLocSupp: NetLocAccessSupport | None = None
+    outOfCredReports: Annotated[
+        list[OutOfCreditInformation] | None, Field(min_length=1)
+    ] = None
+    plmnId: PlmnIdNid | None = None
+    qncReports: Annotated[
+        list[QosNotificationControlInfoTS29514] | None, Field(min_length=1)
+    ] = None
+    qosMonReports: Annotated[
+        list[QosMonitoringReportTS29514] | None, Field(min_length=1)
+    ] = None
+    qosMonDatRateReps: Annotated[
+        list[QosMonitoringReportTS29514] | None, Field(min_length=1)
+    ] = None
+    pdvMonReports: Annotated[list[PdvMonitoringReport] | None, Field(min_length=1)] = (
+        None
+    )
+    congestReports: Annotated[
+        list[QosMonitoringReportTS29514] | None, Field(min_length=1)
+    ] = None
+    rttMonReports: Annotated[
+        list[QosMonitoringReportTS29514] | None, Field(min_length=1)
+    ] = None
+    qosMonCapRepos: Annotated[
+        dict[str, CapabilityReport] | None,
+        Field(
+            description='Contains the QoS monitoring is supported or not. It shall be present when the notified event is "QOS_MON_CAP_REPO". The key of the map is the attribute "capType".\n',
+            min_length=1,
+        ),
+    ] = None
+    ranNasRelCauses: Annotated[
+        list[RanNasRelCause] | None,
+        Field(description="Contains the RAN and/or NAS release cause.", min_length=1),
+    ] = None
+    ratType: RatType | None = None
+    satBackhaulCategory: SatelliteBackhaulCategory | None = None
+    ueLoc: UserLocation | None = None
+    ueLocTime: DateTime | None = None
+    ueTimeZone: TimeZone | None = None
+    usgRep: AccumulatedUsage | None = None
+    urspEnfRep: Bytes | None = None
+    sscMode: SscMode | None = None
+    ueReqDnn: Dnn | None = None
+    ueReqPduSessionType: PduSessionType | None = None
+    tsnBridgeManCont: BridgeManagementContainer | None = None
+    tsnPortManContDstt: PortManagementContainer | None = None
+    tsnPortManContNwtts: Annotated[
+        list[PortManagementContainer] | None, Field(min_length=1)
+    ] = None
+    ipv4AddrList: Annotated[list[Ipv4AddrMask] | None, Field(min_length=1)] = None
+    ipv6PrefixList: Annotated[list[Ipv6Prefix] | None, Field(min_length=1)] = None
+    batOffsetInfo: BatOffsetInfo | None = None
+    ueReachStatus: UeReachabilityStatus | None = None
+    retryAfter: Uinteger | None = None
+    servSatId: SatelliteId | None = None
+    rateLimitRepo: RateLimitRepo | None = None
+    dnaiChgType: DnaiChangeType | None = None
+    sourceDnai: Dnai | None = None
+    targetDnai: Dnai | None = None
+    sessionRecovStatus: PcSessionRecoveryStatus | None = None
 
 
 class ExpectedUeBehaviour(BaseModel):
@@ -7728,6 +12043,20 @@ class GeoServiceArea(BaseModel):
         None
     )
     civicAddressList: Annotated[list[CivicAddress] | None, Field(min_length=1)] = None
+
+
+class HeaderHandlingActionRequest(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    hHndlgCtrlRef: str | None = None
+    hHndlgAction: Annotated[list[HeaderHandlingAction] | None, Field(min_length=1)] = (
+        None
+    )
+    hInfo: str | None = None
+    hVal: str | None = None
+    hHndlgCond: HeaderHandlingCond | None = None
+    hHndlgRep: HeaderHandlingReporting | None = None
 
 
 class MbUpfInfo(BaseModel):
@@ -8180,6 +12509,414 @@ class NrfInfo(BaseModel):
     ] = None
 
 
+class PccRule(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    flowInfos: Annotated[
+        list[FlowInformation] | None,
+        Field(
+            description="An array of IP flow packet filter information.", min_length=1
+        ),
+    ] = None
+    appId: Annotated[
+        str | None,
+        Field(
+            description="A reference to the application detection filter configured at the UPF."
+        ),
+    ] = None
+    appDescriptor: Bytes | None = None
+    contVer: ContentVersion | None = None
+    protoDescDl: ProtocolDescription | None = None
+    protoDescUl: ProtocolDescription | None = None
+    pccRuleId: Annotated[
+        str,
+        Field(description="Univocally identifies the PCC rule within a PDU session."),
+    ]
+    precedence: Uinteger | None = None
+    afSigProtocol: AfSigProtocol | None = None
+    appReloc: Annotated[
+        bool | None,
+        Field(description="Indication of application relocation possibility."),
+    ] = None
+    easRedisInd: Annotated[
+        bool | None, Field(description="Indicates the EAS rediscovery is required.")
+    ] = None
+    refQosData: Annotated[
+        list[str] | None,
+        Field(
+            description="A reference to the QosData policy decision type. It is the qosId described in  clause 5.6.2.8.\n",
+            max_length=1,
+            min_length=1,
+        ),
+    ] = None
+    refAltQosParams: Annotated[
+        list[str] | None,
+        Field(
+            description="A Reference to the QosData policy decision type for the Alternative QoS parameter sets  of the service data flow.\n",
+            min_length=1,
+        ),
+    ] = None
+    refTcData: Annotated[
+        list[str] | None,
+        Field(
+            description="A reference to the TrafficControlData policy decision type. It is the tcId described in  clause 5.6.2.10.\n",
+            max_length=1,
+            min_length=1,
+        ),
+    ] = None
+    refChgData: Annotated[
+        list[str] | None,
+        Field(
+            description="A reference to the ChargingData policy decision type. It is the chgId described in  clause 5.6.2.11.\n",
+            max_length=1,
+            min_length=1,
+        ),
+    ] = None
+    refChgN3gData: Annotated[
+        list[str] | None,
+        Field(
+            description='A reference to the ChargingData policy decision type only applicable to Non-3GPP access if "ATSSS" feature is supported. It is the chgId described in clause 5.6.2.11.\n',
+            max_length=1,
+            min_length=1,
+        ),
+    ] = None
+    refUmData: Annotated[
+        list[str] | None,
+        Field(
+            description="A reference to UsageMonitoringData policy decision type. It is the umId described in  clause 5.6.2.12.\n",
+            max_length=1,
+            min_length=1,
+        ),
+    ] = None
+    refUmN3gData: Annotated[
+        list[str] | None,
+        Field(
+            description='A reference to UsageMonitoringData policy decision type only applicable to Non-3GPP access if "ATSSS" feature is supported. It is the umId described in clause 5.6.2.12. \n',
+            max_length=1,
+            min_length=1,
+        ),
+    ] = None
+    refCondData: Annotated[
+        str | None,
+        Field(
+            description="A reference to the condition data. It is the condId described in clause 5.6.2.9.\n"
+        ),
+    ] = None
+    refQosMon: Annotated[
+        list[str] | None,
+        Field(
+            description="A reference to the QosMonitoringData policy decision type. It is the qmId described in  clause 5.6.2.40. \n",
+            min_length=1,
+        ),
+    ] = None
+    addrPreserInd: bool | None = None
+    tscaiInputDl: TscaiInputContainer | None = None
+    tscaiInputUl: TscaiInputContainer | None = None
+    tscaiTimeDom: Uinteger | None = None
+    capBatAdaptation: Annotated[
+        bool | None,
+        Field(
+            description='Indicates the capability for AF to adjust the burst sending time, when it is provided and set to "true". The default value is "false" if omitted.\n'
+        ),
+    ] = None
+    ddNotifCtrl: DownlinkDataNotificationControl | None = None
+    ddNotifCtrl2: DownlinkDataNotificationControlRm | None = None
+    disUeNotif: bool | None = None
+    packFiltAllPrec: Uinteger | None = None
+    nscSuppFeats: Annotated[
+        dict[str, SupportedFeatures] | None,
+        Field(
+            description="Identifies a list of Network Function Service Consumer supported per service. The key  used in this map for each entry is the ServiceName value as defined in 3GPP TS 29.510.\n",
+            min_length=1,
+        ),
+    ] = None
+    callInfo: CallInfo | None = None
+    traffParaData: TrafficParaData | None = None
+    multiModalId: MultiModalId | None = None
+    expTranInd: Annotated[
+        bool | None,
+        Field(
+            description='Expedited Transfer Indication for the downlink traffic to enable expedited data transfer with reflective QoS for the Non-GBR service data flow. "true": the expedited data  transfer of larger payload for XR application is enabled in the flow. "false":  the expedited data transfer of larger payload for XR application is not enabled in the  flow. The default value is "false" if omitted.\n'
+        ),
+    ] = None
+    ulBrRecInd: Annotated[
+        bool | None,
+        Field(
+            description='Indicates whether the RAN-Controlled UL Bitrate Recommendation for a media flow is supported or not. - Set to "true": the RAN-controlled UL Bitrate Recommendation is supported. - Set to "false": the RAN-controlled UL Bitrate Recommendation is not supported. - The default value "false" is used if this attribute is omitted.\n'
+        ),
+    ] = None
+
+
+class PolicyAssociationRequest(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    notificationUri: Uri
+    altNotifIpv4Addrs: Annotated[
+        list[Ipv4Addr] | None,
+        Field(
+            description="Alternate or backup IPv4 Address(es) where to send Notifications.",
+            min_length=1,
+        ),
+    ] = None
+    altNotifIpv6Addrs: Annotated[
+        list[Ipv6Addr] | None,
+        Field(
+            description="Alternate or backup IPv6 Address(es) where to send Notifications.",
+            min_length=1,
+        ),
+    ] = None
+    altNotifFqdns: Annotated[
+        list[Fqdn] | None,
+        Field(
+            description="Alternate or backup FQDN(s) where to send Notifications.",
+            min_length=1,
+        ),
+    ] = None
+    supi: Supi
+    gpsi: Gpsi | None = None
+    accessType: AccessType | None = None
+    accessTypes: Annotated[list[AccessType] | None, Field(min_length=1)] = None
+    pei: Pei | None = None
+    userLoc: UserLocation | None = None
+    timeZone: TimeZone | None = None
+    servingPlmn: PlmnIdNid | None = None
+    ratType: RatType | None = None
+    ratTypes: Annotated[list[RatType] | None, Field(min_length=1)] = None
+    groupIds: Annotated[list[GroupId] | None, Field(min_length=1)] = None
+    servAreaRes: ServiceAreaRestriction | None = None
+    wlServAreaRes: WirelineServiceAreaRestriction | None = None
+    rfsp: RfspIndex | None = None
+    ueAmbr: Ambr | None = None
+    ueSliceMbrs: Annotated[
+        list[UeSliceMbr] | None,
+        Field(
+            description="The subscribed UE Slice-MBR for each subscribed S-NSSAI of the home PLMN mapping  to a S-NSSAI of the serving PLMN Shall be provided when available.\n",
+            min_length=1,
+        ),
+    ] = None
+    allowedSnssais: Annotated[
+        list[Snssai] | None,
+        Field(
+            description="array of allowed S-NSSAIs for the 3GPP access.", min_length=1
+        ),
+    ] = None
+    partAllowedNssai: Annotated[
+        dict[str, PartiallyAllowedSnssai] | None,
+        Field(
+            description='Represents the Partially Allowed NSSAI. The key of the map shall be set to the value of the "snssai" attribute of the corresponding map entry (encoded using the PartiallyAllowedSnssai data structure).\n',
+            min_length=1,
+        ),
+    ] = None
+    snssaisPartRejected: Annotated[
+        dict[str, SnssaiPartRejected] | None,
+        Field(
+            description='Represents the set of S-NSSAI(s) rejected partially in the RA. The key of the map shall be set to the value of the "snssai" attribute of the corresponding map entry (encoded using the SnssaiPartRejected data structure).\n',
+            min_length=1,
+        ),
+    ] = None
+    rejectedSnssais: Annotated[list[Snssai] | None, Field(min_length=1)] = None
+    pendingNssai: Annotated[list[Snssai] | None, Field(min_length=1)] = None
+    targetSnssais: Annotated[
+        list[Snssai] | None,
+        Field(description="array of target S-NSSAIs.", min_length=1),
+    ] = None
+    mappingSnssais: Annotated[
+        list[MappingOfSnssai] | None,
+        Field(
+            description="mapping of each S-NSSAI of the Allowed NSSAI to the corresponding S-NSSAI of the HPLMN. \n",
+            min_length=1,
+        ),
+    ] = None
+    n3gAllowedSnssais: Annotated[
+        list[Snssai] | None,
+        Field(
+            description="array of allowed S-NSSAIs for the Non-3GPP access.",
+            min_length=1,
+        ),
+    ] = None
+    guami: Guami | None = None
+    serviveName: ServiceName | None = None
+    traceReq: TraceData | None = None
+    nwdafDatas: Annotated[list[NwdafData] | None, Field(min_length=1)] = None
+    enrgSavInd: Uinteger | None = None
+    suppFeat: SupportedFeatures
+
+
+class PolicyAssociationUpdateRequest(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    notificationUri: Uri | None = None
+    altNotifIpv4Addrs: Annotated[
+        list[Ipv4Addr] | None,
+        Field(
+            description="Alternate or backup IPv4 Address(es) where to send Notifications.",
+            min_length=1,
+        ),
+    ] = None
+    altNotifIpv6Addrs: Annotated[
+        list[Ipv6Addr] | None,
+        Field(
+            description="Alternate or backup IPv6 Address(es) where to send Notifications.",
+            min_length=1,
+        ),
+    ] = None
+    altNotifFqdns: Annotated[
+        list[Fqdn] | None,
+        Field(
+            description="Alternate or backup FQDN(s) where to send Notifications.",
+            min_length=1,
+        ),
+    ] = None
+    triggers: Annotated[
+        list[RequestTrigger] | None,
+        Field(
+            description="Request Triggers that the NF service consumer observes.",
+            min_length=1,
+        ),
+    ] = None
+    servAreaRes: ServiceAreaRestriction | None = None
+    wlServAreaRes: WirelineServiceAreaRestriction | None = None
+    rfsp: RfspIndex | None = None
+    smfSelInfo: SmfSelectionData | None = None
+    ueAmbr: Ambr | None = None
+    ueSliceMbrs: Annotated[
+        list[UeSliceMbr] | None,
+        Field(
+            description='The subscribed UE-Slice-MBR for each subscribed S-NSSAI of the home PLMN mapping to a S-NSSAI of the serving PLMN Shall be provided for the "UE_SLICE_MBR_CH" policy control request trigger.\n',
+            min_length=1,
+        ),
+    ] = None
+    praStatuses: Annotated[
+        dict[str, PresenceInfo] | None,
+        Field(
+            description="Contains the UE presence status for tracking area for which changes of the UE presence occurred. The praId attribute within the PresenceInfo data type is the key of the map.\n",
+            min_length=1,
+        ),
+    ] = None
+    userLoc: UserLocation | None = None
+    allowedSnssais: Annotated[
+        list[Snssai] | None,
+        Field(
+            description="array of allowed S-NSSAIs for the 3GPP access.", min_length=1
+        ),
+    ] = None
+    partAllowedNssai: Annotated[
+        dict[str, PartiallyAllowedSnssai] | None,
+        Field(
+            description='Represents the Partially Allowed NSSAI. The key of the map shall be set to the value of the "snssai" attribute of the corresponding map entry (encoded using the PartiallyAllowedSnssai data structure).\n',
+            min_length=1,
+        ),
+    ] = None
+    snssaisPartRejected: Annotated[
+        dict[str, SnssaiPartRejected] | None,
+        Field(
+            description='Represents the set of S-NSSAI(s) rejected partially in the RA. The key of the map shall be set to the value of the "snssai" attribute of the corresponding map entry (encoded using the SnssaiPartRejected data structure).\n',
+            min_length=1,
+        ),
+    ] = None
+    rejectedSnssais: Annotated[list[Snssai] | None, Field(min_length=1)] = None
+    pendingNssai: Annotated[list[Snssai] | None, Field(min_length=1)] = None
+    targetSnssais: Annotated[
+        list[Snssai] | None,
+        Field(description="array of target S-NSSAIs.", min_length=1),
+    ] = None
+    mappingSnssais: Annotated[
+        list[MappingOfSnssai] | None,
+        Field(
+            description="mapping of each S-NSSAI of the Allowed NSSAI to the corresponding S-NSSAI of the HPLMN. \n",
+            min_length=1,
+        ),
+    ] = None
+    snssaiReplInfos: Annotated[
+        list[SnssaiReplaceInfo] | None,
+        Field(
+            description="Change or removal of Mapping of (replaced) S-NSSAI(s) with Alternative S-NSSAI(s)  for one or more S-NSSAI(s) of the UE's Allowed NSSAI and/or Partially Allowed NSSAI. \n",
+            min_length=1,
+        ),
+    ] = None
+    accessTypes: Annotated[list[AccessType] | None, Field(min_length=1)] = None
+    ratTypes: Annotated[list[RatType] | None, Field(min_length=1)] = None
+    n3gAllowedSnssais: Annotated[
+        list[Snssai] | None,
+        Field(
+            description="array of allowed S-NSSAIs for the Non-3GPP access.",
+            min_length=1,
+        ),
+    ] = None
+    unavailSnssais: Annotated[
+        list[Snssai] | None,
+        Field(
+            description="Represents the unavailable S-NSSAI(s) from the UE's Allowed NSSAI and/or Partially Allowed NSSAI that require network slice replacement.\n",
+            min_length=1,
+        ),
+    ] = None
+    traceReq: TraceData | None = None
+    guami: Guami | None = None
+    nwdafDatas: Annotated[list[NwdafData] | None, Field(min_length=1)] = None
+    afSliceReplOut: SliceReplOutcomeInfo | None = None
+    enrgSavInd: Uinteger | None = None
+    suppFeat: SupportedFeatures | None = None
+
+
+class PolicyUpdate(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    resourceUri: Uri
+    triggers: Annotated[
+        list[RequestTrigger] | None,
+        Field(description="Request Triggers that the PCF subscribes.", min_length=1),
+    ] = None
+    servAreaRes: ServiceAreaRestriction | None = None
+    wlServAreaRes: WirelineServiceAreaRestriction | None = None
+    rfsp: RfspIndex | None = None
+    rfspValTime: DurationSec | None = None
+    targetRfsp: RfspIndex | None = None
+    smfSelInfo: SmfSelectionData | None = None
+    ueAmbr: Ambr | None = None
+    ueSliceMbrs: Annotated[
+        list[UeSliceMbr] | None,
+        Field(
+            description="One or more UE-Slice-MBR(s) for S-NSSAI(s) of serving PLMN the allowed NSSAI as part of the AMF Access and Mobility Policy as determined by the PCF.\n",
+            min_length=1,
+        ),
+    ] = None
+    pras: Annotated[
+        dict[str, PresenceInfoRm] | None,
+        Field(
+            description="Contains the presence reporting area(s) for which reporting was requested. The praId attribute within the PresenceInfo data type is the key of the map.\n",
+            min_length=1,
+        ),
+    ] = None
+    pcfUeInfo: PcfUeCallbackInfo | None = None
+    matchPdus: Annotated[
+        list[PduSessionInfo] | None,
+        Field(
+            description="Indicates the matched PDU session(s) for which the PCF for the UE information apply.\n"
+        ),
+    ] = None
+    asTimeDisParam: AsTimeDistributionParam | None = None
+    snssaiReplInfos: Annotated[
+        dict[str, SnssaiReplaceInfo] | None,
+        Field(
+            description='Contains the network slice replacement information. The key of the map shall be set to the concerned unavailable S-NSSAI provided within the "snssai" attribute of the corresponding map entry (encoded using the SnssaiReplaceInfo data structure) to which the network slice replacement information is related.\n',
+            min_length=1,
+        ),
+    ] = None
+    sliceUsgCtrlInfoSets: Annotated[
+        dict[str, SliceUsgCtrlInfoTS29507] | None,
+        Field(
+            description='Represents the updated network slice usage control information. The key of the map shall be set to the on-demand S-NSSAI (within the "snssai" attribute of the corresponding map entry encoded using the SliceUsgCtrlInfo data structure) to which the network slice usage control information is related.\n',
+            min_length=1,
+        ),
+    ] = None
+    sliceReplReq: SliceReplReq | None = None
+    suppFeat: SupportedFeatures | None = None
+
+
 class RangingSlExternalUnrelatedClass(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -8227,6 +12964,132 @@ AppSpecificExpectedUeBehaviourDataAdditionalProperty = TypeAliasType(
 )
 
 
+class SmPolicyContextData(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    accNetChId: AccNetChId | None = None
+    chargEntityAddr: AccNetChargingAddress | None = None
+    gpsi: Gpsi | None = None
+    supi: Supi
+    invalidSupi: Annotated[
+        bool | None,
+        Field(
+            description="When this attribute is included and set to true, it indicates that the supi attribute contains an invalid value.This attribute shall be present if the SUPI is not available in the SMF or the SUPI is unauthenticated. When present it shall be set to true for an invalid SUPI and false (default) for a valid SUPI.\n"
+        ),
+    ] = None
+    interGrpIds: Annotated[list[GroupId] | None, Field(min_length=1)] = None
+    pduSessionId: PduSessionId
+    pduSessionType: PduSessionType
+    chargingcharacteristics: str | None = None
+    dnn: Dnn
+    dnnSelMode: DnnSelectionMode | None = None
+    notificationUri: Uri
+    accessType: AccessType | None = None
+    ratType: RatType | None = None
+    addAccessInfo: AdditionalAccessInfo | None = None
+    servingNetwork: PlmnIdNid | None = None
+    userLocationInfo: UserLocation | None = None
+    ueTimeZone: TimeZone | None = None
+    pei: Pei | None = None
+    ipv4Address: Ipv4Addr | None = None
+    ipv6AddressPrefix: Ipv6Prefix | None = None
+    ipDomain: Annotated[
+        str | None, Field(description="Indicates the IPv4 address domain")
+    ] = None
+    subsSessAmbr: Ambr | None = None
+    authProfIndex: Annotated[
+        str | None,
+        Field(description="Indicates the DN-AAA authorization profile index"),
+    ] = None
+    subsDefQos: SubscribedDefaultQos | None = None
+    vplmnQos: VplmnQos | None = None
+    numOfPackFilter: Annotated[
+        int | None,
+        Field(
+            description="Contains the number of supported packet filter for signalled QoS rules."
+        ),
+    ] = None
+    online: Annotated[
+        bool | None,
+        Field(
+            description="If it is included and set to true, the online charging is applied to the PDU session.\n"
+        ),
+    ] = None
+    offline: Annotated[
+        bool | None,
+        Field(
+            description="If it is included and set to true, the offline charging is applied to the PDU session.\n"
+        ),
+    ] = None
+    field_3gppPsDataOffStatus: Annotated[
+        bool | None,
+        Field(
+            alias="3gppPsDataOffStatus",
+            description="If it is included and set to true, the 3GPP PS Data Off is activated by the UE.\n",
+        ),
+    ] = None
+    refQosIndication: Annotated[
+        bool | None,
+        Field(
+            description="If it is included and set to true, the reflective QoS is supported by the UE."
+        ),
+    ] = None
+    traceReq: TraceData | None = None
+    sliceInfo: Snssai
+    altSliceInfo: Snssai | None = None
+    qosFlowUsage: QosFlowUsage | None = None
+    servNfId: ServingNfIdentity | None = None
+    suppFeat: SupportedFeatures | None = None
+    smfId: NfInstanceId | None = None
+    recoveryTime: DateTime | None = None
+    maPduInd: MaPduIndication | None = None
+    atsssCapab: AtsssCapabilityTS29512 | None = None
+    atsssCapabs: Annotated[list[AtsssCapabilityExt] | None, Field(min_length=1)] = None
+    ipv4FrameRouteList: Annotated[list[Ipv4AddrMask] | None, Field(min_length=1)] = None
+    ipv6FrameRouteList: Annotated[list[Ipv6Prefix] | None, Field(min_length=1)] = None
+    satBackhaulCategory: SatelliteBackhaulCategory | None = None
+    pcfUeInfo: PcfUeCallbackInfo | None = None
+    pvsInfo: Annotated[list[ServerAddressingInfo] | None, Field(min_length=1)] = None
+    onboardInd: Annotated[
+        bool | None,
+        Field(
+            description="If it is included and set to true, it indicates that the PDU session is used for  UE Onboarding.\n"
+        ),
+    ] = None
+    nwdafDatas: Annotated[list[NwdafData] | None, Field(min_length=1)] = None
+    urspEnfInfo: Bytes | None = None
+    sscMode: SscMode | None = None
+    ueReqDnn: Dnn | None = None
+    ueReqPduSessionType: PduSessionType | None = None
+    hrsboInd: Annotated[
+        bool | None,
+        Field(
+            description='HR-SBO support indication. If present and set to "true", it indicates that the HR-SBO is supported. Default value is "false" if omitted.\n'
+        ),
+    ] = None
+    locOffloadInd: Annotated[
+        bool | None,
+        Field(description="Indicates whether local offloading management is allowed."),
+    ] = None
+    uePolFailReport: UePolicyTransferFailureCause | None = None
+    urspProvSuppInd: Annotated[
+        bool | None,
+        Field(
+            description="Indicates whether URSP Provisioning in EPS is supported or not.\n"
+        ),
+    ] = None
+    mpxMediaInd: Annotated[
+        bool | None,
+        Field(
+            description='(S)RTP Multiplexed Media Identification Information support indication indication. If present and set to "true", it indicates that the UE supports Multiplexed Media Identification Information. Default value is "false" if omitted.\n'
+        ),
+    ] = None
+    trafficDescriptors: Annotated[
+        list[DddTrafficDescriptor] | None, Field(min_length=1)
+    ] = None
+
+
 class SmPolicyData(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -8255,6 +13118,248 @@ class SmPolicyData(BaseModel):
     suppFeat: SupportedFeatures | None = None
 
 
+class SmPolicyDeleteData(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    userLocationInfo: UserLocation | None = None
+    ueTimeZone: TimeZone | None = None
+    servingNetwork: PlmnIdNid | None = None
+    userLocationInfoTime: DateTime | None = None
+    ranNasRelCauses: Annotated[
+        list[RanNasRelCause] | None,
+        Field(description="Contains the RAN and/or NAS release cause.", min_length=1),
+    ] = None
+    accuUsageReports: Annotated[
+        list[AccuUsageReport] | None,
+        Field(description="Contains the usage report", min_length=1),
+    ] = None
+    pduSessRelCause: PduSessionRelCause | None = None
+    servSatId: SatelliteId | None = None
+
+
+class SmPolicyUpdateContextData(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    repPolicyCtrlReqTriggers: Annotated[
+        list[PolicyControlRequestTrigger] | None,
+        Field(
+            description="The policy control reqeust trigges which are met.",
+            min_length=1,
+        ),
+    ] = None
+    accNetChIds: Annotated[
+        list[AccNetChId] | None,
+        Field(
+            description="Indicates the access network charging identifier for the PCC rule(s) or whole PDU  session.\n",
+            min_length=1,
+        ),
+    ] = None
+    accessType: AccessType | None = None
+    ratType: RatType | None = None
+    addAccessInfo: AdditionalAccessInfo | None = None
+    relAccessInfo: AdditionalAccessInfo | None = None
+    servingNetwork: PlmnIdNid | None = None
+    userLocationInfo: UserLocation | None = None
+    ueTimeZone: TimeZone | None = None
+    relIpv4Address: Ipv4Addr | None = None
+    ipv4Address: Ipv4Addr | None = None
+    ipDomain: Annotated[
+        str | None, Field(description="Indicates the IPv4 address domain")
+    ] = None
+    ipv6AddressPrefix: Ipv6Prefix | None = None
+    relIpv6AddressPrefix: Ipv6Prefix | None = None
+    addIpv6AddrPrefixes: Ipv6Prefix | None = None
+    addRelIpv6AddrPrefixes: Ipv6Prefix | None = None
+    multiIpv6Prefixes: Annotated[
+        list[Ipv6Prefix] | None,
+        Field(
+            description="The multiple allocated IPv6 prefixes of the served UE.",
+            min_length=1,
+        ),
+    ] = None
+    multiRelIpv6Prefixes: Annotated[
+        list[Ipv6Prefix] | None,
+        Field(
+            description="The multiple released IPv6 prefixes of the served UE.",
+            min_length=1,
+        ),
+    ] = None
+    relUeMac: MacAddr48 | None = None
+    ueMac: MacAddr48 | None = None
+    subsSessAmbr: Ambr | None = None
+    authProfIndex: Annotated[
+        str | None,
+        Field(description="Indicates the DN-AAA authorization profile index"),
+    ] = None
+    subsDefQos: SubscribedDefaultQos | None = None
+    vplmnQos: VplmnQos | None = None
+    vplmnQosNotApp: Annotated[
+        bool | None,
+        Field(
+            description="If it is included and set to true, indicates that the QoS constraints in the VPLMN are not applicable.\n"
+        ),
+    ] = None
+    numOfPackFilter: Annotated[
+        int | None,
+        Field(
+            description="Contains the number of supported packet filter for signalled QoS rules."
+        ),
+    ] = None
+    accuUsageReports: Annotated[
+        list[AccuUsageReport] | None,
+        Field(description="Contains the usage report", min_length=1),
+    ] = None
+    field_3gppPsDataOffStatus: Annotated[
+        bool | None,
+        Field(
+            alias="3gppPsDataOffStatus",
+            description="If it is included and set to true, the 3GPP PS Data Off is activated by the UE.\n",
+        ),
+    ] = None
+    appDetectionInfos: Annotated[
+        list[AppDetectionInfo] | None,
+        Field(
+            description="Report the start/stop of the application traffic and detected SDF descriptions if applicable.\n",
+            min_length=1,
+        ),
+    ] = None
+    ruleReports: Annotated[
+        list[RuleReport] | None,
+        Field(description="Used to report the PCC rule failure.", min_length=1),
+    ] = None
+    sessRuleReports: Annotated[
+        list[SessionRuleReport] | None,
+        Field(description="Used to report the session rule failure.", min_length=1),
+    ] = None
+    qncReports: Annotated[
+        list[QosNotificationControlInfoTS29512] | None,
+        Field(description="QoS Notification Control information.", min_length=1),
+    ] = None
+    qosMonReports: Annotated[
+        list[QosMonitoringReportTS29512] | None,
+        Field(description="QoS Monitoring reporting information.", min_length=1),
+    ] = None
+    qosMonDatRateReps: Annotated[
+        list[QosMonitoringReportTS29512] | None, Field(min_length=1)
+    ] = None
+    qosMonCongReps: Annotated[
+        list[QosMonitoringReportTS29512] | None, Field(min_length=1)
+    ] = None
+    userLocationInfoTime: DateTime | None = None
+    repPraInfos: Annotated[
+        dict[str, PresenceInfo] | None,
+        Field(
+            description="Reports the changes of presence reporting area. The praId attribute within the PresenceInfo data type is the key of the map.\n",
+            min_length=1,
+        ),
+    ] = None
+    ueInitResReq: UeInitiatedResourceRequest | None = None
+    refQosIndication: Annotated[
+        bool | None,
+        Field(
+            description="If it is included and set to true, the reflective QoS is supported by the UE. If it is included and set to false, the reflective QoS is revoked by the UE.\n"
+        ),
+    ] = None
+    qosFlowUsage: QosFlowUsage | None = None
+    creditManageStatus: CreditManagementStatus | None = None
+    servNfId: ServingNfIdentity | None = None
+    traceReq: TraceData | None = None
+    maPduInd: MaPduIndication | None = None
+    atsssCapab: AtsssCapabilityTS29512 | None = None
+    atsssCapabs: Annotated[list[AtsssCapabilityExt] | None, Field(min_length=1)] = None
+    tsnBridgeInfo: TsnBridgeInfo | None = None
+    tsnBridgeManCont: BridgeManagementContainer | None = None
+    tsnPortManContDstt: PortManagementContainer | None = None
+    tsnPortManContNwtts: Annotated[
+        list[PortManagementContainer] | None, Field(min_length=1)
+    ] = None
+    tscNotifUri: Uri | None = None
+    tscNotifCorreId: Annotated[
+        str | None,
+        Field(
+            description="Correlation identifier for TSC management information notifications.\n"
+        ),
+    ] = None
+    mulAddrInfos: Annotated[
+        list[IpMulticastAddressInfo] | None, Field(min_length=1)
+    ] = None
+    policyDecFailureReports: Annotated[
+        list[PolicyDecisionFailureCode] | None,
+        Field(
+            description="Contains the type(s) of failed policy decision and/or condition data.",
+            min_length=1,
+        ),
+    ] = None
+    invalidPolicyDecs: Annotated[
+        list[InvalidParam] | None,
+        Field(
+            description="Indicates the invalid parameters for the reported type(s) of the failed policy decision and/or condition data.\n",
+            min_length=1,
+        ),
+    ] = None
+    trafficDescriptors: Annotated[
+        list[DddTrafficDescriptor] | None, Field(min_length=1)
+    ] = None
+    pccRuleId: Annotated[
+        str | None,
+        Field(
+            description="Contains the identifier of the PCC rule which is used for traffic detection of event.\n"
+        ),
+    ] = None
+    typesOfNotif: Annotated[list[DlDataDeliveryStatus] | None, Field(min_length=1)] = (
+        None
+    )
+    interGrpIds: Annotated[list[GroupId] | None, Field(min_length=1)] = None
+    satBackhaulCategory: SatelliteBackhaulCategory | None = None
+    pcfUeInfo: PcfUeCallbackInfo | None = None
+    nwdafDatas: Annotated[list[NwdafData] | None, Field(min_length=1)] = None
+    anGwStatus: Annotated[
+        bool | None,
+        Field(
+            description="When it is included and set to true, it indicates that the AN-Gateway has failed and that the PCF should refrain from sending policy decisions to the SMF until it is informed that the AN-Gateway has been recovered.\n"
+        ),
+    ] = None
+    uePolCont: Bytes | None = None
+    uePolFailReport: UePolicyTransferFailureCause | None = None
+    urspEnfInfo: Bytes | None = None
+    sscMode: SscMode | None = None
+    ueReqDnn: Dnn | None = None
+    ueReqPduSessionType: PduSessionType | None = None
+    l4sReports: Annotated[
+        list[L4sSupportInfo] | None,
+        Field(
+            description="ECN marking for L4S support availability in 5GS.", min_length=1
+        ),
+    ] = None
+    altSliceInfo: Snssai | None = None
+    batOffsetInfo: BatOffsetInfoPcc | None = None
+    hrsboInd: Annotated[
+        bool | None,
+        Field(
+            description='HR-SBO support indication. If present and set to "true", it indicates that the HR-SBO is supported. If present and set to "false", it indicates that the HR-SBO is not supported.\n'
+        ),
+    ] = None
+    ueReachStatus: UeReachabilityStatus | None = None
+    retryAfter: Uinteger | None = None
+    qosMonCapRepos: Annotated[
+        dict[str, CapabilityReport] | None,
+        Field(
+            description='QoS monitoring is supported or not. This attribute shall be present only when the notified event is "QOS_MON_CAP_REPO". The key of of the map is the attribute "capType".\n',
+            min_length=1,
+        ),
+    ] = None
+    n3gDevInfos: Annotated[
+        dict[str, Non3gppDeviceInfo] | None,
+        Field(
+            description="Contains information about the non-3gpp device(s) behind the UE using the PDU Session of the UE.\n",
+            min_length=1,
+        ),
+    ] = None
+    servSatId: SatelliteId | None = None
+
+
 class SpatialValidityCond(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
@@ -8272,6 +13377,119 @@ class UnrelatedClass(BaseModel):
     externalUnrelatedClass: ExternalUnrelatedClass | None = None
     serviceTypeUnrelatedClasses: Annotated[
         list[ServiceTypeUnrelatedClass] | None, Field(min_length=1)
+    ] = None
+
+
+class AfHeaderHandlingControlInfo(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    hDetectionReference: Annotated[
+        str, Field(description="Indication of header detection reference.")
+    ]
+    hDetectionSuppInfo: Annotated[
+        str | None, Field(description="Indication of transparent dynamic information.")
+    ] = None
+    notifUri: UriRm | None = None
+    notifId: str | None = None
+    spVal: SpatialValidityRm | None = None
+    tempVals: Annotated[list[TemporalValidity] | None, Field(min_length=1)] = None
+    hHndlgUl: Annotated[
+        list[HeaderHandlingActionRequest] | None,
+        Field(
+            description="Contains the list of header handling action request parameters in the uplink direction.\n",
+            min_length=1,
+        ),
+    ] = None
+    hHndlgDl: Annotated[
+        list[HeaderHandlingActionRequest] | None,
+        Field(
+            description="Contains the list of header handling action request parameters in the downlink direction.\n",
+            min_length=1,
+        ),
+    ] = None
+
+
+class AfRoutingRequirement(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    appReloc: bool | None = None
+    routeToLocs: Annotated[list[RouteToLocation] | None, Field(min_length=1)] = None
+    spVal: SpatialValidity | None = None
+    tempVals: Annotated[list[TemporalValidity] | None, Field(min_length=1)] = None
+    upPathChgSub: UpPathChgEvent | None = None
+    outcomeSub: TraffRouteReqOutcomeEvent | None = None
+    simConnFailSub: SimConnFailEvent | None = None
+    addrPreserInd: bool | None = None
+    simConnInd: Annotated[
+        bool | None,
+        Field(
+            description="Indicates whether simultaneous connectivity should be temporarily maintained for the source and target PSA.\n"
+        ),
+    ] = None
+    simConnTerm: DurationSec | None = None
+    easIpReplaceInfos: Annotated[
+        list[EasIpReplacementInfo] | None,
+        Field(description="Contains EAS IP replacement information.", min_length=1),
+    ] = None
+    easRedisInd: Annotated[
+        bool | None, Field(description="Indicates the EAS rediscovery is required.")
+    ] = None
+    maxAllowedUpLat: Uinteger | None = None
+    tfcCorreInfo: TrafficCorrelationInfo | None = None
+    candDnaiInd: Annotated[
+        bool | None,
+        Field(
+            description="Indicates whether candidate DNAI(s) are requested to be reported."
+        ),
+    ] = None
+    n6DelayInd: Annotated[
+        bool | None,
+        Field(
+            description="Indication of whether the N6 delay measurement is requested to be considered or not. The N6 delay measurement is requested to be considered if it is set to true. The N6 delay measurement is not requested to be considered if it is set to false. The default value is false.\n"
+        ),
+    ] = None
+
+
+class AfRoutingRequirementRm(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    appReloc: bool | None = None
+    routeToLocs: Annotated[list[RouteToLocation] | None, Field(min_length=1)] = None
+    spVal: SpatialValidityRm | None = None
+    tempVals: Annotated[list[TemporalValidity] | None, Field(min_length=1)] = None
+    upPathChgSub: UpPathChgEvent | None = None
+    simConnFailSub: SimConnFailEvent | None = None
+    addrPreserInd: bool | None = None
+    simConnInd: Annotated[
+        bool | None,
+        Field(
+            description="Indicates whether simultaneous connectivity should be temporarily maintained for the source and target PSA.\n"
+        ),
+    ] = None
+    simConnTerm: DurationSecRm | None = None
+    easIpReplaceInfos: Annotated[
+        list[EasIpReplacementInfo] | None,
+        Field(description="Contains EAS IP replacement information.", min_length=1),
+    ] = None
+    easRedisInd: Annotated[
+        bool | None, Field(description="Indicates the EAS rediscovery is required.")
+    ] = None
+    maxAllowedUpLat: UintegerRm | None = None
+    tfcCorreInfo: TrafficCorrelationInfo | None = None
+    candDnaiInd: Annotated[
+        bool | None,
+        Field(
+            description="Indicates whether candidate DNAI(s) are requested to be reported."
+        ),
+    ] = None
+    n6DelayInd: Annotated[
+        bool | None,
+        Field(
+            description="Indication of whether the N6 delay measurement is requested to be considered or not. The N6 delay measurement is requested to be considered if it is set to true. The N6 delay measurement is not requested to be considered if it is set to false.\n"
+        ),
     ] = None
 
 
@@ -8320,12 +13538,269 @@ class LcsPrivacyData(BaseModel):
     ] = "USER_PLANE_REPORT_NOT_ALLOWED"
 
 
+class MediaComponent(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    afAppId: AfAppId | None = None
+    afRoutReq: AfRoutingRequirement | None = None
+    afSfcReq: AfSfcRequirement | None = None
+    afHdrReq: AfHeaderHandlingControlInfo | None = None
+    qosReference: str | None = None
+    disUeNotif: bool | None = None
+    altSerReqs: Annotated[list[str] | None, Field(min_length=1)] = None
+    altSerReqsData: Annotated[
+        list[AlternativeServiceRequirementsData] | None,
+        Field(
+            description="Contains alternative service requirements that include individual QoS parameter sets.\n",
+            min_length=1,
+        ),
+    ] = None
+    contVer: ContentVersion | None = None
+    codecs: Annotated[list[CodecData] | None, Field(max_length=2, min_length=1)] = None
+    desMaxLatency: Float | None = None
+    desMaxLoss: Float | None = None
+    flusId: str | None = None
+    fStatus: FlowStatus | None = None
+    marBwDl: BitRate | None = None
+    marBwUl: BitRate | None = None
+    maxPacketLossRateDl: PacketLossRateRm | None = None
+    maxPacketLossRateUl: PacketLossRateRm | None = None
+    maxSuppBwDl: BitRate | None = None
+    maxSuppBwUl: BitRate | None = None
+    medCompN: int
+    medSubComps: Annotated[
+        dict[str, MediaSubComponent] | None,
+        Field(
+            description="Contains the requested bitrate and filters for the set of service data flows identified by their common flow identifier. The key of the map is the fNum attribute.\n",
+            min_length=1,
+        ),
+    ] = None
+    medType: MediaType | None = None
+    minDesBwDl: BitRate | None = None
+    minDesBwUl: BitRate | None = None
+    mirBwDl: BitRate | None = None
+    mirBwUl: BitRate | None = None
+    preemptCap: PreemptionCapability | None = None
+    preemptVuln: PreemptionVulnerability | None = None
+    prioSharingInd: PrioritySharingIndicator | None = None
+    resPrio: ReservPriority | None = None
+    rrBw: BitRate | None = None
+    rsBw: BitRate | None = None
+    sharingKeyDl: Uint32 | None = None
+    sharingKeyUl: Uint32 | None = None
+    tsnQos: TsnQosContainer | None = None
+    tscaiInputDl: TscaiInputContainer | None = None
+    tscaiInputUl: TscaiInputContainer | None = None
+    tscaiTimeDom: Uinteger | None = None
+    capBatAdaptation: Annotated[
+        bool | None,
+        Field(
+            description='Indicates the capability for AF to adjust the burst sending time, when it is supported and set to "true".\n'
+        ),
+    ] = None
+    rTLatencyInd: Annotated[
+        bool | None,
+        Field(
+            description='Indicates the service data flow needs to meet the Round-Trip (RT) latency requirement of the service, when it is included and set to "true".\n'
+        ),
+    ] = None
+    pdb: PacketDelBudget | None = None
+    rTLatencyIndCorreId: RttFlowReference | None = None
+    pduSetQosDl: PduSetQosPara | None = None
+    pduSetQosUl: PduSetQosPara | None = None
+    protoDescDl: ProtocolDescription | None = None
+    protoDescUl: ProtocolDescription | None = None
+    periodUl: DurationMilliSec | None = None
+    periodDl: DurationMilliSec | None = None
+    l4sInd: UplinkDownlinkSupport | None = None
+    datBurstSizeInd: Annotated[
+        bool | None,
+        Field(
+            description='Indicates the Data Burst Size marking for the DL service data flow is supported if present and set to "true". The default value is "false" if omitted.\n'
+        ),
+    ] = None
+    timetoNextBurstInd: Annotated[
+        bool | None,
+        Field(
+            description='Indicates the Time to Next Burst for the DL service data flow is supported, when it is included and set to "true". The default value is "false" if omitted.\n'
+        ),
+    ] = None
+    onPathN6SigInfo: OnPathN6SigInfo | None = None
+    expTranInd: Annotated[
+        bool | None,
+        Field(
+            description='Expedited Transfer Indication for the downlink traffic to enable expedited data transfer with reflective QoS for the Non-GBR service data flow. "true": the expedited data transfer of larger payload for XR application is enabled in the flow. "false": the expedited data transfer of larger payload for XR application is not enabled in the flow. The default value is "false" if omitted.\n'
+        ),
+    ] = None
+    ulBrRecInd: Annotated[
+        bool | None,
+        Field(
+            description='Indicates whether the RAN-controlled UL Bitrate Recommendation Indication is supported for the corresponding service data flow or not. - Set to "true": the RAN-controlled UL Bitrate Recommendation Indication is supported. - Set to "false": the RAN-controlled UL Bitrate Recommendation Indication is not\n  supported \n- The default value "false" is used if this attribute is omitted. \n'
+        ),
+    ] = None
+
+
+class MediaComponentRm(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    afAppId: AfAppId | None = None
+    afRoutReq: AfRoutingRequirementRm | None = None
+    afSfcReq: AfSfcRequirement | None = None
+    afHdrReq: AfHeaderHandlingControlInfo | None = None
+    qosReference: str | None = None
+    altSerReqs: Annotated[list[str] | None, Field(min_length=1)] = None
+    altSerReqsData: Annotated[
+        list[AlternativeServiceRequirementsData] | None,
+        Field(
+            description="Contains removable alternative service requirements that include individual QoS parameter sets.\n",
+            min_length=1,
+        ),
+    ] = None
+    disUeNotif: bool | None = None
+    contVer: ContentVersion | None = None
+    codecs: Annotated[list[CodecData] | None, Field(max_length=2, min_length=1)] = None
+    desMaxLatency: FloatRm | None = None
+    desMaxLoss: FloatRm | None = None
+    flusId: str | None = None
+    fStatus: FlowStatus | None = None
+    marBwDl: BitRateRm | None = None
+    marBwUl: BitRateRm | None = None
+    maxPacketLossRateDl: PacketLossRateRm | None = None
+    maxPacketLossRateUl: PacketLossRateRm | None = None
+    maxSuppBwDl: BitRateRm | None = None
+    maxSuppBwUl: BitRateRm | None = None
+    medCompN: int
+    medSubComps: Annotated[
+        dict[str, MediaSubComponentRm] | None,
+        Field(
+            description="Contains the requested bitrate and filters for the set of service data flows identified by their common flow identifier. The key of the map is the fNum attribute.\n",
+            min_length=1,
+        ),
+    ] = None
+    medType: MediaType | None = None
+    minDesBwDl: BitRateRm | None = None
+    minDesBwUl: BitRateRm | None = None
+    mirBwDl: BitRateRm | None = None
+    mirBwUl: BitRateRm | None = None
+    preemptCap: PreemptionCapabilityRm | None = None
+    preemptVuln: PreemptionVulnerabilityRm | None = None
+    prioSharingInd: PrioritySharingIndicator | None = None
+    resPrio: ReservPriority | None = None
+    rrBw: BitRateRm | None = None
+    rsBw: BitRateRm | None = None
+    sharingKeyDl: Uint32Rm | None = None
+    sharingKeyUl: Uint32Rm | None = None
+    tsnQos: TsnQosContainerRm | None = None
+    tscaiInputDl: TscaiInputContainer | None = None
+    tscaiInputUl: TscaiInputContainer | None = None
+    tscaiTimeDom: Uinteger | None = None
+    capBatAdaptation: Annotated[
+        bool | None,
+        Field(
+            description='Indicates the capability for AF to adjust the burst sending time, when it is supported and set to "true". The default value is "false" if omitted.\n'
+        ),
+    ] = None
+    rTLatencyInd: Annotated[
+        bool | None,
+        Field(
+            description='Indicates the service data flow needs to meet the Round-Trip (RT) latency requirement of the service, when it is included and set to "true". The default value is "false" if omitted.\n'
+        ),
+    ] = None
+    pdb: PacketDelBudgetRm | None = None
+    rTLatencyIndCorreId: RttFlowReferenceRm | None = None
+    pduSetQosDl: PduSetQosParaRm | None = None
+    pduSetQosUl: PduSetQosParaRm | None = None
+    protoDescDl: ProtocolDescriptionRm | None = None
+    protoDescUl: ProtocolDescriptionRm | None = None
+    periodUl: DurationMilliSecRm | None = None
+    periodDl: DurationMilliSecRm | None = None
+    l4sInd: UplinkDownlinkSupport | None = None
+    datBurstSizeInd: Annotated[
+        bool | None,
+        Field(
+            description='Indicates the Data Burst Size marking for the DL service data flow is supported if present and set to "true".\n'
+        ),
+    ] = None
+    timetoNextBurstInd: Annotated[
+        bool | None,
+        Field(
+            description='Indicates the Time to Next Burst for the DL service data flow is supported, when it is included and set to "true".\n'
+        ),
+    ] = None
+    onPathN6SigInfo: OnPathN6SigInfo | None = None
+    expTranInd: Annotated[
+        bool | None,
+        Field(
+            description='Expedited Transfer Indication for the downlink traffic to enable expedited data transfer with reflective QoS for the Non-GBR service data flow. "true": the expedited data transfer of larger payload for XR application is enabled in the flow. "false": the expedited data transfer of larger payload for XR application is not enabled in the flow.\n'
+        ),
+    ] = None
+    ulBrRecInd: Annotated[
+        bool | None,
+        Field(
+            description='Indicates whether the RAN-controlled UL Bitrate Recommendation indication is supported for the corresponding service data flow or not. - Set to "true": the RAN-controlled UL Bitrate Recommendation Indication is supported. - Set to "false": the RAN-controlled UL Bitrate Recommendation Indication is not\n  supported. \n'
+        ),
+    ] = None
+
+
 class OdbExemptedConditions(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
     )
     spatialValidityCond: SpatialValidityCond | None = None
     validityTime: DateTime | None = None
+
+
+class PolicyAssociation(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    request: PolicyAssociationRequest | None = None
+    triggers: Annotated[
+        list[RequestTrigger] | None,
+        Field(description="Request Triggers that the PCF subscribes.", min_length=1),
+    ] = None
+    servAreaRes: ServiceAreaRestriction | None = None
+    wlServAreaRes: WirelineServiceAreaRestriction | None = None
+    rfsp: RfspIndex | None = None
+    rfspValTime: DurationSec | None = None
+    targetRfsp: RfspIndex | None = None
+    smfSelInfo: SmfSelectionData | None = None
+    ueAmbr: Ambr | None = None
+    ueSliceMbrs: Annotated[
+        list[UeSliceMbr] | None,
+        Field(
+            description="One or more UE-Slice-MBR(s) for S-NSSAI(s) of serving PLMN as part of the AMF Access and Mobility Policy as determined by the PCF.\n",
+            min_length=1,
+        ),
+    ] = None
+    pras: Annotated[
+        dict[str, PresenceInfo] | None,
+        Field(
+            description="Contains the presence reporting area(s) for which reporting was requested. The praId attribute within the PresenceInfo data type is the key of the map.\n",
+            min_length=1,
+        ),
+    ] = None
+    pcfUeInfo: PcfUeCallbackInfo | None = None
+    matchPdus: Annotated[
+        list[PduSessionInfo] | None,
+        Field(
+            description="Indicates the matched PDU session(s) for which the PCF for the UE information apply.\n"
+        ),
+    ] = None
+    asTimeDisParam: AsTimeDistributionParam | None = None
+    sliceUsgCtrlInfoSets: Annotated[
+        dict[str, SliceUsgCtrlInfoTS29507] | None,
+        Field(
+            description='Represents the network slice usage control information. The key of the map shall be set to the on-demand S-NSSAI (within the "snssai" attribute of the corresponding map entry encoded using the SliceUsgCtrlInfo data structure) to which the network slice usage control information is related.\n',
+            min_length=1,
+        ),
+    ] = None
+    chfInfo: ChargingInformation | None = None
+    chfGroupId: NfGroupId | None = None
+    sliceReplReq: SliceReplReq | None = None
+    suppFeat: SupportedFeatures
 
 
 class PpData(BaseModel):
@@ -8367,6 +13842,230 @@ class RangingSlPrivacyData(BaseModel):
         list[RangingSlPlmnOperatorClass] | None, Field(min_length=1)
     ] = None
     rangingSlEvtRptExpectedArea: GeographicArea | None = None
+
+
+class TrafficControlData(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    tcId: Annotated[
+        str,
+        Field(
+            description="Univocally identifies the traffic control policy data within a PDU session."
+        ),
+    ]
+    l4sInd: UplinkDownlinkSupport | None = None
+    flowStatus: FlowStatus | None = None
+    redirectInfo: RedirectInformation | None = None
+    addRedirectInfo: Annotated[
+        list[RedirectInformation] | None, Field(min_length=1)
+    ] = None
+    muteNotif: Annotated[
+        bool | None,
+        Field(
+            description="Indicates whether applicat'on's start or stop notification is to be muted."
+        ),
+    ] = None
+    trafficSteeringPolIdDl: Annotated[
+        str | None,
+        Field(
+            description="Reference to a pre-configured traffic steering policy for downlink traffic at the SMF.\n"
+        ),
+    ] = None
+    trafficSteeringPolIdUl: Annotated[
+        str | None,
+        Field(
+            description="Reference to a pre-configured traffic steering policy for uplink traffic at the SMF.\n"
+        ),
+    ] = None
+    metadata: Metadata | None = None
+    routeToLocs: Annotated[
+        list[RouteToLocation] | None,
+        Field(
+            description="A list of location which the traffic shall be routed to for the AF request",
+            min_length=1,
+        ),
+    ] = None
+    maxAllowedUpLat: UintegerRm | None = None
+    easIpReplaceInfos: Annotated[
+        list[EasIpReplacementInfo] | None,
+        Field(description="Contains EAS IP replacement information.", min_length=1),
+    ] = None
+    traffCorreInd: bool | None = None
+    tfcCorreInfo: TrafficCorrelationInfo | None = None
+    simConnInd: Annotated[
+        bool | None,
+        Field(
+            description="Indicates whether simultaneous connectivity should be temporarily maintained for the  source and target PSA.\n"
+        ),
+    ] = None
+    simConnTerm: DurationSec | None = None
+    n6DelayInd: Annotated[
+        bool | None,
+        Field(
+            description="Indicates whether the N6 delay is requested to be considered for traffic steering.\n"
+        ),
+    ] = None
+    upPathChgEvent: UpPathChgEvent | None = None
+    outcomeEvent: TraffRouteReqOutcomeEvent | None = None
+    simConnFailEvent: SimConnFailEvent | None = None
+    steerFun: SteeringFunctionality | None = None
+    transMode: TransportMode | None = None
+    steerModeDl: SteeringMode | None = None
+    steerModeUl: SteeringMode | None = None
+    mulAccCtrl: MulticastAccessControl | None = None
+    candDnaiInd: Annotated[
+        bool | None,
+        Field(
+            description='Indication of reporting candidate DNAI(s). If it is included and set to "true", the candidate DNAI(s) for the PDU session need to be reported. Otherwise set to "false" or omitted.\n'
+        ),
+    ] = None
+    datEndMarkInd: Annotated[
+        bool | None,
+        Field(
+            description='The data burst end marking is enabled if it is set to "true". Default value is "false" if omitted.\n'
+        ),
+    ] = None
+    datBurstSizeInd: Annotated[
+        bool | None,
+        Field(
+            description='Indicates to identify and mark Data Burst Size if present and set to "true". The default value is "false" if omitted.\n'
+        ),
+    ] = None
+    timetoNextBurstInd: Annotated[
+        bool | None,
+        Field(
+            description='Indicates the Time to Next Burst for the DL service data flow is supported, when it is included and set to "true". The default value is "false" if omitted.\n'
+        ),
+    ] = None
+    payloadHdrReq: AfHeaderHandlingControlInfo | None = None
+    onPathN6SigInfo: OnPathN6SigInfo | None = None
+
+
+class AppSessionContextReqData(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    afAppId: AfAppId | None = None
+    afChargId: ApplicationChargingId | None = None
+    afReqData: AfRequestedData | None = None
+    afRoutReq: AfRoutingRequirement | None = None
+    afSfcReq: AfSfcRequirement | None = None
+    afHdrReq: AfHeaderHandlingControlInfo | None = None
+    aspId: AspId | None = None
+    bdtRefId: BdtReferenceId | None = None
+    dnn: Dnn | None = None
+    evSubsc: EventsSubscReqData | None = None
+    mcpttId: Annotated[
+        str | None, Field(description="Indication of MCPTT service request.")
+    ] = None
+    mcVideoId: Annotated[
+        str | None, Field(description="Indication of MCVideo service request.")
+    ] = None
+    medComponents: Annotated[
+        dict[str, MediaComponent] | None,
+        Field(
+            description="Contains media component information. The key of the map is the medCompN attribute.\n",
+            min_length=1,
+        ),
+    ] = None
+    multiModalId: MultiModalId | None = None
+    ipDomain: str | None = None
+    mpsAction: MpsAction | None = None
+    mpsId: Annotated[
+        str | None, Field(description="Indication of MPS service request.")
+    ] = None
+    mcsId: Annotated[
+        str | None, Field(description="Indication of MCS service request.")
+    ] = None
+    preemptControlInfo: PreemptionControlInformation | None = None
+    qosDuration: DurationSec | None = None
+    qosInactInt: DurationSec | None = None
+    resPrio: ReservPriority | None = None
+    servInfStatus: ServiceInfoStatus | None = None
+    notifUri: Uri
+    servUrn: ServiceUrn | None = None
+    sliceInfo: Snssai | None = None
+    sponId: SponId | None = None
+    sponStatus: SponsoringStatus | None = None
+    supi: Supi | None = None
+    gpsi: Gpsi | None = None
+    suppFeat: SupportedFeatures
+    ueIpv4: Ipv4Addr | None = None
+    ueIpv6: Ipv6Addr | None = None
+    ueMac: MacAddr48 | None = None
+    tsnBridgeManCont: BridgeManagementContainer | None = None
+    tsnPortManContDstt: PortManagementContainer | None = None
+    tsnPortManContNwtts: Annotated[
+        list[PortManagementContainer] | None, Field(min_length=1)
+    ] = None
+    tscNotifUri: Uri | None = None
+    tscNotifCorreId: Annotated[
+        str | None,
+        Field(
+            description="Correlation identifier for TSC management information notifications.\n"
+        ),
+    ] = None
+
+
+class AppSessionContextUpdateData(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    afAppId: AfAppId | None = None
+    afRoutReq: AfRoutingRequirementRm | None = None
+    afSfcReq: AfSfcRequirement | None = None
+    afHdrReq: AfHeaderHandlingControlInfo | None = None
+    aspId: AspId | None = None
+    bdtRefId: BdtReferenceId | None = None
+    evSubsc: EventsSubscReqDataRm | None = None
+    mcpttId: Annotated[
+        str | None, Field(description="Indication of MCPTT service request.")
+    ] = None
+    mcVideoId: Annotated[
+        str | None, Field(description="Indication of modification of MCVideo service.")
+    ] = None
+    medComponents: Annotated[
+        dict[str, MediaComponentRm] | None,
+        Field(
+            description="Contains media component information. The key of the map is the medCompN attribute.\n",
+            min_length=1,
+        ),
+    ] = None
+    mpsAction: MpsAction | None = None
+    mpsId: Annotated[
+        str | None, Field(description="Indication of MPS service request.")
+    ] = None
+    mcsId: Annotated[
+        str | None, Field(description="Indication of MCS service request.")
+    ] = None
+    preemptControlInfo: PreemptionControlInformationRm | None = None
+    qosDuration: DurationSecRm | None = None
+    qosInactInt: DurationSecRm | None = None
+    resPrio: ReservPriority | None = None
+    servInfStatus: ServiceInfoStatus | None = None
+    sipForkInd: SipForkingIndication | None = None
+    sponId: SponId | None = None
+    sponStatus: SponsoringStatus | None = None
+    tsnBridgeManCont: BridgeManagementContainer | None = None
+    tsnPortManContDstt: PortManagementContainer | None = None
+    tsnPortManContNwtts: Annotated[
+        list[PortManagementContainer] | None, Field(min_length=1)
+    ] = None
+    tscNotifUri: Uri | None = None
+    tscNotifCorreId: Annotated[
+        str | None,
+        Field(
+            description="Correlation identifier for TSC management information notifications.\n"
+        ),
+    ] = None
+
+
+class AppSessionContextUpdateDataPatch(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    ascReqData: AppSessionContextUpdateData | None = None
 
 
 class DnnConfiguration(BaseModel):
@@ -8524,11 +14223,194 @@ class SessionManagementSubscriptionData(BaseModel):
     ueLevelMeasConfig: UeLevelMeasurementsConfiguration | None = None
 
 
+class SmPolicyDecision(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    sessRules: Annotated[
+        dict[str, SessionRule] | None,
+        Field(
+            description="A map of Sessionrules with the content being the SessionRule as described in clause 5.6.2.7. The key used in this map for each entry is the sessRuleId attribute of the corresponding SessionRule.\n",
+            min_length=1,
+        ),
+    ] = None
+    pccRules: Annotated[
+        dict[str, PccRule] | None,
+        Field(
+            description="A map of PCC rules with the content being the PCCRule as described in  clause 5.6.2.6. The key used in this map for each entry is the pccRuleId attribute of the corresponding PccRule.\n",
+            min_length=1,
+        ),
+    ] = None
+    pcscfRestIndication: Annotated[
+        bool | None,
+        Field(
+            description="If it is included and set to true, it indicates the P-CSCF Restoration is requested.\n"
+        ),
+    ] = None
+    qosDecs: Annotated[
+        dict[str, QosData] | None,
+        Field(
+            description="Map of QoS data policy decisions. The key used in this map for each entry is the qosId attribute of the corresponding QosData.\n",
+            min_length=1,
+        ),
+    ] = None
+    chgDecs: Annotated[
+        dict[str, ChargingData] | None,
+        Field(
+            description="Map of Charging data policy decisions. The key used in this map for each entry is the chgId attribute of the corresponding ChargingData.\n",
+            min_length=1,
+        ),
+    ] = None
+    chargingInfo: ChargingInformation | None = None
+    chfGroupId: NfGroupId | None = None
+    traffContDecs: Annotated[
+        dict[str, TrafficControlData] | None,
+        Field(
+            description="Map of Traffic Control data policy decisions. The key used in this map for each entry is the tcId attribute of the corresponding TrafficControlData.\n",
+            min_length=1,
+        ),
+    ] = None
+    umDecs: Annotated[
+        dict[str, UsageMonitoringData] | None,
+        Field(
+            description="Map of Usage Monitoring data policy decisions. The key used in this map for each entry is the umId attribute of the corresponding UsageMonitoringData.\n",
+            min_length=1,
+        ),
+    ] = None
+    qosChars: Annotated[
+        dict[str, QosCharacteristics] | None,
+        Field(
+            description="Map of QoS characteristics for non standard 5QIs. This map uses the 5QI values as keys.\n",
+            min_length=1,
+        ),
+    ] = None
+    qosMonDecs: Annotated[
+        dict[str, QosMonitoringData] | None,
+        Field(
+            description="Map of QoS Monitoring data policy decisions. The key used in this map for each entry is the qmId attribute of the corresponding QosMonitoringData.\n",
+            min_length=1,
+        ),
+    ] = None
+    reflectiveQoSTimer: DurationSec | None = None
+    conds: Annotated[
+        dict[str, ConditionData] | None,
+        Field(
+            description="A map of condition data with the content being as described in clause 5.6.2.9. The key used in this map for each entry is the condId attribute of the corresponding ConditionData.\n",
+            min_length=1,
+        ),
+    ] = None
+    revalidationTime: DateTime | None = None
+    offline: Annotated[
+        bool | None,
+        Field(
+            description="Indicates the offline charging is applicable to the PDU session when it is included and  set to true.\n"
+        ),
+    ] = None
+    online: Annotated[
+        bool | None,
+        Field(
+            description="Indicates the online charging is applicable to the PDU session when it is included and  set to true.\n"
+        ),
+    ] = None
+    offlineChOnly: Annotated[
+        bool | None,
+        Field(
+            description="Indicates that the online charging method shall never be used for any PCC rule activated during the lifetime of the PDU session.\n"
+        ),
+    ] = False
+    policyCtrlReqTriggers: Annotated[
+        list[PolicyControlRequestTrigger] | None,
+        Field(
+            description="Defines the policy control request triggers subscribed by the PCF.",
+            min_length=1,
+        ),
+    ] = None
+    lastReqRuleData: Annotated[
+        list[RequestedRuleData] | None,
+        Field(
+            description="Defines the last list of rule control data requested by the PCF.",
+            min_length=1,
+        ),
+    ] = None
+    lastReqUsageData: RequestedUsageData | None = None
+    praInfos: Annotated[
+        dict[str, PresenceInfoRm] | None,
+        Field(
+            description="Map of PRA information. The praId attribute within the PresenceInfo data type is the key  of the map.\n",
+            min_length=1,
+        ),
+    ] = None
+    ipv4Index: IpIndexTS29519 | None = None
+    ipv6Index: IpIndexTS29519 | None = None
+    qosFlowUsage: QosFlowUsage | None = None
+    qosMonCapRepoTypes: Annotated[
+        list[NotifCapType] | None,
+        Field(
+            description="Contains the type(s) of QoS Monitoring capability report is applied.\n",
+            min_length=1,
+        ),
+    ] = None
+    relCause: SmPolicyAssociationReleaseCause | None = None
+    suppFeat: SupportedFeatures | None = None
+    tsnBridgeManCont: BridgeManagementContainer | None = None
+    tsnPortManContDstt: PortManagementContainer | None = None
+    tsnPortManContNwtts: Annotated[
+        list[PortManagementContainer] | None, Field(min_length=1)
+    ] = None
+    tscNotifUri: Uri | None = None
+    tscNotifCorreId: Annotated[
+        str | None,
+        Field(
+            description="Correlation identifier for TSC management information notifications.\n"
+        ),
+    ] = None
+    redSessIndication: Annotated[
+        bool | None,
+        Field(
+            description="Indicates whether the PDU session is a redundant PDU session. If absent it means the PDU session is not a redundant PDU session.\n"
+        ),
+    ] = None
+    uePolCont: Bytes | None = None
+    sliceUsgCtrlInfo: SliceUsgCtrlInfoTS29512 | None = None
+    vplmnOffloadInfos: Annotated[
+        list[VplmnOffloadingInfo] | None,
+        Field(
+            description="List of VPLMN Specific offloading information.", min_length=1
+        ),
+    ] = None
+    locOffloadInfos: Annotated[
+        list[LocalOffloadingManagementInfo] | None,
+        Field(
+            description="Contains the list of the local offloading management policy information.",
+            min_length=1,
+        ),
+    ] = None
+    vplmnDlAmbr: VplmnDlAmbr | None = None
+    sessionRecovStatus: PcSessionRecoveryStatus | None = None
+
+
+class SmPolicyNotification(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    resourceUri: Uri | None = None
+    smPolicyDecision: SmPolicyDecision | None = None
+
+
 class SmSubsData1(RootModel[list[SessionManagementSubscriptionData]]):
     root: Annotated[
         list[SessionManagementSubscriptionData],
         Field(description="Session Management Subscription Data", min_length=1),
     ]
+
+
+class AppSessionContext(BaseModel):
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
+    ascReqData: AppSessionContextReqData | None = None
+    ascRespData: AppSessionContextRespData | None = None
+    evsNotif: EventsNotification | None = None
 
 
 class ExtendedSmSubsData(BaseModel):
