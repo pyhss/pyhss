@@ -13,6 +13,7 @@ This includes support for acting as:
  - PCRF
  - Gateway Mobile Location Centre 
  - 5G Unified Data Repository (UDR), e.g. for Open5GS in 5G SA, see [5G UDR](docs/5g_udr.md)
+ - 5G Policy Control Function (PCF) with VoNR QoS flows from Rx, see [5G PCF](docs/5g_pcf.md)
 
 Supported database backends are `MySQL`, `PostgreSQL` and `SQLite`, all provisioned through a Swagger based [RESTful API](docs/API.md) for easy, safe CRUD operations on the subscriber data.
 
@@ -33,6 +34,7 @@ The underlying library - ``diameter.py`` can be easily worked with to add suppor
 * Sh - For Application Servers to IMS & XCAP Data
 * Gx Credit Control Answer / Re-Auth Request including installing Charging Rules on demand
 * Nudr_DataRepository (5G SBI, HTTP/2) - Authentication, AM/SMF selection/SM subscription and policy data for the UDM and PCF
+* Npcf_AMPolicyControl, Npcf_SMPolicyControl, Npcf_PolicyAuthorization (5G SBI, HTTP/2) - Policies for the AMF and SMF, QoS flows for AFs
 
 
 ## Usage
@@ -127,6 +129,7 @@ The following services make up PyHSS:
  - logService.py: Handles logging for all services.
  - metricService.py: Exposes prometheus metrics from other services.
  - udrService.py: Optional 5G UDR, serves Nudr_DataRepository over HTTP/2 and registers at the NRF.
+ - pcfService.py: Optional 5G PCF, serves the Npcf services over HTTP/2, registers at the NRF and notifies the SMF of QoS flows.
  
 ## Subscriber Information Storage
 

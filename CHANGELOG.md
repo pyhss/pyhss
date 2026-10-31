@@ -22,6 +22,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   cleartext and registers at the NRF, so PyHSS can be the subscriber database of e.g.
   Open5GS in 5G SA. 4G and 5G share the subscribers and the SQN. See
   [docs/5g_udr.md](docs/5g_udr.md).
+- 5G PCF: the new `pyhss_pcf` service serves Npcf_AMPolicyControl, Npcf_SMPolicyControl and
+  Npcf_PolicyAuthorization over HTTP/2 cleartext and registers at the NRF, so Open5GS can run
+  in 5G SA without its PCF and MongoDB. Policy comes from the APN table. Rx AAR and STR of UEs
+  on NR set up and remove the 5QI 1/2 QoS flows for VoNR with `pcf.rx_enabled`. See
+  [docs/5g_pcf.md](docs/5g_pcf.md).
 - The SBI models (`lib/sbi/models/`) are generated from the 3GPP Release 19 OpenAPI specs,
   which are vendored in `specs/3gpp/`. The tests validate the UDR against these specs.
 - Database schema version 2: `apn.sst`, `apn.sd` (S-NSSAI of an APN/DNN) and
