@@ -58,6 +58,12 @@ udr:
   nrf:
     enabled: False
 
+pcf:
+  bind_ip: "127.0.0.1"
+  bind_port: 17778
+  nrf:
+    enabled: False
+
 benchmarking:
   enabled: True
   reporting_interval: 3600
