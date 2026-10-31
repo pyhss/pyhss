@@ -63,8 +63,11 @@ case "${CONTAINER_ROLE}" in
     udr)
         exec python3 udrService.py
         ;;
+    pcf)
+        exec python3 pcfService.py
+        ;;
     *)
-        echo "WARN: Unknown env var value CONTAINER_ROLE '${CONTAINER_ROLE}'. Must be one of {hss,diameter,api,gsup,udr,metrics,logs,geored,database}. Defaulting to running container CMD."
+        echo "WARN: Unknown env var value CONTAINER_ROLE '${CONTAINER_ROLE}'. Must be one of {hss,diameter,api,gsup,udr,pcf,metrics,logs,geored,database}. Defaulting to running container CMD."
         exec $@
         ;;
 esac

@@ -155,6 +155,48 @@ udr:
     # Send hss.MCC/MNC as plmnList. Open5GS' NRF rejects a profile whose PLMN is not served by it
     send_plmn_list: False
 
+# Optional 5G PCF (Npcf_AMPolicyControl, Npcf_SMPolicyControl, Npcf_PolicyAuthorization over
+# HTTP/2), e.g. for the AMF/SMF of Open5GS in 5G SA, without MongoDB. See docs/5g_pcf.md.
+pcf:
+  bind_ip: "127.0.0.1"
+  bind_port: 7777
+  # IP address registered at the NRF, i.e. where AMF/SMF/SCP reach this PCF (default: bind_ip)
+  advertise_ip: ""
+  # NF instance ID (UUID) registered at the NRF (default: derived from hostname and bind_port)
+  nf_instance_id: ""
+  # API versions in the URI to serve and advertise: Open5GS uses v1
+  api_versions: ["v1"]
+  # Seconds an idle HTTP/2 connection is kept open
+  keep_alive_timeout: 3600
+  # NF types allowed to use this PCF (NRF profile)
+  allowed_nf_types: ["SCP", "AMF", "SMF", "AF", "NEF"]
+  # Answer Rx AAR/STR of UEs that have an SM policy here, in pyhss_hss. Off: Rx only uses Gx
+  rx_enabled: False
+  # DNN of the IMS PDU session, where AF sessions without a DNN (all of Rx) are looked up
+  ims_dnn: "ims"
+  # QoS flows for media, bandwidth (bps) is used when the AF requests none
+  qos:
+    audio:
+      5qi: 1
+      arp_priority: 2
+      precedence: 40
+      bandwidth: 128000
+    video:
+      5qi: 2
+      arp_priority: 4
+      precedence: 30
+      bandwidth: 512000
+  nrf:
+    enabled: False
+    # NRF, or SCP with via_scp (indirect communication, as in the default Open5GS setup)
+    uri: "http://127.0.0.10:7777"
+    via_scp: False
+    # Used if the NRF does not set the heartbeat timer
+    heartbeat_interval: 10
+    retry_interval: 5
+    # Send hss.MCC/MNC as plmnList. Open5GS' NRF rejects a profile whose PLMN is not served by it
+    send_plmn_list: False
+
 metric:
   bind_ip: "127.0.0.1"
   bind_port: 9191

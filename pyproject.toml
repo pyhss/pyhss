@@ -17,6 +17,7 @@ pyhss_hss = "pyhss.services.hssService:main"
 pyhss_log = "pyhss.services.logService:main"
 pyhss_metric = "pyhss.services.metricService:main"
 pyhss_udr = "pyhss.services.udrService:main"
+pyhss_pcf = "pyhss.services.pcfService:main"
 
 [tool.setuptools]
 packages = [
@@ -24,6 +25,7 @@ packages = [
 	"pyhss.lib.gsup",
 	"pyhss.lib.gsup.controller",
 	"pyhss.lib.gsup.protocol",
+	"pyhss.lib.pcf",
 	"pyhss.lib.sbi",
 	"pyhss.lib.sbi.models",
 	"pyhss.lib.udr",
@@ -70,14 +72,22 @@ include = [
 	"lib/databaseSchema.py",
 	"lib/gsup/controller/ss.py",
 	"lib/gsup/protocol/gsup_msg.py",
+	"lib/pcf/__init__.py",
+	"lib/pcf/app.py",
+	"lib/pcf/datamodel.py",
+	"lib/pcf/policy.py",
+	"lib/pcf/rx.py",
+	"lib/pcf/store.py",
 	"lib/pyhss_config.py",
 	"lib/sbi/__init__.py",
 	"lib/sbi/nrf_client.py",
 	"lib/sbi/server.py",
+	"lib/sbi/service.py",
 	"lib/udr/__init__.py",
 	"lib/udr/app.py",
 	"lib/udr/datamodel.py",
 	"lib/version.py",
+	"services/pcfService.py",
 	"services/udrService.py",
 	"tests/test_database_upgrade_mariadb.py",
 	"tests/test_database_upgrade_postgresql.py",
@@ -90,6 +100,10 @@ include = [
 	"tests/test_messaging_queue_order.py",
 	"tests/test_milenage.py",
 	"tests/test_nrf_client.py",
+	"tests/test_pcf_app.py",
+	"tests/test_pcf_datamodel.py",
+	"tests/test_pcf_rx.py",
+	"tests/test_pcf_service.py",
 	"tests/test_sbi_models.py",
 	"tests/test_udr_app.py",
 	"tests/test_udr_datamodel.py",

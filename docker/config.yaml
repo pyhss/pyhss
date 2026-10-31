@@ -138,6 +138,25 @@ udr:
     retry_interval: ${UDR_NRF_RETRY_INTERVAL:-5}
     send_plmn_list: ${UDR_NRF_SEND_PLMN_LIST:-False}
 
+# 5G PCF (pyhss_pcf), see docs/5g_pcf.md
+pcf:
+  bind_ip: "${PCF_BIND_IP:-0.0.0.0}"
+  bind_port: ${PCF_BIND_PORT:-7777}
+  advertise_ip: "${PCF_ADVERTISE_IP:-}"
+  nf_instance_id: "${PCF_NF_INSTANCE_ID:-}"
+  api_versions: ["v1"]
+  keep_alive_timeout: ${PCF_KEEP_ALIVE_TIMEOUT:-3600}
+  allowed_nf_types: ["SCP", "AMF", "SMF", "AF", "NEF"]
+  rx_enabled: ${PCF_RX_ENABLED:-False}
+  ims_dnn: "${PCF_IMS_DNN:-ims}"
+  nrf:
+    enabled: ${PCF_NRF_ENABLED:-False}
+    uri: "${PCF_NRF_URI:-http://nrf:7777}"
+    via_scp: ${PCF_NRF_VIA_SCP:-False}
+    heartbeat_interval: ${PCF_NRF_HEARTBEAT_INTERVAL:-10}
+    retry_interval: ${PCF_NRF_RETRY_INTERVAL:-5}
+    send_plmn_list: ${PCF_NRF_SEND_PLMN_LIST:-False}
+
 metric:
   bind_ip: "${METRIC_BIND_IP:-0.0.0.0}"
   bind_port: ${METRIC_BIND_PORT:-9191}
