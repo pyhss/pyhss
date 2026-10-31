@@ -194,3 +194,18 @@ class SbiApp:
             headers.append((b"content-type", response.content_type.encode()))
         await send({"type": "http.response.start", "status": response.status, "headers": headers})
         await send({"type": "http.response.body", "body": payload})
+
+
+class SbiMultiApp(SbiApp):
+    """ASGI application serving several SBI services on one port, e.g. the three of a PCF."""
+
+    def __init__(self, apps, log=None):
+        super().__init__("", [], log)
+        self.apps = list(apps)
+
+    async def handle(self, request):
+        for app in self.apps:
+            if request.path.startswith(f"{app.base}/"):
+                return await app.handle(request)
+        problem = SbiError(404, "RESOURCE_URI_STRUCTURE_NOT_FOUND", f"Unknown API: {request.path}").problem()
+        return Response(404, problem, PROBLEM_JSON)

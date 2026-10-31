@@ -24,7 +24,7 @@ API_FULL_VERSIONS = {
 def build_nf_profile(
     nf_instance_id,
     nf_type,
-    service_name,
+    service_names,
     ipv4_address,
     port,
     api_versions,
@@ -33,26 +33,31 @@ def build_nf_profile(
     plmn_list=None,
     heartbeat_timer=None,
 ):
-    service_instance_id = service_name
-    service = {
-        "serviceInstanceId": service_instance_id,
-        "serviceName": service_name,
-        "versions": [
-            {"apiVersionInUri": v, "apiFullVersion": API_FULL_VERSIONS.get(service_name, {}).get(v, "1.0.0")}
-            for v in api_versions
-        ],
-        "scheme": "http",
-        "nfServiceStatus": "REGISTERED",
-        "ipEndPoints": [{"ipv4Address": ipv4_address, "transport": "TCP", "port": int(port)}],
-    }
-    if service_allowed_nf_types:
-        service["allowedNfTypes"] = service_allowed_nf_types
+    """service_names: the name of the NF service, or a list of them if the NF has several."""
+    if isinstance(service_names, str):
+        service_names = [service_names]
+    services = {}
+    for service_name in service_names:
+        service = {
+            "serviceInstanceId": service_name,
+            "serviceName": service_name,
+            "versions": [
+                {"apiVersionInUri": v, "apiFullVersion": API_FULL_VERSIONS.get(service_name, {}).get(v, "1.0.0")}
+                for v in api_versions
+            ],
+            "scheme": "http",
+            "nfServiceStatus": "REGISTERED",
+            "ipEndPoints": [{"ipv4Address": ipv4_address, "transport": "TCP", "port": int(port)}],
+        }
+        if service_allowed_nf_types:
+            service["allowedNfTypes"] = service_allowed_nf_types
+        services[service_name] = service
     profile = {
         "nfInstanceId": str(nf_instance_id),
         "nfType": nf_type,
         "nfStatus": "REGISTERED",
         "ipv4Addresses": [ipv4_address],
-        "nfServiceList": {service_instance_id: service},
+        "nfServiceList": services,
     }
     if allowed_nf_types:
         profile["allowedNfTypes"] = allowed_nf_types

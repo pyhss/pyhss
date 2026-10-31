@@ -111,6 +111,15 @@ def test_nf_profile_conforms_to_spec():
     }
 
 
+def test_nf_profile_with_several_services():
+    nf_profile = build_nf_profile(
+        INSTANCE_ID, "PCF", ["npcf-smpolicycontrol", "npcf-am-policy-control"], "127.0.1.18", 7777, ["v1"]
+    )
+    assert sorted(nf_profile.nfServiceList) == ["npcf-am-policy-control", "npcf-smpolicycontrol"]
+    service = nf_profile.nfServiceList["npcf-smpolicycontrol"]
+    assert service.ipEndPoints[0].port == 7777
+
+
 def test_register_heartbeat_deregister():
     nrf = FakeNrf(heartbeat_timer=10)
     c = client(nrf)
