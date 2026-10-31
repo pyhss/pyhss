@@ -27,6 +27,29 @@ from pyhss_config import config
 from rat import SubscriberRATRestriction, RAT
 
 
+class DiameterAvpError(Exception):
+    """
+    Raised by a request handler when a received AVP is missing or invalid.
+    generateDiameterResponse() turns it into an error answer carrying result_code and a Failed-AVP (RFC 6733 section 7.1.5).
+    """
+    result_code = 5012  # DIAMETER_UNABLE_TO_COMPLY
+
+    def __init__(self, avp_code, avp_data='', vendor_id=None, avp_flags=None):
+        self.avp_code = avp_code
+        self.avp_data = avp_data
+        self.vendor_id = vendor_id
+        self.avp_flags = avp_flags if avp_flags is not None else ('c0' if vendor_id is not None else 40)
+        super().__init__(f"{self.__class__.__name__}: AVP {avp_code}" + (f" (Vendor-Id {vendor_id})" if vendor_id is not None else ""))
+
+
+class DiameterMissingAvp(DiameterAvpError):
+    result_code = 5005  # DIAMETER_MISSING_AVP
+
+
+class DiameterInvalidAvpValue(DiameterAvpError):
+    result_code = 5004  # DIAMETER_INVALID_AVP_VALUE
+
+
 class Diameter:
 
     def __init__(
@@ -84,35 +107,35 @@ class Diameter:
                 {"commandCode": 282, "applicationId": 0, "flags": 80, "responseMethod": self.Answer_282, "failureResultCode": 5012 ,"requestAcronym": "DPR", "responseAcronym": "DPA", "requestName": "Disconnect Peer Request", "responseName": "Disconnect Peer Answer"},
 
                 # Gx PCEF/PCRF
-                {"commandCode": 300, "applicationId": 16777216, "responseMethod": self.Answer_16777216_300, "failureResultCode": 4100 ,"requestAcronym": "UAR", "responseAcronym": "UAA", "requestName": "User Authentication Request", "responseName": "User Authentication Answer"},
-                {"commandCode": 301, "applicationId": 16777216, "responseMethod": self.Answer_16777216_301, "failureResultCode": 4100 ,"requestAcronym": "SAR", "responseAcronym": "SAA", "requestName": "Server Assignment Request", "responseName": "Server Assignment Answer"},
-                {"commandCode": 302, "applicationId": 16777216, "responseMethod": self.Answer_16777216_302, "failureResultCode": 4100 ,"requestAcronym": "LIR", "responseAcronym": "LIA", "requestName": "Location Information Request", "responseName": "Location Information Answer"},
-                {"commandCode": 303, "applicationId": 16777216, "responseMethod": self.Answer_16777216_303, "failureResultCode": 4100 ,"requestAcronym": "MAR", "responseAcronym": "MAA", "requestName": "Multimedia Authentication Request", "responseName": "Multimedia Authentication Answer"},
+                {"commandCode": 300, "applicationId": 16777216, "responseMethod": self.Answer_16777216_300, "failureResultCode": 4100 ,"failureResultCodeExperimental": True ,"requestAcronym": "UAR", "responseAcronym": "UAA", "requestName": "User Authentication Request", "responseName": "User Authentication Answer"},
+                {"commandCode": 301, "applicationId": 16777216, "responseMethod": self.Answer_16777216_301, "failureResultCode": 4100 ,"failureResultCodeExperimental": True ,"requestAcronym": "SAR", "responseAcronym": "SAA", "requestName": "Server Assignment Request", "responseName": "Server Assignment Answer"},
+                {"commandCode": 302, "applicationId": 16777216, "responseMethod": self.Answer_16777216_302, "failureResultCode": 4100 ,"failureResultCodeExperimental": True ,"requestAcronym": "LIR", "responseAcronym": "LIA", "requestName": "Location Information Request", "responseName": "Location Information Answer"},
+                {"commandCode": 303, "applicationId": 16777216, "responseMethod": self.Answer_16777216_303, "failureResultCode": 4100 ,"failureResultCodeExperimental": True ,"requestAcronym": "MAR", "responseAcronym": "MAA", "requestName": "Multimedia Authentication Request", "responseName": "Multimedia Authentication Answer"},
 
                 # Gy PCEF/OCS
-                {"commandCode": 306, "applicationId": 16777217, "responseMethod": self.Answer_16777217_306, "failureResultCode": 5001 ,"requestAcronym": "UDR", "responseAcronym": "UDA", "requestName": "User Data Request", "responseName": "User Data Answer"},
-                {"commandCode": 307, "applicationId": 16777217, "responseMethod": self.Answer_16777217_307, "failureResultCode": 5001 ,"requestAcronym": "PRUR", "responseAcronym": "PRUA", "requestName": "Profile Update Request", "responseName": "Profile Update Answer"},
+                {"commandCode": 306, "applicationId": 16777217, "responseMethod": self.Answer_16777217_306, "failureResultCode": 5001 ,"failureResultCodeExperimental": True ,"requestAcronym": "UDR", "responseAcronym": "UDA", "requestName": "User Data Request", "responseName": "User Data Answer"},
+                {"commandCode": 307, "applicationId": 16777217, "responseMethod": self.Answer_16777217_307, "failureResultCode": 5001 ,"failureResultCodeExperimental": True ,"requestAcronym": "PRUR", "responseAcronym": "PRUA", "requestName": "Profile Update Request", "responseName": "Profile Update Answer"},
 
                 # Rx PCEF/P-CSCF
-                {"commandCode": 265, "applicationId": 16777236, "responseMethod": self.Answer_16777236_265, "failureResultCode": 4100 ,"requestAcronym": "AAR", "responseAcronym": "AAA", "requestName": "AA Request", "responseName": "AA Answer"},
-                {"commandCode": 275, "applicationId": 16777236, "responseMethod": self.Answer_16777236_275, "failureResultCode": 4100 ,"requestAcronym": "STR", "responseAcronym": "STA", "requestName": "Session Termination Request", "responseName": "Session Termination Answer"},
-                {"commandCode": 274, "applicationId": 16777236, "responseMethod": self.Answer_16777236_274, "failureResultCode": 4100 ,"requestAcronym": "ASR", "responseAcronym": "ASA", "requestName": "Abort Session Request", "responseName": "Abort Session Answer"},
+                {"commandCode": 265, "applicationId": 16777236, "responseMethod": self.Answer_16777236_265, "failureResultCode": 4100 ,"failureResultCodeExperimental": True ,"requestAcronym": "AAR", "responseAcronym": "AAA", "requestName": "AA Request", "responseName": "AA Answer"},
+                {"commandCode": 275, "applicationId": 16777236, "responseMethod": self.Answer_16777236_275, "failureResultCode": 4100 ,"failureResultCodeExperimental": True ,"requestAcronym": "STR", "responseAcronym": "STA", "requestName": "Session Termination Request", "responseName": "Session Termination Answer"},
+                {"commandCode": 274, "applicationId": 16777236, "responseMethod": self.Answer_16777236_274, "failureResultCode": 4100 ,"failureResultCodeExperimental": True ,"requestAcronym": "ASR", "responseAcronym": "ASA", "requestName": "Abort Session Request", "responseName": "Abort Session Answer"},
 
                 # Re OCS
-                {"commandCode": 258, "applicationId": 16777238, "responseMethod": self.Answer_16777238_258, "failureResultCode": 4100 ,"requestAcronym": "RAR", "responseAcronym": "RAA", "requestName": "Re Auth Request", "responseName": "Re Auth Answer"},
+                {"commandCode": 258, "applicationId": 16777238, "responseMethod": self.Answer_16777238_258, "failureResultCode": 4100 ,"failureResultCodeExperimental": True ,"requestAcronym": "RAR", "responseAcronym": "RAA", "requestName": "Re Auth Request", "responseName": "Re Auth Answer"},
                 {"commandCode": 272, "applicationId": 16777238, "responseMethod": self.Answer_16777238_272, "failureResultCode": 5012 ,"requestAcronym": "CCR", "responseAcronym": "CCA", "requestName": "Credit Control Request", "responseName": "Credit Control Answer"},
 
                 # S6a MME
-                {"commandCode": 318, "applicationId": 16777251, "flags": "c0", "responseMethod": self.Answer_16777251_318, "failureResultCode": 4100 ,"requestAcronym": "AIR", "responseAcronym": "AIA", "requestName": "Authentication Information Request", "responseName": "Authentication Information Answer"},
-                {"commandCode": 316, "applicationId": 16777251, "responseMethod": self.Answer_16777251_316, "failureResultCode": 4100 ,"requestAcronym": "ULR", "responseAcronym": "ULA", "requestName": "Update Location Request", "responseName": "Update Location Answer"},
+                {"commandCode": 318, "applicationId": 16777251, "flags": "c0", "responseMethod": self.Answer_16777251_318, "failureResultCode": 4100 ,"failureResultCodeExperimental": True ,"requestAcronym": "AIR", "responseAcronym": "AIA", "requestName": "Authentication Information Request", "responseName": "Authentication Information Answer"},
+                {"commandCode": 316, "applicationId": 16777251, "responseMethod": self.Answer_16777251_316, "failureResultCode": 4100 ,"failureResultCodeExperimental": True ,"requestAcronym": "ULR", "responseAcronym": "ULA", "requestName": "Update Location Request", "responseName": "Update Location Answer"},
                 {"commandCode": 321, "applicationId": 16777251, "responseMethod": self.Answer_16777251_321, "failureResultCode": 5012 ,"requestAcronym": "PUR", "responseAcronym": "PUA", "requestName": "Purge UE Request", "responseName": "Purge UE Answer"},
                 {"commandCode": 323, "applicationId": 16777251, "responseMethod": self.Answer_16777251_323, "failureResultCode": 5012 ,"requestAcronym": "NOR", "responseAcronym": "NOA", "requestName": "Notify Request", "responseName": "Notify Answer"},
 
                 # S13 EIR
-                {"commandCode": 324, "applicationId": 16777252, "responseMethod": self.Answer_16777252_324, "failureResultCode": 4100 ,"requestAcronym": "ECR", "responseAcronym": "ECA", "requestName": "ME Identity Check Request", "responseName": "ME Identity Check Answer"},
+                {"commandCode": 324, "applicationId": 16777252, "responseMethod": self.Answer_16777252_324, "failureResultCode": 4100 ,"failureResultCodeExperimental": True ,"requestAcronym": "ECR", "responseAcronym": "ECA", "requestName": "ME Identity Check Request", "responseName": "ME Identity Check Answer"},
 
                 # SLh LCS
-                {"commandCode": 8388622, "applicationId": 16777291, "responseMethod": self.Answer_16777291_8388622, "failureResultCode": 4100 ,"requestAcronym": "LRR", "responseAcronym": "LRA", "requestName": "LCS Routing Info Request", "responseName": "LCS Routing Info Answer"},
+                {"commandCode": 8388622, "applicationId": 16777291, "responseMethod": self.Answer_16777291_8388622, "failureResultCode": 4100 ,"failureResultCodeExperimental": True ,"requestAcronym": "LRR", "responseAcronym": "LRA", "requestName": "LCS Routing Info Request", "responseName": "LCS Routing Info Answer"},
             ]
 
         self.diameterRequestList = [
@@ -729,6 +752,32 @@ class Diameter:
                         misc_data.append(sub_avp['misc_data'])
         return misc_data
 
+    def get_top_level_avp_data(self, avps, avp_code):
+        #Returns the payload of the first top level AVP with avp_code ('' when it is empty), or None when there is none.
+        #Grouped AVPs are not searched, unlike get_avp_data().
+        for avp in avps:
+            if int(avp['avp_code']) == int(avp_code):
+                return avp['misc_data'] if isinstance(avp['misc_data'], str) else ''
+        return None
+
+    def get_required_avp_data(self, avps, avp_code, vendor_id=None):
+        #Returns the data of the first top level AVP with avp_code (and, when vendor_id is given, that Vendor-Id).
+        #Raises DiameterMissingAvp when there is none, so the request is answered with DIAMETER_MISSING_AVP, and
+        #DiameterInvalidAvpValue when the AVP is present with an empty payload, answered with DIAMETER_INVALID_AVP_VALUE.
+        #Unlike get_avp_data() this does not look inside grouped AVPs: a mandatory AVP nested in another AVP does not count.
+        for avp in avps:
+            if int(avp['avp_code']) != int(avp_code):
+                continue
+            if vendor_id is not None and avp['vendor_id'] != vendor_id:                             #The decoder sets vendor_id to '' when the V bit is clear
+                continue
+            if avp['misc_data']:
+                return avp['misc_data']
+            if avp.get('sub_avps'):
+                return avp['sub_avps']
+            received_vendor_id = avp['vendor_id'] if avp['vendor_id'] != '' else None
+            raise DiameterInvalidAvpValue(avp_code, avp_data='', vendor_id=received_vendor_id, avp_flags=avp['avp_flags'])
+        raise DiameterMissingAvp(avp_code, vendor_id=vendor_id)
+
     def decode_diameter_packet_length(self, data):
         packet_vars = {}
         data = data.hex()
@@ -1228,22 +1277,63 @@ class Diameter:
                     prefixHostname=self.hostname, 
                     prefixServiceName='metric')
                 
+                matchedApplication = None
+                handlerError = None
                 for diameterApplication in self.diameterResponseList:
                     try:
                         assert(packet_vars["command_code"] == diameterApplication["commandCode"])
                         assert(packet_vars["ApplicationId"] == diameterApplication["applicationId"])
                         if 'flags' in diameterApplication:
                             assert(str(packet_vars["flags"]) == str(diameterApplication["flags"]))
-                        self.logTool.log(service='HSS', level='debug', message=f"[diameter.py] [generateDiameterResponse] [{diameterApplication.get('requestAcronym', '')}] Attempting to generate response", redisClient=self.redisMessaging)
-                        try:
-                            response = diameterApplication["responseMethod"](packet_vars, avps)
-                            self.logTool.log(service='HSS', level='debug', message=f"[diameter.py] [generateDiameterResponse] [{diameterApplication.get('requestAcronym', '')}] Successfully generated response: {response}", redisClient=self.redisMessaging)
-                        except Exception as e:
-                            self.logTool.log(service='HSS', level='error', message=f"[diameter.py] [generateDiameterResponse] [{diameterApplication.get('requestAcronym', '')}] Error generating response: {traceback.format_exc()}", redisClient=self.redisMessaging)
-                            return ''
-                        break
                     except Exception as e:
                         continue
+                    matchedApplication = diameterApplication
+                    self.logTool.log(service='HSS', level='debug', message=f"[diameter.py] [generateDiameterResponse] [{diameterApplication.get('requestAcronym', '')}] Attempting to generate response", redisClient=self.redisMessaging)
+                    try:
+                        response = diameterApplication["responseMethod"](packet_vars, avps)
+                    except DiameterAvpError as e:
+                        self.logTool.log(service='HSS', level='warning', message=f"[diameter.py] [generateDiameterResponse] [{diameterApplication.get('requestAcronym', '')}] {e}", redisClient=self.redisMessaging)
+                        handlerError = e
+                    except Exception as e:
+                        self.logTool.log(service='HSS', level='error', message=f"[diameter.py] [generateDiameterResponse] [{diameterApplication.get('requestAcronym', '')}] Error generating response: {traceback.format_exc()}", redisClient=self.redisMessaging)
+                        handlerError = e
+                    else:
+                        try:
+                            self.logTool.log(service='HSS', level='debug', message=f"[diameter.py] [generateDiameterResponse] [{diameterApplication.get('requestAcronym', '')}] Successfully generated response: {response}", redisClient=self.redisMessaging)
+                        except Exception:
+                            pass                                                                    #A logging failure must not turn a valid answer into an error answer
+                    break
+
+                if matchedApplication is None:
+                    raise ValueError(f"No response handler for command code {packet_vars['command_code']} application {packet_vars['ApplicationId']}")
+
+                if handlerError is not None:
+                    #The handler failed: answer with an error Result-Code instead of dropping the request.
+                    #This runs outside the matching loop, so a failure while building the error answer is
+                    #counted by the failure metric below and the request is dropped as before, not counted
+                    #as a successful response.
+                    if isinstance(handlerError, DiameterAvpError):
+                        if handlerError.vendor_id is not None:
+                            failed_avp = self.generate_vendor_avp(handlerError.avp_code, handlerError.avp_flags, handlerError.vendor_id, handlerError.avp_data)
+                        else:
+                            failed_avp = self.generate_avp(handlerError.avp_code, handlerError.avp_flags, handlerError.avp_data)
+                        response = self.Respond_ResultCode(packet_vars, avps, handlerError.result_code, failed_avp=failed_avp)
+                    else:
+                        #failureResultCodeExperimental marks the entries whose fallback code is a 3GPP
+                        #(Vendor-Id 10415) Experimental-Result-Code; the RFC 6733 codes go in Result-Code.
+                        response = self.Respond_ResultCode(packet_vars, avps, matchedApplication['failureResultCode'], experimental=matchedApplication.get('failureResultCodeExperimental', False))
+                    self.redisMessaging.sendMetric(serviceName='diameter', metricName='prom_diam_response_count_application_id_fail',
+                                        metricType='counter', metricAction='inc',
+                                        metricLabels={
+                                            "diameter_application_id": packet_vars["ApplicationId"],
+                                            "diameter_cmd_code": packet_vars["command_code"],
+                                        },
+                                        metricValue=1.0, metricHelp='Number of Failed Diameter Responses',
+                                        metricExpiry=60,
+                                        usePrefix=True,
+                                        prefixHostname=self.hostname,
+                                        prefixServiceName='metric')
+                    return response
 
                 self.redisMessaging.sendMetric(serviceName='diameter', metricName='prom_diam_response_count_application_id_successful',
                                     metricType='counter', metricAction='inc', 
@@ -1837,7 +1927,7 @@ class Diameter:
     #3GPP S6a/S6d Update Location Answer
     def Answer_16777251_316(self, packet_vars, avps):
         avp = ''                                                                                    #Initiate empty var AVP
-        session_id = self.get_avp_data(avps, 263)[0]                                                     #Get Session-ID
+        session_id = self.get_required_avp_data(avps, 263)                                               #Get Session-ID
         avp += self.generate_avp(263, 40, session_id)                                                    #Session-ID AVP set
         avp += self.generate_avp(264, 40, self.OriginHost)                                                    #Origin Host
         avp += self.generate_avp(296, 40, self.OriginRealm)                                                   #Origin Realm
@@ -2192,7 +2282,7 @@ class Diameter:
     #3GPP S6a/S6d Authentication Information Answer
     def Answer_16777251_318(self, packet_vars, avps):
         self.logTool.log(service='HSS', level='debug', message=f"AIA AVPS: {avps}", redisClient=self.redisMessaging)
-        imsi = self.get_avp_data(avps, 1)[0]                                                             #Get IMSI from User-Name AVP in request
+        imsi = self.get_required_avp_data(avps, 1)                                                       #Get IMSI from User-Name AVP in request
         imsi = binascii.unhexlify(imsi).decode('utf-8')                                                  #Convert IMSI
         plmn = self.get_avp_data(avps, 1407)[0]                                                          #Get PLMN from User-Name AVP in request
 
@@ -2393,11 +2483,11 @@ class Diameter:
     #Purge UE Answer (PUA)
     def Answer_16777251_321(self, packet_vars, avps):
         
-        imsi = self.get_avp_data(avps, 1)[0]                                                             #Get IMSI from User-Name AVP in request
+        imsi = self.get_required_avp_data(avps, 1)                                                       #Get IMSI from User-Name AVP in request
         imsi = binascii.unhexlify(imsi).decode('utf-8')
 
         avp = ''
-        session_id = self.get_avp_data(avps, 263)[0]                                                     #Get Session-ID
+        session_id = self.get_required_avp_data(avps, 263)                                               #Get Session-ID
         avp += self.generate_avp(263, 40, session_id)                                                    #Session-ID AVP set
         avp += self.generate_avp(268, 40, self.int_to_hex(2001, 4))                                      #Result Code (DIAMETER_SUCCESS (2001))
         avp += self.generate_avp(260, 40, "000001024000000c" + format(int(16777251),"x").zfill(8) +  "0000010a4000000c000028af")      #Vendor-Specific-Application-ID (S6a)        
@@ -2427,7 +2517,7 @@ class Diameter:
     #Notify Answer (NOA)
     def Answer_16777251_323(self, packet_vars, avps):
         avp = ''
-        session_id = self.get_avp_data(avps, 263)[0]                                                     #Get Session-ID
+        session_id = self.get_required_avp_data(avps, 263)                                               #Get Session-ID
         avp += self.generate_avp(263, 40, session_id)                                                    #Session-ID AVP set
         avp += self.generate_avp(268, 40, self.int_to_hex(2001, 4))                                      #Result Code (DIAMETER_SUCCESS (2001))
         avp += self.generate_avp(260, 40, "000001024000000c" + format(int(16777251),"x").zfill(8) +  "0000010a4000000c000028af")      #Vendor-Specific-Application-ID (S6a)        
@@ -2904,7 +2994,7 @@ class Diameter:
     def Answer_16777216_300(self, packet_vars, avps):
         
         avp = ''                                                                                         #Initiate empty var AVP                                                                                           #Session-ID
-        session_id = self.get_avp_data(avps, 263)[0]                                                     #Get Session-ID
+        session_id = self.get_required_avp_data(avps, 263)                                               #Get Session-ID
         avp += self.generate_avp(263, 40, session_id)                                                    #Set session ID to received session ID
         avp += self.generate_avp(264, 40, self.OriginHost)                                               #Origin Host
         avp += self.generate_avp(296, 40, self.OriginRealm)                                              #Origin Realm
@@ -3008,7 +3098,7 @@ class Diameter:
     #3GPP Cx Server Assignment Answer
     def Answer_16777216_301(self, packet_vars, avps):
         avp = ''                                                                                    #Initiate empty var AVP                                                                                           #Session-ID
-        session_id = self.get_avp_data(avps, 263)[0]                                                     #Get Session-ID
+        session_id = self.get_required_avp_data(avps, 263)                                               #Get Session-ID
         avp += self.generate_avp(263, 40, session_id)                                                    #Set session ID to received session ID
         avp += self.generate_avp(264, 40, self.OriginHost)                                               #Origin Host
         avp += self.generate_avp(296, 40, self.OriginRealm)                                              #Origin Realm
@@ -3101,7 +3191,7 @@ class Diameter:
     #3GPP Cx Location Information Answer
     def Answer_16777216_302(self, packet_vars, avps):
         avp = ''                                                                                    #Initiate empty var AVP                                                                                           #Session-ID
-        session_id = self.get_avp_data(avps, 263)[0]                                                     #Get Session-ID
+        session_id = self.get_required_avp_data(avps, 263)                                               #Get Session-ID
         avp += self.generate_avp(263, 40, session_id)                                                    #Set session ID to received session ID
         avp += self.generate_avp(264, 40, self.OriginHost)                                                    #Origin Host
         avp += self.generate_avp(296, 40, self.OriginRealm)
@@ -3161,18 +3251,26 @@ class Diameter:
 
     #3GPP Cx Multimedia Authentication Answer
     def Answer_16777216_303(self, packet_vars, avps):
-        public_identity = self.get_avp_data(avps, 601)[0]
-        public_identity = binascii.unhexlify(public_identity).decode('utf-8')
+        public_identity_hex = self.get_required_avp_data(avps, 601, vendor_id=10415)
+        try:
+            public_identity = binascii.unhexlify(public_identity_hex).decode('utf-8')
+        except (binascii.Error, UnicodeDecodeError):
+            raise DiameterInvalidAvpValue(601, avp_data=public_identity_hex, vendor_id=10415)      #Public-Identity must be a UTF-8 string
         self.logTool.log(service='HSS', level='debug', message="Got MAR for public_identity : " + str(public_identity), redisClient=self.redisMessaging)
-        username = self.get_avp_data(avps, 1)[0]
-        username = binascii.unhexlify(username).decode('utf-8')
+        username_hex = self.get_required_avp_data(avps, 1)
+        try:
+            username = binascii.unhexlify(username_hex).decode('utf-8')
+        except (binascii.Error, UnicodeDecodeError):
+            raise DiameterInvalidAvpValue(1, avp_data=username_hex)                                 #User-Name must be a UTF-8 string
+        if '@' not in username:
+            raise DiameterInvalidAvpValue(1, avp_data=username_hex)                                 #User-Name must be imsi@domain
         imsi = username.split('@')[0]   #Strip Domain
         domain = username.split('@')[1] #Get Domain Part
         self.logTool.log(service='HSS', level='debug', message="Got MAR username: " + str(username), redisClient=self.redisMessaging)
         auth_scheme = ''
 
         avp = ''                                                                                    #Initiate empty var AVP
-        session_id = self.get_avp_data(avps, 263)[0]                                                     #Get Session-ID
+        session_id = self.get_required_avp_data(avps, 263)                                               #Get Session-ID
         avp += self.generate_avp(263, 40, session_id)                                                    #Set session ID to received session ID
         avp += self.generate_avp(260, 40, "0000010a4000000c000028af000001024000000c01000000")            #Vendor-Specific-Application-ID for Cx
         avp += self.generate_avp(277, 40, "00000001")                                                    #Auth Session State
@@ -3285,37 +3383,49 @@ class Diameter:
         return response
 
     #Generate a Generic error handler with Result Code as input
-    def Respond_ResultCode(self, packet_vars, avps, result_code):
+    def Respond_ResultCode(self, packet_vars, avps, result_code, experimental=False, failed_avp=None):
+        """
+        Builds a generic error answer for the request in packet_vars / avps (RFC 6733 section 7.2).
+        result_code is sent in Result-Code (268), or in Experimental-Result (297, Vendor-Id 10415) when experimental is True.
+        failed_avp is an optional pre-encoded AVP to include inside Failed-AVP (279).
+        """
         self.logTool.log(service='HSS', level='error', message="Responding with result code " + str(result_code) + " to request with command code " + str(packet_vars['command_code']), redisClient=self.redisMessaging)
         avp = ''                                                                                    #Initiate empty var AVP
-        avp += self.generate_avp(264, 40, self.OriginHost)                                                    #Origin Host
-        avp += self.generate_avp(296, 40, self.OriginRealm)                                                   #Origin Realm
-        try:
-            session_id = self.get_avp_data(avps, 263)[0]                                                     #Get Session-ID
-            avp += self.generate_avp(263, 40, session_id)                                                    #Set session ID to received session ID
-        except:
-            self.logTool.log(service='HSS', level='debug', message="Failed to add SessionID into error", redisClient=self.redisMessaging)
+        session_id = self.get_top_level_avp_data(avps, 263)                                         #Get the request's own Session-ID (not one nested in another AVP)
+        if session_id:                                                                              #Echo it unless absent or empty
+            avp += self.generate_avp(263, 40, session_id)                                           #Set session ID to received session ID
+        avp += self.generate_avp(264, 40, self.OriginHost)                                          #Origin Host
+        avp += self.generate_avp(296, 40, self.OriginRealm)                                         #Origin Realm
         for avps_to_check in avps:                                                                  #Only include AVP 260 (Vendor-Specific-Application-ID) if inital request included it
             if avps_to_check['avp_code'] == 260:
                 concat_subavp = ''
-                for sub_avp in avps_to_check['misc_data']:
-                    concat_subavp += self.generate_avp(sub_avp['avp_code'], sub_avp['avp_flags'], sub_avp['misc_data'])
-                avp += self.generate_avp(260, 40, concat_subavp)        #Vendor-Specific-Application-ID
-        avp += self.generate_avp(268, 40, self.int_to_hex(result_code, 4))                                                   #Response Code
-        
-        #Experimental Result AVP(Response Code for Failure)
-        avp_experimental_result = ''
-        avp_experimental_result += self.generate_vendor_avp(266, 40, 10415, '')                         #AVP Vendor ID
-        avp_experimental_result += self.generate_avp(298, 40, self.int_to_hex(result_code, 4))                 #AVP Experimental-Result-Code: DIAMETER_ERROR_USER_UNKNOWN (5001)
-        avp += self.generate_avp(297, 40, avp_experimental_result)                                      #AVP Experimental-Result(297)
-
-        response = self.generate_diameter_packet("01", "60", int(packet_vars['command_code']), int(packet_vars['ApplicationId']), packet_vars['hop-by-hop-identifier'], packet_vars['end-to-end-identifier'], avp)     #Generate Diameter packet
+                for sub_avp in avps_to_check['sub_avps']:
+                    sub_avp_data = sub_avp['misc_data'] if isinstance(sub_avp['misc_data'], str) else ''  #The decoder yields [] for an empty payload
+                    if sub_avp['vendor_id'] != '':                                                  #The decoder sets vendor_id to '' when the V bit is clear and to an int (possibly 0) when it is set
+                        concat_subavp += self.generate_vendor_avp(sub_avp['avp_code'], sub_avp['avp_flags'], sub_avp['vendor_id'], sub_avp_data)
+                    else:
+                        concat_subavp += self.generate_avp(sub_avp['avp_code'], sub_avp['avp_flags'], sub_avp_data)
+                avp += self.generate_avp(260, 40, concat_subavp)                                    #Vendor-Specific-Application-ID
+        auth_session_state = self.get_top_level_avp_data(avps, 277)                                 #Only include AVP 277 (Auth-Session-State) if inital request included it
+        if auth_session_state:
+            avp += self.generate_avp(277, 40, auth_session_state)
+        if experimental:
+            avp_experimental_result = ''
+            avp_experimental_result += self.generate_vendor_avp(266, 40, 10415, '')                 #AVP Vendor ID
+            avp_experimental_result += self.generate_avp(298, 40, self.int_to_hex(result_code, 4))  #AVP Experimental-Result-Code
+            avp += self.generate_avp(297, 40, avp_experimental_result)                              #AVP Experimental-Result(297)
+        else:
+            avp += self.generate_avp(268, 40, self.int_to_hex(result_code, 4))                      #Result-Code
+        if failed_avp:
+            avp += self.generate_avp(279, 40, failed_avp)                                           #Failed-AVP
+        flags = format(int(packet_vars['flags'], 16) & 0x40, '02x')                                 #Answer flags: only keep the Proxiable bit of the request
+        response = self.generate_diameter_packet("01", flags, int(packet_vars['command_code']), int(packet_vars['ApplicationId']), packet_vars['hop-by-hop-identifier'], packet_vars['end-to-end-identifier'], avp)     #Generate Diameter packet
         return response
 
     #3GPP Cx Registration Termination Answer
     def Answer_16777216_304(self, packet_vars, avps):
         avp = ''                                                                                    #Initiate empty var AVP                                                                                           #Session-ID
-        session_id = self.get_avp_data(avps, 263)[0]                                                     #Get Session-ID
+        session_id = self.get_required_avp_data(avps, 263)                                               #Get Session-ID
         avp += self.generate_avp(263, 40, session_id)                                                    #Set session ID to received session ID
         vendor_id = self.generate_avp(266, 40, str(binascii.hexlify('10415'),'ascii'))
         self.logTool.log(service='HSS', level='debug', message="vendor_id avp: " + str(vendor_id), redisClient=self.redisMessaging)
@@ -3430,7 +3540,7 @@ class Diameter:
             self.logTool.log(service='HSS', level='debug', message=f"Rejecting Sh User-Data-Request: {e}", redisClient=self.redisMessaging)
             invalid_user_identity = next((avp_object for avp_object in avps if int(avp_object['avp_code']) == 700), None)
 
-        session_id = self.get_avp_data(avps, 263)[0]                                                     #Get Session-ID
+        session_id = self.get_required_avp_data(avps, 263)                                               #Get Session-ID
         avp += self.generate_avp(263, 40, session_id)                                                    #Set session ID to received session ID
         avp += self.generate_avp(264, 40, self.OriginHost)                                               #Origin Host
         avp += self.generate_avp(296, 40, self.OriginRealm)                                              #Origin Realm
@@ -3607,7 +3717,7 @@ class Diameter:
         self.database.UpdateObj(IMS_SUBSCRIBER, {'xcap_profile': sh_user_data}, subscriber_ims_details['ims_subscriber_id'])
 
         avp = ''                                                                                    #Initiate empty var AVP                                                                                           #Session-ID
-        session_id = self.get_avp_data(avps, 263)[0]                                                     #Get Session-ID
+        session_id = self.get_required_avp_data(avps, 263)                                               #Get Session-ID
         avp += self.generate_avp(263, 40, session_id)                                                    #Set session ID to received session ID
         avp += self.generate_avp(264, 40, self.OriginHost)                                               #Origin Host
         avp += self.generate_avp(296, 40, self.OriginRealm)                                              #Origin Realm
@@ -4359,7 +4469,7 @@ class Diameter:
     #3GPP SLh - LCS-Routing-Info-Answer
     def Answer_16777291_8388622(self, packet_vars, avps):
         avp = '' 
-        session_id = self.get_avp_data(avps, 263)[0]                                                    #Get Session-ID
+        session_id = self.get_required_avp_data(avps, 263)                                              #Get Session-ID
         avp += self.generate_avp(263, 40, session_id)                                                   #Set session    ID to received session ID
         #AVP: Vendor-Specific-Application-Id(260) l=32 f=-M-
         VendorSpecificApplicationId = ''
