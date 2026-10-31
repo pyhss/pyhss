@@ -24,6 +24,8 @@ from baseModels import Peer, OutboundData
 import pydantic_core
 import xml.etree.ElementTree as ET
 from pyhss_config import config
+from pcf import rx as pcf_rx
+from pcf.store import PcfStore
 from rat import SubscriberRATRestriction, RAT
 
 
@@ -60,6 +62,12 @@ class Diameter:
         self.hostname = socket.gethostname()
 
         self.database = Database(logTool=logTool, main_service=main_service)
+
+        # Rx for UEs on NR is answered from the state of pyhss_pcf
+        self.pcfStore = None
+        self.pcfImsDnn = config.get('pcf', {}).get('ims_dnn', 'ims')
+        if config.get('pcf', {}).get('rx_enabled', False):
+            self.pcfStore = PcfStore(self.redisMessaging.redisClient)
         self.diameterRequestTimeout = int(config.get('hss', {}).get('diameter_request_timeout', 10))
         self.diameterPeerKey = config.get('hss', {}).get('diameter_peer_key', 'diameterPeers')
         self.useDraFallback = config.get('hss', {}).get('use_dra_fallback', False)
@@ -3663,6 +3671,11 @@ class Diameter:
             except Exception as e:
                 ueIp = None
 
+            if self.pcfStore and pcf_rx.aar(self.pcfStore, self.pcfImsDnn, sessionId, ueIp, avps):
+                self.logTool.log(service='HSS', level='info', message=f"[diameter.py] [Answer_16777236_265] [AAA] UE {ueIp} is on NR, handled by the PCF", redisClient=self.redisMessaging)
+                avp += self.generate_avp(268, 40, self.int_to_hex(2001, 4))
+                return self.generate_diameter_packet("01", "40", 265, 16777236, packet_vars['hop-by-hop-identifier'], packet_vars['end-to-end-identifier'], avp)
+
             """
             Determine if the AAR for the IP belongs to an inbound roaming emergency subscriber.
             """
@@ -4161,6 +4174,9 @@ class Diameter:
             avp += self.generate_avp(263, 40, self.string_to_hex(sessionId))                                                    #Set session ID to received session ID
             avp += self.generate_avp(264, 40, self.OriginHost)                                               #Origin Host
             avp += self.generate_avp(296, 40, self.OriginRealm)                                              #Origin Realm
+            if self.pcfStore and pcf_rx.session_termination(self.pcfStore, sessionId):
+                avp += self.generate_avp(268, 40, self.int_to_hex(2001, 4))
+                return self.generate_diameter_packet("01", "40", 275, 16777236, packet_vars['hop-by-hop-identifier'], packet_vars['end-to-end-identifier'], avp)
             servingApn = None
             try:
                 imsSubscriber = self.database.Get_IMS_Subscriber_By_Session_Id(sessionId=sessionId)
