@@ -2156,6 +2156,10 @@ class Database:
                     assert(len(serving_pgw) > 0)
                     assert("None" not in serving_pgw)
                     
+                    if ServingAPN and ((subscriber_routing == "None") or (subscriber_routing == "") or (subscriber_routing == "Failed to Decode / Get UE IP") or (subscriber_routing == None)):
+                        json_data['subscriber_routing'] = ServingAPN['subscriber_routing']
+                        self.logTool.log(service='Database', level='debug', message="Using existing subscriber routing from Serving APN", redisClient=self.redisMessaging)
+
                     self.UpdateObj(SERVING_APN, json_data, ServingAPN['serving_apn_id'], True)
                     objectData = self.GetObj(SERVING_APN, ServingAPN['serving_apn_id'])
                     self.handleWebhook(objectData, 'PATCH')
