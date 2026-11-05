@@ -42,7 +42,7 @@ class GSUPClient:
             raise ValueError(f"Unsupported message type: {msg_type}")
 
         # Send the identity response to the server
-        data = self.ipa.tag_unit(self.identity.encode('utf-8'))
+        data = self.ipa.tag_unit(f"{self.identity}\0".encode('utf-8'))
         data = self.ipa.id_resp(data)
         self.sock.send(data)
 
