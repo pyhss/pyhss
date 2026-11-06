@@ -69,20 +69,33 @@ curl -X PUT http://localhost:8080/apn/ -H 'Content-Type: application/json' -d '{
 
 ## SQN handling
 
-The SQN is shared between S6a (4G) and 5G:
+The SQN is shared between S6a (4G), Cx, GSUP and 5G. SIM cards use the lower 5 bits of the SQN
+(the IND) as the index into an array of SQN counters, and the rest (SEQ) as the counter in that
+slot. To keep every vector in the same slot, all paths step the SQN by **`hss.sqn_increment`**
+(default 32), as Open5GS' UDR does:
 
-- **S6a AIR:** the vector uses the stored SQN, then PyHSS stores SQN + 100 (unchanged).
+- **4G/IMS/GSUP vectors** (S6a AIR, Cx MAR, GSUP): the vector uses the stored SQN, then PyHSS
+  adds `hss.sqn_increment`. (Before, this was +100, which moved the index by 4 per vector.)
 - **5G authentication:**
   1. The UDM reads the SQN with a GET and generates the vector from it.
-  2. After authentication, its PUT to `authentication-status` adds 32. Open5GS' UDR does the
-     same, and its UDM relies on it.
-- **5G resync:** the UDM verifies the AUTS and PATCHes `/sequenceNumber/sqn`. PyHSS stores the
-  new value + 32.
-  - With `udr.sqn_patch_policy: max` (the default), the SQN never moves backwards. A 5G resync
-    therefore can't undo SQNs that S6a has handed out since.
-  - With `set`, the value is overwritten, as Open5GS' UDR does.
+  2. After authentication, its PUT to `authentication-status` adds `hss.sqn_increment`. Open5GS'
+     UDR does the same, and its UDM relies on it.
+- **Resync** (AUTS):
+  - **4G/IMS/GSUP:** PyHSS takes SQN_MS from the AUTS and stores `max(stored, SQN_MS) +
+    hss.sqn_increment`.
+  - **5G:** the UDM verifies the AUTS and PATCHes `/sequenceNumber/sqn` (Open5GS sends
+    SQN_MS + 33). PyHSS stores the new value + `hss.sqn_increment`.
+    - With `udr.sqn_patch_policy: max` (the default), the SQN never moves backwards. A 5G resync
+      therefore can't undo SQNs that S6a has handed out since.
+    - With `set`, the value is overwritten, as Open5GS' UDR does.
+- **New AUC rows** should start at a multiple of 32 (index 0), for example 96.
+  `provision_pyhss.py` in `sim_secrets` does that by default.
 
-SQN updates are atomic (row lock) and are propagated via geored, like `Update_AuC`.
+Set `hss.sqn_increment` to the size of the SIM's SQN array (2^IND bits) if it isn't 32. It has to
+be a multiple of it. SQNs stored by earlier versions (+100 steps) keep their index until the next
+resync.
+
+SQN updates are atomic (row lock), wrap at 48 bits and are propagated via geored.
 
 ## Configuration
 
@@ -152,5 +165,5 @@ Where Open5GS 2.8.0 and the specs differ:
 - **`allowedSscModes`:** Open5GS' own UDR sends three entries, which violates TS 29.503
   (`maxItems: 2`, the modes allowed besides the default). PyHSS sends the spec-compliant
   `["SSC_MODE_2", "SSC_MODE_3"]`, which the Open5GS SMF accepts.
-- **SQN increment:** the SQN +32 on `authentication-status` follows Open5GS. The spec doesn't
+- **SQN increment:** the SQN +32 (`hss.sqn_increment`) on `authentication-status` follows Open5GS. The spec doesn't
   define this.
