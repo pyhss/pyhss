@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the lookup. Previously the parameters stayed attached, the lookup
   failed with `Experimental-Result-Code` 5001, and the LIA had no
   `Server-Name` for the I-CSCF to route to.
+- Answer Diameter requests that carry a missing or malformed AVP with an
+  error Result-Code ([#308](https://github.com/nickvsnetworking/pyhss/issues/308)).
 
 ## [2.0.1] - 2026-10-14
 
