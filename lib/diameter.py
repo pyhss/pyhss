@@ -3836,10 +3836,19 @@ class Diameter:
                                 servingApn = remoteServingApn
                             else:
                                 servingApn = self.database.Get_Serving_APN(subscriber_id=subscriberId, apn_id=apnId)
-                            servingPgwPeer = servingApn.get('serving_pgw_peer', None).split(';')[0]
-                            servingPgw = servingApn.get('serving_pgw', None)
-                            servingPgwRealm = servingApn.get('serving_pgw_realm', None)
-                            pcrfSessionId = servingApn.get('pcrf_session_id', None)
+
+                            if servingApn:
+                                self.logTool.log(service='HSS', level='debug', message=f"[diameter.py] [Answer_16777236_265] [AAA] Found Serving APN for subscriberId: {subscriberId} and apnId: {apnId}", redisClient=self.redisMessaging)
+                                servingPgwPeer = servingApn.get('serving_pgw_peer', None).split(';')[0]
+                                servingPgw = servingApn.get('serving_pgw', None)
+                                servingPgwRealm = servingApn.get('serving_pgw_realm', None)
+                                pcrfSessionId = servingApn.get('pcrf_session_id', None)
+                            else:
+                                servingPgwPeer = None
+                                servingPgw = None
+                                servingPgwRealm = None
+                                pcrfSessionId = None
+                                raise Exception("No Serving APN found")
 
                         if not ueIp:
                             ueIp = servingApn.get('subscriber_routing', None)
