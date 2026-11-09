@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.2] - 2026-11-12
+
 ### Fixed
 
 - Find a subscriber by MSISDN when the Cx Username AVP is a SIP or tel
@@ -15,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the lookup. Previously the parameters stayed attached, the lookup
   failed with `Experimental-Result-Code` 5001, and the LIA had no
   `Server-Name` for the I-CSCF to route to.
+- Debian: fix packaging with dh-virtualenv 1.3.1 (current debian unstable).
+- Fix null character in gsup payload decoding, causing the postgres backend to
+  fail when updating a GSUP record.
 
 ## [2.0.1] - 2026-10-14
 
@@ -269,3 +274,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.0.2]: https://github.com/nickvsnetworking/pyhss/releases/tag/1.0.2
 [2.0.0]: https://github.com/nickvsnetworking/pyhss/releases/tag/2.0.0
 [2.0.1]: https://github.com/nickvsnetworking/pyhss/releases/tag/2.0.1
+[2.0.2]: https://github.com/nickvsnetworking/pyhss/releases/tag/2.0.2

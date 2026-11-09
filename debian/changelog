@@ -1,3 +1,24 @@
+pyhss (2.0.2) unstable; urgency=medium
+
+  [ Oliver Smith ]
+  * debian: fix packaging with dh-virtualenv 1.3.1
+  * lib/gsup/server: rework code for null-terminated values
+  * tests: gsup: test with one ID not null-terminated
+
+  [ Lennart Rosam ]
+  * docs(readme): drop unimplemented Zh/Zn interface
+  * docs(readme): remove MySQL from compose services
+  * github: let publish workflow push to ghcr.io
+  * docker: point image references at the pyhss org
+  * HSS: strip URI parameters from Cx Username identities
+  * tests: make tests work in isolation
+  * tests(diameter): create the test DB when missing
+
+  [ lina-neumann ]
+  * fix null character in gsup payload decoding
+
+ -- Oliver Smith <osmith@sysmocom.de>  Wed, 11 Nov 2026 15:04:12 +0100
+
 pyhss (2.0.1) unstable; urgency=medium
 
   [ phatlc ]
