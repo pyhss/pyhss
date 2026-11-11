@@ -171,7 +171,11 @@ class GsupServer:
             try:
                 length = int.from_bytes(payload[index:index + 2], 'big') - 1
                 tag = self.ipa.idtag(payload[index + 2:index + 3][0])
-                value = str(payload[index + 3:index + 3 + length - 1], 'utf-8')
+                value = str(payload[index + 3:index + 3 + length], 'utf-8')
+
+                if value.endswith("\0"):
+                    value = value.removesuffix("\0")
+
                 tags[tag] = value
                 index += 3 + length
             except Exception as e:
