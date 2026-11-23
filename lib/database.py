@@ -2204,6 +2204,9 @@ class Database:
             self.logTool.log(service='Database', level='debug', message=E, redisClient=self.redisMessaging)
             self.safe_close(session)
             raise ValueError(E)
+        if result is None:
+            self.safe_close(session)
+            raise ValueError(f"No serving APN {apn_id} for subscriber_id {subscriber_id}")
         result = result.__dict__
         result.pop('_sa_instance_state')
         
@@ -2347,6 +2350,7 @@ class Database:
             raise ValueError(E)
         result = result.__dict__
         result.pop('_sa_instance_state')
+        self.safe_close(session)
         result = self.Sanitize_Datetime(result)
         return result
 
@@ -2363,6 +2367,7 @@ class Database:
             raise ValueError(E)
         result = result.__dict__
         result.pop('_sa_instance_state')
+        self.safe_close(session)
         result = self.Sanitize_Datetime(result)
         return result
 
@@ -2404,6 +2409,7 @@ class Database:
 
             if not result:
                 self.logTool.log(service='Database', level='debug', message=f"[database.py] [Get_Emergency_Subscriber] No match for emergency subscriber on IMSI: {imsi} / Subscriber IP: {subscriberIp} / gxSessionId: {gxSessionId} / rxSessionId: {rxSessionId}", redisClient=self.redisMessaging)
+                self.safe_close(session)
                 return None
             result = result.__dict__
             result.pop('_sa_instance_state')
