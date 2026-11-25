@@ -3640,9 +3640,18 @@ class Diameter:
             avp += self.generate_avp(296, 40, self.OriginRealm)                                              #Origin Realm
             avp += self.generate_vendor_avp(628, 80, 10415, "0000010a4000000c000028af0000027580000010000028af000000010000027680000010000028af00000001") #Supported Features
 
-            subscriptionId = bytes.fromhex(self.get_avp_data(avps, 444)[0]).decode('ascii')
-            self.logTool.log(service='HSS', level='debug', message=f"[diameter.py] [Answer_16777236_265] [AAA] Received subscription ID: {subscriptionId}", redisClient=self.redisMessaging)
-            subscriptionId = subscriptionId.replace('sip:', '')
+            subscription_id_avp = self.get_avp_data(avps, 444)
+            if subscription_id_avp and len(subscription_id_avp) > 0:
+                subscriptionId = bytes.fromhex(subscription_id_avp[0]).decode('ascii')
+
+                self.logTool.log(service='HSS', level='debug', message=f"[diameter.py] [Answer_16777236_265] [AAA] Received subscription ID: {subscriptionId}", redisClient=self.redisMessaging)
+            
+                subscriptionId = subscriptionId.replace('sip:', '')
+            else:
+                subscriptionId = None
+
+                self.logTool.log(service='HSS', level='debug', message=f"[diameter.py] [Answer_16777236_265] [AAA] Received without subscription ID", redisClient=self.redisMessaging)
+
             imsi = None
             msisdn = None
             identifier = None
@@ -3713,7 +3722,7 @@ class Diameter:
 
             self.logTool.log(service='HSS', level='debug', message=f"[diameter.py] [Answer_16777236_265] [AAA] IP APN Name: {ipApnName}", redisClient=self.redisMessaging)
 
-            if '@' in subscriptionId:
+            if subscriptionId is not None and '@' in subscriptionId:
                 subscriberIdentifier = subscriptionId.split('@')[0]
                 # Subscriber Identifier can be either an IMSI or an MSISDN
                 try:
@@ -3732,24 +3741,22 @@ class Diameter:
                     pass
                 if identifier == None:
                     try:
-                        ueIP = subscriptionId.split('@')[1].split(':')[0]
-                        ue = self.database.Get_UE_by_IP(ueIP)
+                        ue = self.database.Get_UE_by_IP(ueIp)
                         subscriberId = ue.get('subscriber_id', None)
                         subscriberDetails = self.database.Get_Subscriber(subscriber_id=subscriberId)
                         imsi = subscriberDetails.get('imsi', None)
-                        self.logTool.log(service='HSS', level='debug', message=f"[diameter.py] [Answer_16777236_265] [AAA] Found IMSI {imsi} by IP: {ueIP}", redisClient=self.redisMessaging)
+                        self.logTool.log(service='HSS', level='debug', message=f"[diameter.py] [Answer_16777236_265] [AAA] Found IMSI {imsi} by IP: {ueIp}", redisClient=self.redisMessaging)
                     except Exception as e:
                         pass
             else:
                 imsi = None
                 msisdn = None
                 try:
-                    ueIP = subscriptionId.split(':')[0]
-                    ue = self.database.Get_UE_by_IP(ueIP)
+                    ue = self.database.Get_UE_by_IP(ueIp)
                     subscriberId = ue.get('subscriber_id', None)
                     subscriberDetails = self.database.Get_Subscriber(subscriber_id=subscriberId)
                     imsi = subscriberDetails.get('imsi', None)
-                    self.logTool.log(service='HSS', level='debug', message=f"[diameter.py] [Answer_16777236_265] [AAA] Found IMSI {imsi} by IP: {ueIP}", redisClient=self.redisMessaging)
+                    self.logTool.log(service='HSS', level='debug', message=f"[diameter.py] [Answer_16777236_265] [AAA] Found IMSI {imsi} by IP: {ueIp}", redisClient=self.redisMessaging)
                 except Exception as e:
                     pass
 
